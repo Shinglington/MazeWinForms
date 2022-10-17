@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32804.467
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PRJ_MazeWinForms", "PRJ_MazeWinForms\PRJ_MazeWinForms.csproj", "{03B3BB84-4AA0-42C2-AFE7-E1D6F54273A5}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{03B3BB84-4AA0-42C2-AFE7-E1D6F54273A5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{03B3BB84-4AA0-42C2-AFE7-E1D6F54273A5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{03B3BB84-4AA0-42C2-AFE7-E1D6F54273A5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{03B3BB84-4AA0-42C2-AFE7-E1D6F54273A5}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {8D7F0CB9-1072-47C9-8A63-0537BFAB1C3B}
+	EndGlobalSection
+EndGlobal
