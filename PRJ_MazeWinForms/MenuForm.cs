@@ -10,11 +10,16 @@ using System.Windows.Forms;
 
 namespace PRJ_MazeWinForms
 {
-    public partial class Form1 : Form
+    public partial class MenuForm : Form
     {
-        public Form1()
+        public MenuForm()
         {
             InitializeComponent();
+        }
+
+        private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
+        {
+
         }
     }
 }
