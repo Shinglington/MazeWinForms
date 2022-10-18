@@ -12,14 +12,53 @@ namespace PRJ_MazeWinForms
 {
     public partial class SettingsForm : Form
     {
-        public SettingsForm()
+        private MenuForm ParentMenu;
+        public SettingsForm(MenuForm M)
         {
             InitializeComponent();
+            // Indicates which form originally called the settings form
+            ParentMenu = M;
+
+            SetupEvents();
         }
 
-        private void btn_advSettings_Click(object sender, EventArgs e)
+        private void SetupEvents()
         {
-            tbl_basicSettings.Hide();
+            this.FormClosed += new FormClosedEventHandler(ReturnToMenu);
+            btn_back.Click += new EventHandler(ReturnToMenu);
+        }
+
+        private void ReturnToMenu(object sender, EventArgs e)
+        {
+            this.Hide();
+            ParentMenu.Show();
         }
     }
+
+    public partial class ButtonState
+    {
+        private Button _button;
+        private bool _state;
+        public ButtonState(Button b, bool initialState = false)
+        {
+            _button = b;
+            _state = initialState;
+        }
+
+        public void OnClick()
+        {
+            _state = !_state;
+        }
+
+        private void ShowBasicSettings()
+        {
+
+        }
+
+        private void ShowAdvancedSettings()
+        {
+
+        }
+    }
+
 }

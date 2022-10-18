@@ -40,6 +40,7 @@
             this.lbl_easy = new System.Windows.Forms.Label();
             this.optn_easy = new System.Windows.Forms.RadioButton();
             this.btn_advSettings = new System.Windows.Forms.Button();
+            this.btn_back = new System.Windows.Forms.Button();
             this.tbl_settingPanel.SuspendLayout();
             this.tbl_basicSettings.SuspendLayout();
             this.SuspendLayout();
@@ -50,10 +51,11 @@
             this.tbl_settingPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tbl_settingPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tbl_settingPanel.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tbl_settingPanel.Controls.Add(this.btn_back, 2, 2);
             this.tbl_settingPanel.Controls.Add(this.lbl_settings, 1, 0);
             this.tbl_settingPanel.Controls.Add(this.btn_generate, 1, 2);
             this.tbl_settingPanel.Controls.Add(this.tbl_basicSettings, 0, 1);
-            this.tbl_settingPanel.Controls.Add(this.btn_advSettings, 2, 2);
+            this.tbl_settingPanel.Controls.Add(this.btn_advSettings, 0, 2);
             this.tbl_settingPanel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tbl_settingPanel.Location = new System.Drawing.Point(0, 0);
             this.tbl_settingPanel.Name = "tbl_settingPanel";
@@ -203,14 +205,25 @@
             // 
             this.btn_advSettings.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btn_advSettings.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.btn_advSettings.Location = new System.Drawing.Point(562, 367);
+            this.btn_advSettings.Location = new System.Drawing.Point(30, 367);
             this.btn_advSettings.Margin = new System.Windows.Forms.Padding(30);
             this.btn_advSettings.Name = "btn_advSettings";
-            this.btn_advSettings.Size = new System.Drawing.Size(208, 53);
+            this.btn_advSettings.Size = new System.Drawing.Size(206, 53);
             this.btn_advSettings.TabIndex = 4;
             this.btn_advSettings.Text = "Advanced Settings";
             this.btn_advSettings.UseVisualStyleBackColor = true;
-            this.btn_advSettings.Click += new System.EventHandler(this.btn_advSettings_Click);
+            // 
+            // btn_back
+            // 
+            this.btn_back.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_back.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.btn_back.Location = new System.Drawing.Point(562, 367);
+            this.btn_back.Margin = new System.Windows.Forms.Padding(30);
+            this.btn_back.Name = "btn_back";
+            this.btn_back.Size = new System.Drawing.Size(208, 53);
+            this.btn_back.TabIndex = 5;
+            this.btn_back.Text = "Back";
+            this.btn_back.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
@@ -242,5 +255,6 @@
         private System.Windows.Forms.Label lbl_easy;
         private System.Windows.Forms.RadioButton optn_easy;
         private System.Windows.Forms.Button btn_advSettings;
+        private System.Windows.Forms.Button btn_back;
     }
 }
