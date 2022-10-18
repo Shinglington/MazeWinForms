@@ -32,13 +32,13 @@
             this.lbl_settings = new System.Windows.Forms.Label();
             this.btn_generate = new System.Windows.Forms.Button();
             this.tbl_basicSettings = new System.Windows.Forms.TableLayoutPanel();
+            this.optn_hard = new System.Windows.Forms.RadioButton();
+            this.optn_medium = new System.Windows.Forms.RadioButton();
+            this.lbl_hard = new System.Windows.Forms.Label();
+            this.lbl_medium = new System.Windows.Forms.Label();
             this.lbl_Difficulty = new System.Windows.Forms.Label();
             this.lbl_easy = new System.Windows.Forms.Label();
-            this.lbl_medium = new System.Windows.Forms.Label();
-            this.lbl_hard = new System.Windows.Forms.Label();
             this.optn_easy = new System.Windows.Forms.RadioButton();
-            this.optn_medium = new System.Windows.Forms.RadioButton();
-            this.optn_hard = new System.Windows.Forms.RadioButton();
             this.btn_advSettings = new System.Windows.Forms.Button();
             this.tbl_settingPanel.SuspendLayout();
             this.tbl_basicSettings.SuspendLayout();
@@ -112,6 +112,56 @@
             this.tbl_basicSettings.Size = new System.Drawing.Size(260, 219);
             this.tbl_basicSettings.TabIndex = 3;
             // 
+            // optn_hard
+            // 
+            this.optn_hard.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.optn_hard.AutoSize = true;
+            this.optn_hard.Location = new System.Drawing.Point(240, 181);
+            this.optn_hard.Name = "optn_hard";
+            this.optn_hard.Size = new System.Drawing.Size(14, 13);
+            this.optn_hard.TabIndex = 6;
+            this.optn_hard.TabStop = true;
+            this.optn_hard.UseVisualStyleBackColor = true;
+            // 
+            // optn_medium
+            // 
+            this.optn_medium.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.optn_medium.AutoSize = true;
+            this.optn_medium.Location = new System.Drawing.Point(240, 120);
+            this.optn_medium.Name = "optn_medium";
+            this.optn_medium.Size = new System.Drawing.Size(14, 13);
+            this.optn_medium.TabIndex = 5;
+            this.optn_medium.TabStop = true;
+            this.optn_medium.UseVisualStyleBackColor = true;
+            // 
+            // lbl_hard
+            // 
+            this.lbl_hard.AutoSize = true;
+            this.lbl_hard.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.lbl_hard.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbl_hard.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.lbl_hard.Location = new System.Drawing.Point(10, 167);
+            this.lbl_hard.Margin = new System.Windows.Forms.Padding(10);
+            this.lbl_hard.Name = "lbl_hard";
+            this.lbl_hard.Size = new System.Drawing.Size(214, 42);
+            this.lbl_hard.TabIndex = 3;
+            this.lbl_hard.Text = "Hard";
+            this.lbl_hard.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // lbl_medium
+            // 
+            this.lbl_medium.AutoSize = true;
+            this.lbl_medium.BackColor = System.Drawing.SystemColors.AppWorkspace;
+            this.lbl_medium.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbl_medium.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.lbl_medium.Location = new System.Drawing.Point(10, 106);
+            this.lbl_medium.Margin = new System.Windows.Forms.Padding(10);
+            this.lbl_medium.Name = "lbl_medium";
+            this.lbl_medium.Size = new System.Drawing.Size(214, 41);
+            this.lbl_medium.TabIndex = 2;
+            this.lbl_medium.Text = "Medium";
+            this.lbl_medium.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // lbl_Difficulty
             // 
             this.lbl_Difficulty.AutoSize = true;
@@ -138,34 +188,6 @@
             this.lbl_easy.Text = "Easy";
             this.lbl_easy.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // lbl_medium
-            // 
-            this.lbl_medium.AutoSize = true;
-            this.lbl_medium.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            this.lbl_medium.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_medium.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.lbl_medium.Location = new System.Drawing.Point(10, 106);
-            this.lbl_medium.Margin = new System.Windows.Forms.Padding(10);
-            this.lbl_medium.Name = "lbl_medium";
-            this.lbl_medium.Size = new System.Drawing.Size(214, 41);
-            this.lbl_medium.TabIndex = 2;
-            this.lbl_medium.Text = "Medium";
-            this.lbl_medium.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // lbl_hard
-            // 
-            this.lbl_hard.AutoSize = true;
-            this.lbl_hard.BackColor = System.Drawing.SystemColors.AppWorkspace;
-            this.lbl_hard.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_hard.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.lbl_hard.Location = new System.Drawing.Point(10, 167);
-            this.lbl_hard.Margin = new System.Windows.Forms.Padding(10);
-            this.lbl_hard.Name = "lbl_hard";
-            this.lbl_hard.Size = new System.Drawing.Size(214, 42);
-            this.lbl_hard.TabIndex = 3;
-            this.lbl_hard.Text = "Hard";
-            this.lbl_hard.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
             // optn_easy
             // 
             this.optn_easy.Anchor = System.Windows.Forms.AnchorStyles.None;
@@ -176,28 +198,6 @@
             this.optn_easy.TabIndex = 4;
             this.optn_easy.TabStop = true;
             this.optn_easy.UseVisualStyleBackColor = true;
-            // 
-            // optn_medium
-            // 
-            this.optn_medium.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.optn_medium.AutoSize = true;
-            this.optn_medium.Location = new System.Drawing.Point(240, 120);
-            this.optn_medium.Name = "optn_medium";
-            this.optn_medium.Size = new System.Drawing.Size(14, 13);
-            this.optn_medium.TabIndex = 5;
-            this.optn_medium.TabStop = true;
-            this.optn_medium.UseVisualStyleBackColor = true;
-            // 
-            // optn_hard
-            // 
-            this.optn_hard.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.optn_hard.AutoSize = true;
-            this.optn_hard.Location = new System.Drawing.Point(240, 181);
-            this.optn_hard.Name = "optn_hard";
-            this.optn_hard.Size = new System.Drawing.Size(14, 13);
-            this.optn_hard.TabIndex = 6;
-            this.optn_hard.TabStop = true;
-            this.optn_hard.UseVisualStyleBackColor = true;
             // 
             // btn_advSettings
             // 
@@ -210,6 +210,7 @@
             this.btn_advSettings.TabIndex = 4;
             this.btn_advSettings.Text = "Advanced Settings";
             this.btn_advSettings.UseVisualStyleBackColor = true;
+            this.btn_advSettings.Click += new System.EventHandler(this.btn_advSettings_Click);
             // 
             // SettingsForm
             // 

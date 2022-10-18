@@ -12,6 +12,7 @@ namespace PRJ_MazeWinForms
 {
     public partial class MenuForm : Form
     {
+        private SettingsForm Settings = new SettingsForm();
         public MenuForm()
         {
             InitializeComponent();
@@ -20,6 +21,13 @@ namespace PRJ_MazeWinForms
         private void menuStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
 
+        }
+
+        private void btn_start_Click(object sender, EventArgs e)
+        {
+            SettingsForm Settings = new SettingsForm();
+            this.Hide();
+            Settings.Show();
         }
     }
 }

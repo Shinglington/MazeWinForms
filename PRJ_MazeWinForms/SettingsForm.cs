@@ -16,5 +16,10 @@ namespace PRJ_MazeWinForms
         {
             InitializeComponent();
         }
+
+        private void btn_advSettings_Click(object sender, EventArgs e)
+        {
+            tbl_basicSettings.Hide();
+        }
     }
 }
