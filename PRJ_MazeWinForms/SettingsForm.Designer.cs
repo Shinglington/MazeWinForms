@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.tbl_settingPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.btn_back = new System.Windows.Forms.Button();
             this.lbl_settings = new System.Windows.Forms.Label();
             this.btn_generate = new System.Windows.Forms.Button();
             this.tbl_basicSettings = new System.Windows.Forms.TableLayoutPanel();
@@ -40,7 +41,6 @@
             this.lbl_easy = new System.Windows.Forms.Label();
             this.optn_easy = new System.Windows.Forms.RadioButton();
             this.btn_advSettings = new System.Windows.Forms.Button();
-            this.btn_back = new System.Windows.Forms.Button();
             this.tbl_settingPanel.SuspendLayout();
             this.tbl_basicSettings.SuspendLayout();
             this.SuspendLayout();
@@ -63,8 +63,21 @@
             this.tbl_settingPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tbl_settingPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tbl_settingPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tbl_settingPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tbl_settingPanel.Size = new System.Drawing.Size(800, 450);
             this.tbl_settingPanel.TabIndex = 0;
+            // 
+            // btn_back
+            // 
+            this.btn_back.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_back.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
+            this.btn_back.Location = new System.Drawing.Point(562, 367);
+            this.btn_back.Margin = new System.Windows.Forms.Padding(30);
+            this.btn_back.Name = "btn_back";
+            this.btn_back.Size = new System.Drawing.Size(208, 53);
+            this.btn_back.TabIndex = 5;
+            this.btn_back.Text = "Back";
+            this.btn_back.UseVisualStyleBackColor = true;
             // 
             // lbl_settings
             // 
@@ -113,6 +126,7 @@
             this.tbl_basicSettings.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 28F));
             this.tbl_basicSettings.Size = new System.Drawing.Size(260, 219);
             this.tbl_basicSettings.TabIndex = 3;
+            this.tbl_basicSettings.Visible = false;
             // 
             // optn_hard
             // 
@@ -212,18 +226,6 @@
             this.btn_advSettings.TabIndex = 4;
             this.btn_advSettings.Text = "Advanced Settings";
             this.btn_advSettings.UseVisualStyleBackColor = true;
-            // 
-            // btn_back
-            // 
-            this.btn_back.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_back.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F);
-            this.btn_back.Location = new System.Drawing.Point(562, 367);
-            this.btn_back.Margin = new System.Windows.Forms.Padding(30);
-            this.btn_back.Name = "btn_back";
-            this.btn_back.Size = new System.Drawing.Size(208, 53);
-            this.btn_back.TabIndex = 5;
-            this.btn_back.Text = "Back";
-            this.btn_back.UseVisualStyleBackColor = true;
             // 
             // SettingsForm
             // 
