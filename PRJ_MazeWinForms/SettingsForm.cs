@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
+using static PRJ_MazeWinForms.MyFormMethods;
 namespace PRJ_MazeWinForms
 {
     public partial class SettingsForm : Form
@@ -43,6 +44,12 @@ namespace PRJ_MazeWinForms
             this.FormClosed += new FormClosedEventHandler(ReturnToMenu);
             btn_back.Click += new EventHandler(ReturnToMenu);
             btn_advSettings.Click += new EventHandler(SwapSettings);
+
+            foreach(Control c in MyFormMethods.GetAllControls(this, typeof(Label)))
+            {
+                MyFormMethods.ResizeLabelText(c, new EventArgs());
+                c.Resize += new EventHandler(MyFormMethods.ResizeLabelText);
+            }
         }
 
         private void SetupControls()
@@ -89,14 +96,38 @@ namespace PRJ_MazeWinForms
 
         private void SetupBasicSettings()
         {
-            TableLayoutPanel Table = new TableLayoutPanel();
+            TableLayoutPanel Table = new TableLayoutPanel() { Dock = DockStyle.Fill };
             // Set parent and location
             Table.Parent = _formPanel;
             _formPanel.SetCellPosition(Table, new TableLayoutPanelCellPosition(0, 1));
-            // Setup RowCount and ColumnCount
-            Table.RowCount = Enum.GetValues(typeof(Difficulty)).Length;
-            Table.ColumnCount = 2;
-            
+            // Setup Columns
+            Table.ColumnStyles.Clear();
+            Table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 0.9F));
+            Table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 0.1F));
+
+            // Setup Rows
+            Table.RowStyles.Clear();
+            Table.RowStyles.Add(new RowStyle(SizeType.Percent, 0.1F));
+            int rowCount = Enum.GetValues(typeof(Difficulty)).Length;
+            for (int row = 0; row < rowCount; row++)
+            {
+                Table.RowStyles.Add(new RowStyle(SizeType.Percent, (0.9F / rowCount)));
+                // Create label
+                Label CurrDifficulty = new Label() { Text = ((Difficulty)(row)).ToString(), Font = new Font("Arial", 10), Dock = DockStyle.Fill };
+                CurrDifficulty.Parent = Table;
+                Table.SetCellPosition(CurrDifficulty, new TableLayoutPanelCellPosition(0, row + 1));
+
+                // Create RadioButtons
+                RadioButton radioButton = new RadioButton() { Dock = DockStyle.Fill };
+                radioButton.Parent = Table;
+                Table.SetCellPosition(radioButton, new TableLayoutPanelCellPosition(1, row + 1));
+            }
+
+
+            // Header
+            Label Header = new Label() { Text = "Difficulty", Font = new Font("Arial", 15), Dock = DockStyle.Fill };
+            Header.Parent = Table;
+            Table.SetCellPosition(Header, new TableLayoutPanelCellPosition(0, 0));
 
             _tbl_basicSettings = Table;
         }
