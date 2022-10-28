@@ -24,6 +24,7 @@ namespace PRJ_MazeWinForms
             {
                 while (areaAvailable > areaRequired * 1.3)
                 {
+                    Console.WriteLine(areaAvailable);
                     // resize font until text fits
                     label.Font = new Font(label.Font.FontFamily, label.Font.Size * 1.1F);
                     stringSize = TextRenderer.MeasureText(label.Text, label.Font);

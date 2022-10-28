@@ -44,18 +44,18 @@ namespace PRJ_MazeWinForms
             this.FormClosed += new FormClosedEventHandler(ReturnToMenu);
             btn_back.Click += new EventHandler(ReturnToMenu);
             btn_advSettings.Click += new EventHandler(SwapSettings);
-
-            foreach(Control c in MyFormMethods.GetAllControls(this, typeof(Label)))
-            {
-                MyFormMethods.ResizeLabelText(c, new EventArgs());
-                c.Resize += new EventHandler(MyFormMethods.ResizeLabelText);
-            }
         }
 
         private void SetupControls()
         {
             SetupBasicSettings();
             SetupAdvancedSettings();
+            _tbl_advSettings.Hide();
+
+            foreach (Label l in MyFormMethods.GetAllControls(_formPanel, typeof(Label)))
+            {
+                MyFormMethods.ResizeLabelText(l, new EventArgs());
+            }
         }
 
         private void ReturnToMenu(object sender, EventArgs e)
@@ -134,13 +134,38 @@ namespace PRJ_MazeWinForms
 
         private void SetupAdvancedSettings()
         {
-            TableLayoutPanel Table = new TableLayoutPanel();
+            TableLayoutPanel Table = new TableLayoutPanel() { Dock = DockStyle.Fill };
             // Set parent and location
             Table.Parent = _formPanel;
             _formPanel.SetCellPosition(Table, new TableLayoutPanelCellPosition(0, 1));
-            Table.RowCount = 3;
-            Table.ColumnCount = 2;
 
+            // Setup columns
+            Table.ColumnStyles.Clear();
+            Table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 0.7F));
+            Table.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 0.3F));
+
+            // Setup rows
+            Table.RowStyles.Clear();
+            Table.RowStyles.Add(new RowStyle(SizeType.Percent, 0.1F));
+
+            // Width
+            Table.RowStyles.Add(new RowStyle(SizeType.Percent, 0.3F));
+            Label Width = new Label() { Text = "Width", Font = new Font("Arial", 10), Dock = DockStyle.Fill };
+            Width.Parent = Table;
+            Table.SetCellPosition(Width, new TableLayoutPanelCellPosition(0, 1));
+
+
+            // Height
+            Table.RowStyles.Add(new RowStyle(SizeType.Percent, 0.3F));
+            Label Height = new Label() { Text = "Height", Font = new Font("Arial", 10), Dock = DockStyle.Fill };
+            Height.Parent = Table;
+            Table.SetCellPosition(Height, new TableLayoutPanelCellPosition(0, 2));
+
+            // Algorithm Selection
+            Table.RowStyles.Add(new RowStyle(SizeType.Percent, 0.3F));
+            Label Algorithm = new Label() { Text = "Algorithm", Font = new Font("Arial", 10), Dock = DockStyle.Fill };
+            Algorithm.Parent = Table;
+            Table.SetCellPosition(Algorithm, new TableLayoutPanelCellPosition(0, 3));
 
             _tbl_advSettings = Table;
         }
