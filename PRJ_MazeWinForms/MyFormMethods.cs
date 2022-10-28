@@ -12,36 +12,37 @@ namespace PRJ_MazeWinForms
     {
         public static void ResizeLabelText(object sender, EventArgs e)
         {
+            // Resizes labels in table layout panel cells to maximise font size
             Label label = sender as Label;
             Size stringSize = TextRenderer.MeasureText(label.Text, label.Font);
-            int rows = (int)(label.Height / stringSize.Height);
 
-            double areaAvailable = rows * stringSize.Height * label.Width;
-            double areaRequired = stringSize.Width * stringSize.Height;
+            // Find width and height of cell that label is located in
+            TableLayoutPanel Container = label.Parent as TableLayoutPanel;
+            TableLayoutPanelCellPosition Pos = Container.GetCellPosition(label);
+            double cellHeight = Container.GetRowHeights()[Pos.Row];
+            double cellWidth = Container.GetColumnWidths()[Pos.Column];
 
-            // if current area bigger than required area, make text bigger
-            if (areaAvailable > areaRequired * 1.3)
+            
+            double areaAvailable = cellHeight * cellWidth * 0.5F;
+            double areaRequired = stringSize.Height * stringSize.Width;
+
+            // while available area bigger than required area, make text bigger
+            while (areaAvailable > areaRequired)
             {
-                while (areaAvailable > areaRequired * 1.3)
-                {
-                    Console.WriteLine(areaAvailable);
-                    // resize font until text fits
-                    label.Font = new Font(label.Font.FontFamily, label.Font.Size * 1.1F);
-                    stringSize = TextRenderer.MeasureText(label.Text, label.Font);
-                    areaRequired = rows * stringSize.Height * label.Width;
-                }
-            }
-            else
-            {
-                while (areaAvailable < areaRequired * 1.3)
-                {
-                    // resize font until text fits
-                    label.Font = new Font(label.Font.FontFamily, label.Font.Size * 0.9F);
-                    stringSize = TextRenderer.MeasureText(label.Text, label.Font);
-                    areaRequired = rows * stringSize.Height * label.Width;
-                }
+                // resize font until text fits
+                label.Font = new Font(label.Font.FontFamily, label.Font.Size * 1.05F);
+                stringSize = TextRenderer.MeasureText(label.Text, label.Font);
+                areaRequired = stringSize.Height * stringSize.Width;
             }
 
+            // while available area smaller than required area, make text smaller
+            while (areaAvailable < areaRequired)
+            {
+                // resize font until text fits
+                label.Font = new Font(label.Font.FontFamily, label.Font.Size * 0.95F);
+                stringSize = TextRenderer.MeasureText(label.Text, label.Font);
+                areaRequired = stringSize.Height * stringSize.Width;
+            }
         }
 
 

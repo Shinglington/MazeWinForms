@@ -20,11 +20,15 @@ namespace PRJ_MazeWinForms
         private TableLayoutPanel _tbl_basicSettings;
         private TableLayoutPanel _tbl_advSettings;
         private SettingMode _mode;
+
+
+        private const string TEXT_FONT = "Arial";
         enum SettingMode 
         {
             Basic,
             Advanced
         }
+
 
 
         public SettingsForm(MenuForm M)
@@ -52,6 +56,7 @@ namespace PRJ_MazeWinForms
             SetupAdvancedSettings();
             _tbl_advSettings.Hide();
 
+            // Resize labels
             foreach (Label l in MyFormMethods.GetAllControls(_formPanel, typeof(Label)))
             {
                 MyFormMethods.ResizeLabelText(l, new EventArgs());
@@ -113,7 +118,7 @@ namespace PRJ_MazeWinForms
             {
                 Table.RowStyles.Add(new RowStyle(SizeType.Percent, (0.9F / rowCount)));
                 // Create label
-                Label CurrDifficulty = new Label() { Text = ((Difficulty)(row)).ToString(), Font = new Font("Arial", 10), Dock = DockStyle.Fill };
+                Label CurrDifficulty = new Label() { Text = ((Difficulty)(row)).ToString(), Font = new Font(TEXT_FONT, 10), Dock = DockStyle.Fill };
                 CurrDifficulty.Parent = Table;
                 Table.SetCellPosition(CurrDifficulty, new TableLayoutPanelCellPosition(0, row + 1));
 
@@ -125,7 +130,7 @@ namespace PRJ_MazeWinForms
 
 
             // Header
-            Label Header = new Label() { Text = "Difficulty", Font = new Font("Arial", 15), Dock = DockStyle.Fill };
+            Label Header = new Label() { Text = "Difficulty", Font = new Font(TEXT_FONT, 10), Dock = DockStyle.Fill };
             Header.Parent = Table;
             Table.SetCellPosition(Header, new TableLayoutPanelCellPosition(0, 0));
 
@@ -150,20 +155,21 @@ namespace PRJ_MazeWinForms
 
             // Width
             Table.RowStyles.Add(new RowStyle(SizeType.Percent, 0.3F));
-            Label Width = new Label() { Text = "Width", Font = new Font("Arial", 10), Dock = DockStyle.Fill };
+            Label Width = new Label() { Text = "Width", Font = new Font(TEXT_FONT, 10), Dock = DockStyle.Fill };
             Width.Parent = Table;
             Table.SetCellPosition(Width, new TableLayoutPanelCellPosition(0, 1));
 
 
+
             // Height
             Table.RowStyles.Add(new RowStyle(SizeType.Percent, 0.3F));
-            Label Height = new Label() { Text = "Height", Font = new Font("Arial", 10), Dock = DockStyle.Fill };
+            Label Height = new Label() { Text = "Height", Font = new Font(TEXT_FONT, 10), Dock = DockStyle.Fill };
             Height.Parent = Table;
             Table.SetCellPosition(Height, new TableLayoutPanelCellPosition(0, 2));
 
             // Algorithm Selection
             Table.RowStyles.Add(new RowStyle(SizeType.Percent, 0.3F));
-            Label Algorithm = new Label() { Text = "Algorithm", Font = new Font("Arial", 10), Dock = DockStyle.Fill };
+            Label Algorithm = new Label() { Text = "Algorithm", Font = new Font(TEXT_FONT, 10), Dock = DockStyle.Fill };
             Algorithm.Parent = Table;
             Table.SetCellPosition(Algorithm, new TableLayoutPanelCellPosition(0, 3));
 
@@ -188,15 +194,25 @@ namespace PRJ_MazeWinForms
 
         }
 
-        public Settings(string Difficulty)
+        public Settings(Difficulty difficulty)
         {
-            // Basic
+            switch (difficulty)
+            {
+                case (Difficulty)0:
+                    Console.WriteLine(difficulty.ToString());
+                    break;
+                case (Difficulty)1:
+                    Console.WriteLine(difficulty.ToString());
+                    break;
+                case (Difficulty)2:
+                    Console.WriteLine(difficulty.ToString());
+                    break;
+            }
 
         }
-            
-    }
 
-    enum Difficulty
+    }
+    public enum Difficulty
     {
         Easy,
         Medium,
