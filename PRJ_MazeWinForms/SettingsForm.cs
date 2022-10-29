@@ -29,8 +29,6 @@ namespace PRJ_MazeWinForms
             Advanced
         }
 
-
-
         public SettingsForm(MenuForm M)
         {
             InitializeComponent();
@@ -94,11 +92,6 @@ namespace PRJ_MazeWinForms
             } 
 
         }
-
-
-
-
-
         private void SetupBasicSettings()
         {
             TableLayoutPanel Table = new TableLayoutPanel() { Dock = DockStyle.Fill };
@@ -136,7 +129,6 @@ namespace PRJ_MazeWinForms
 
             _tbl_basicSettings = Table;
         }
-
         private void SetupAdvancedSettings()
         {
             TableLayoutPanel Table = new TableLayoutPanel() { Dock = DockStyle.Fill };
@@ -174,6 +166,56 @@ namespace PRJ_MazeWinForms
             Table.SetCellPosition(Algorithm, new TableLayoutPanelCellPosition(0, 3));
 
             _tbl_advSettings = Table;
+        }
+
+        private Settings GetBasicSettings()
+        {
+            Settings MazeSettings = null;
+            // loop through radio buttons
+            for (int row = 1; row <= 3; row++)
+            {
+                RadioButton radioButton = (RadioButton)_tbl_basicSettings.GetControlFromPosition(1, row);
+                Difficulty selectedDifficulty = (Difficulty)(row - 1);
+                if (radioButton.Checked)
+                {
+                    // Use Difficulty overload
+                    MazeSettings = new Settings(selectedDifficulty);
+                    break;
+                }
+            }
+            return MazeSettings;
+        }
+
+        private Settings GetAdvancedSettings()
+        {
+            Settings MazeSettings = null;
+            try
+            {
+
+            }
+            catch
+            {
+                Console.WriteLine("One or more of the advanced fields are blank");
+            }
+
+            return MazeSettings;
+        }
+        private Settings GetMazeSettings()
+        {
+            Settings MazeSettings = null;
+            switch (_mode)
+            {
+                case SettingMode.Basic:
+                    MazeSettings = GetBasicSettings();
+                    break;
+                case SettingMode.Advanced:
+                    MazeSettings = GetAdvancedSettings();
+                    break;
+                default:
+                    Console.WriteLine("Can't identify Setting mode");
+                    break;
+            }
+            return MazeSettings;
         }
     }
 
