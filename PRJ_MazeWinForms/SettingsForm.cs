@@ -147,22 +147,24 @@ namespace PRJ_MazeWinForms
 
             // Width
             Table.RowStyles.Add(new RowStyle(SizeType.Percent, 0.3F));
-            Label Width = new Label() { Text = "Width", Font = new Font(TEXT_FONT, 10), Dock = DockStyle.Fill };
-            Width.Parent = Table;
+            Label Width = new Label() { Text = "Width", Font = new Font(TEXT_FONT, 10), Dock = DockStyle.Fill, Parent = Table };
             Table.SetCellPosition(Width, new TableLayoutPanelCellPosition(0, 1));
+            TextBox WidthField = new TextBox() { Font = new Font(TEXT_FONT, 10), Dock = DockStyle.Fill, Parent = Table };
+            Table.SetCellPosition(WidthField, new TableLayoutPanelCellPosition(1, 1));
 
 
 
             // Height
             Table.RowStyles.Add(new RowStyle(SizeType.Percent, 0.3F));
-            Label Height = new Label() { Text = "Height", Font = new Font(TEXT_FONT, 10), Dock = DockStyle.Fill };
-            Height.Parent = Table;
+            Label Height = new Label() { Text = "Height", Font = new Font(TEXT_FONT, 10), Dock = DockStyle.Fill, Parent = Table };
             Table.SetCellPosition(Height, new TableLayoutPanelCellPosition(0, 2));
+            TextBox HeightField = new TextBox() { Font = new Font(TEXT_FONT, 10), Dock = DockStyle.Fill, Parent = Table };
+            Table.SetCellPosition(HeightField, new TableLayoutPanelCellPosition(1, 2));
+
 
             // Algorithm Selection
             Table.RowStyles.Add(new RowStyle(SizeType.Percent, 0.3F));
-            Label Algorithm = new Label() { Text = "Algorithm", Font = new Font(TEXT_FONT, 10), Dock = DockStyle.Fill };
-            Algorithm.Parent = Table;
+            Label Algorithm = new Label() { Text = "Algorithm", Font = new Font(TEXT_FONT, 10), Dock = DockStyle.Fill, Parent = Table };
             Table.SetCellPosition(Algorithm, new TableLayoutPanelCellPosition(0, 3));
 
             _tbl_advSettings = Table;
@@ -191,11 +193,13 @@ namespace PRJ_MazeWinForms
             Settings MazeSettings = null;
             try
             {
+                int Width = int.Parse(_tbl_advSettings.GetControlFromPosition(1, 1).Text);
+                int Height = int.Parse(_tbl_advSettings.GetControlFromPosition(1, 2).Text);
 
             }
             catch
             {
-                Console.WriteLine("One or more of the advanced fields are blank");
+                Console.WriteLine("Error raised while reading advanced fields");
             }
 
             return MazeSettings;
