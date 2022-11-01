@@ -39,36 +39,7 @@ namespace MazeConsole
 
         private bool GenerateMaze(string GenType)
         {
-            bool success = false;
-
-            switch (GenType)
-            {
-                case "AldousBroder":
-                    success = MazeGen.AldousBroder(_graph);
-                    break;
-                case "Wilsons":
-                    success = MazeGen.Wilsons(_graph);
-                    break;
-                case "BinaryTree":
-                    success = MazeGen.BinaryTree(_graph);
-                    break;
-                case "Sidewinder":
-                    success = MazeGen.Sidewinder(_graph);
-                    break;
-                case "HuntAndKill":
-                    success = MazeGen.HuntAndKill(_graph);
-                    break;
-                case "RecursiveBacktracker":
-                    success = MazeGen.RecursiveBacktracker(_graph);
-                    break;
-                case "GrowingTree":
-                    success = MazeGen.GrowingTree(_graph);
-                    break;
-                default:
-                    success = false;
-                    break;
-            }
-            return success;
+            return MazeGen.GenerateMaze(_graph, GenType);
         }
 
         // Reset visited attribute in nodes

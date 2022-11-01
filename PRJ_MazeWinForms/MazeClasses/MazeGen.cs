@@ -7,6 +7,45 @@ namespace MazeConsole
     class MazeGen
     {
         public static Random rand = new Random();
+
+        public static bool GenerateMaze(Graph _graph, string Algorithm)
+        {
+
+            bool success = false;
+
+            switch (Algorithm)
+            {
+                case "AldousBroder":
+                    success = AldousBroder(_graph);
+                    break;
+                case "Wilsons":
+                    success = Wilsons(_graph);
+                    break;
+                case "BinaryTree":
+                    success = BinaryTree(_graph);
+                    break;
+                case "Sidewinder":
+                    success = Sidewinder(_graph);
+                    break;
+                case "HuntAndKill":
+                    success = HuntAndKill(_graph);
+                    break;
+                case "RecursiveBacktracker":
+                    success = RecursiveBacktracker(_graph);
+                    break;
+                case "GrowingTree":
+                    success = GrowingTree(_graph);
+                    break;
+                default:
+                    success = false;
+                    break;
+            }
+            return success;
+        }
+
+
+
+
         public static bool AldousBroder(Graph G)
         {
             bool success = true;

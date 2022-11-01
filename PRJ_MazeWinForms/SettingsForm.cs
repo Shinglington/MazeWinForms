@@ -190,7 +190,7 @@ namespace PRJ_MazeWinForms
             {
                 int width = int.Parse(_tbl_advSettings.GetControlFromPosition(1, 1).Text);
                 int height = int.Parse(_tbl_advSettings.GetControlFromPosition(1, 2).Text);
-                string algorithm = "TEST";
+                string algorithm = "AldousBroder";
 
 
                 MazeSettings = new Settings(width, height, algorithm);
