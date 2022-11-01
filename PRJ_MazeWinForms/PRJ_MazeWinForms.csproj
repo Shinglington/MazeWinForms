@@ -46,6 +46,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MazeClasses\Graph.cs" />
+    <Compile Include="MazeClasses\Maze.cs" />
+    <Compile Include="MazeClasses\MazeGen.cs" />
+    <Compile Include="MazeClasses\MazeSolver.cs" />
+    <Compile Include="MazeClasses\Node.cs" />
     <Compile Include="MazeForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -58,6 +63,9 @@
     <Compile Include="MenuForm.Designer.cs">
       <DependentUpon>MenuForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MyDataStructures\MyList.cs" />
+    <Compile Include="MyDataStructures\MyQueue.cs" />
+    <Compile Include="MyDataStructures\MyStack.cs" />
     <Compile Include="MyFormMethods.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
