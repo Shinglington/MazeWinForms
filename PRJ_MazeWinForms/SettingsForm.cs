@@ -1,15 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Configuration;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-
-using static PRJ_MazeWinForms.MyFormMethods;
 namespace PRJ_MazeWinForms
 {
     public partial class SettingsForm : Form
@@ -45,7 +36,11 @@ namespace PRJ_MazeWinForms
         {
             this.FormClosed += new FormClosedEventHandler(ReturnToMenu);
             btn_back.Click += new EventHandler(ReturnToMenu);
+
             btn_advSettings.Click += new EventHandler(SwapSettings);
+
+
+            btn_generate.Click += new EventHandler(GenerateMaze);
         }
 
         private void SetupControls()
@@ -193,9 +188,12 @@ namespace PRJ_MazeWinForms
             Settings MazeSettings = null;
             try
             {
-                int Width = int.Parse(_tbl_advSettings.GetControlFromPosition(1, 1).Text);
-                int Height = int.Parse(_tbl_advSettings.GetControlFromPosition(1, 2).Text);
+                int width = int.Parse(_tbl_advSettings.GetControlFromPosition(1, 1).Text);
+                int height = int.Parse(_tbl_advSettings.GetControlFromPosition(1, 2).Text);
+                string algorithm = "TEST";
 
+
+                MazeSettings = new Settings(width, height, algorithm);
             }
             catch
             {
@@ -221,23 +219,33 @@ namespace PRJ_MazeWinForms
             }
             return MazeSettings;
         }
+
+        private void GenerateMaze(object sender, EventArgs e)
+        {
+            Settings MazeSettings = GetMazeSettings();
+            if (MazeSettings != null)
+            {
+                MazeForm MazeForm = new MazeForm(MazeSettings);
+                MazeForm.Show();
+                this.Hide();
+            }
+        }
     }
 
     public class Settings 
     {
-        private int _width;
-        private int _height;
-        private string _algorithm;
+        public int Width { get; }
+        public int Height { get; }
+        public string Algorithm { get;  }
 
         
         // Different constructors for difficulty parameters and advanced parameters
         public Settings(int width, int height, string algorithm)
         {
             // Advanced
-            _width = width;
-            _height = height;
-            _algorithm = algorithm;
-
+            Width = width;
+            Height = height;
+            Algorithm = algorithm;
         }
 
         public Settings(Difficulty difficulty)
@@ -254,7 +262,6 @@ namespace PRJ_MazeWinForms
                     Console.WriteLine(difficulty.ToString());
                     break;
             }
-
         }
 
     }

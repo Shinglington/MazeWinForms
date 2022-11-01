@@ -12,9 +12,26 @@ namespace PRJ_MazeWinForms
 {
     public partial class MazeForm : Form
     {
-        public MazeForm()
+        private Settings _mazeSettings;
+        private TableLayoutPanel _tbl_mazePanel;
+
+        public MazeForm(Settings MazeSettings)
         {
             InitializeComponent();
+
+            _mazeSettings = MazeSettings;
+            _tbl_mazePanel = SetupMazePanel();
+        }
+
+
+        private TableLayoutPanel SetupMazePanel()
+        {
+            TableLayoutPanel MazePanel = new TableLayoutPanel() { Dock = DockStyle.Fill, Parent = this };
+            Console.WriteLine("Width is {0}", _mazeSettings.Width);
+            Console.WriteLine("Height is {0}", _mazeSettings.Height);
+            Console.WriteLine("Algorithm is {0}", _mazeSettings.Algorithm);
+
+            return MazePanel;
         }
     }
 }
