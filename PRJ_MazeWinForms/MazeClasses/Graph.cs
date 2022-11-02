@@ -1,5 +1,7 @@
 ﻿using MazeConsole.MyDataStructures;
 using System;
+using System.Windows.Forms;
+
 namespace MazeConsole
 {
     class Graph
@@ -36,7 +38,7 @@ namespace MazeConsole
             EndNode = _nodes[width - 1, height - 1];
 
         }
-        public string GetDisplay(MyList<Node> highlightNodes = null)
+        public string GetConsoleDisplay(MyList<Node> highlightNodes = null)
         {
             string mazeString = "";
             mazeString += WALL_CHAR;
@@ -101,6 +103,32 @@ namespace MazeConsole
             return mazeString;
 
         }
+
+        public void GetFormsDisplay(TableLayoutPanel GraphPanel)
+        {
+            GraphPanel.RowStyles.Clear();
+            GraphPanel.ColumnStyles.Clear();
+            for (int row = 0; row < Height; row++)
+            {
+                GraphPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F / (Height + 1)));
+            }
+            for (int col = 0; col < Width; col++)
+            {
+                GraphPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F / (Width + 1)));
+            }
+
+
+            for (int row = 0; row < Height; row++)
+            {
+                for (int col = 0; col < Width; col++)
+                {
+                    _nodes[col, row].PaintNode(GraphPanel);
+                }
+            }
+
+        }
+
+
         // Check if all nodes have been visited
         public bool AllNodesVisited()
         {

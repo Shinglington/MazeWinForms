@@ -1,4 +1,9 @@
-﻿using MazeConsole.MyDataStructures;
+﻿// System Modules
+using System.Windows.Forms;
+
+// My Modules
+using MazeConsole.MyDataStructures;
+
 
 namespace MazeConsole
 {
@@ -16,6 +21,7 @@ namespace MazeConsole
             GenerateMaze(GenType);
         }
 
+
         public Node StartNode
         {
             get
@@ -32,14 +38,19 @@ namespace MazeConsole
             }
         }
 
-        public string DisplayMaze(MyList<Node> highlightNodes = null)
-        {
-            return _graph.GetDisplay(highlightNodes);
-        }
-
         private bool GenerateMaze(string GenType)
         {
             return MazeGen.GenerateMaze(_graph, GenType);
+        }
+
+        public string ConsoleDisplay(MyList<Node> highlightNodes = null)
+        {
+            return _graph.GetConsoleDisplay(highlightNodes);
+        }
+
+        public void FormsDisplay(TableLayoutPanel MazePanel)
+        {
+            _graph.GetFormsDisplay(MazePanel);
         }
 
         // Reset visited attribute in nodes

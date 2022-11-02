@@ -20,17 +20,16 @@ namespace PRJ_MazeWinForms
 
             _mazeSettings = MazeSettings;
             _maze = new Maze(_mazeSettings.Width, _mazeSettings.Height, _mazeSettings.Algorithm);
-            _tbl_mazePanel = SetupMazePanel();
+            _tbl_mazePanel = GenerateMaze();
         }
 
 
-        private TableLayoutPanel SetupMazePanel()
+        private TableLayoutPanel GenerateMaze()
         {
-            TableLayoutPanel MazePanel = new TableLayoutPanel() { Dock = DockStyle.Fill, Parent = this };
-            Console.WriteLine("Width is {0}", _mazeSettings.Width);
-            Console.WriteLine("Height is {0}", _mazeSettings.Height);
-            Console.WriteLine("Algorithm is {0}", _mazeSettings.Algorithm);
-            Console.Write(_maze.DisplayMaze());
+            TableLayoutPanel MazePanel = new TableLayoutPanel() { Dock = DockStyle.Fill, Parent = this }; 
+            _maze.FormsDisplay(MazePanel);
+
+            Console.Write(_maze.ConsoleDisplay());
             return MazePanel;
         }
     }
