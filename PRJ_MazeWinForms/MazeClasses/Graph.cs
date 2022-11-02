@@ -110,14 +110,12 @@ namespace MazeConsole
             GraphPanel.ColumnStyles.Clear();
             for (int row = 0; row < Height; row++)
             {
-                GraphPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F / (Height + 1)));
+                GraphPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F / Height));
             }
             for (int col = 0; col < Width; col++)
             {
-                GraphPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F / (Width + 1)));
+                GraphPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F / Width));
             }
-
-
             for (int row = 0; row < Height; row++)
             {
                 for (int col = 0; col < Width; col++)

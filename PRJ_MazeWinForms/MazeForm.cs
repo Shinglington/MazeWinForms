@@ -26,9 +26,8 @@ namespace PRJ_MazeWinForms
 
         private TableLayoutPanel GenerateMaze()
         {
-            TableLayoutPanel MazePanel = new TableLayoutPanel() { Dock = DockStyle.Fill, Parent = this }; 
+            TableLayoutPanel MazePanel = new TableLayoutPanel() { Parent = this, Dock = DockStyle.Fill };
             _maze.FormsDisplay(MazePanel);
-
             Console.Write(_maze.ConsoleDisplay());
             return MazePanel;
         }
