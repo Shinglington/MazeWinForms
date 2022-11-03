@@ -14,14 +14,12 @@ namespace MazeConsole
         public int Width { private set; get; }
         public int Height { private set; get; }
 
-        public Maze(int width, int height, string GenType)
+        public Maze(int width, int height, GenAlgorithm GenType)
         {
             Width = width;
             Height = height;
             _graph = new Graph(Width, Height);
-
-            MazeGen.GenAlgorithms Algorithm = (MazeGen.GenAlgorithms) Enum.Parse(typeof(MazeGen.GenAlgorithms), GenType);
-            GenerateMaze(Algorithm);
+            MazeGen.GenerateMaze(_graph, GenType);
         }
 
 
@@ -41,7 +39,7 @@ namespace MazeConsole
             }
         }
 
-        private bool GenerateMaze(MazeGen.GenAlgorithms GenType)
+        private bool GenerateMaze(GenAlgorithm GenType)
         {
             return MazeGen.GenerateMaze(_graph, GenType);
         }

@@ -163,7 +163,7 @@ namespace PRJ_MazeWinForms
             Label Algorithm = new Label() { Text = "Algorithm", Font = new Font(TEXT_FONT, 10), Dock = DockStyle.Fill, Parent = Table };
             Table.SetCellPosition(Algorithm, new TableLayoutPanelCellPosition(0, 3));
             ComboBox AlgSelection = new ComboBox() { Parent = Table, Dock = DockStyle.Fill, DropDownStyle = ComboBoxStyle.DropDownList };
-            foreach(MazeGen.GenAlgorithms alg in Enum.GetValues(typeof(MazeGen.GenAlgorithms)))
+            foreach(GenAlgorithm alg in Enum.GetValues(typeof(GenAlgorithm)))
             {
                 AlgSelection.Items.Add(alg.ToString());
             }
@@ -197,7 +197,8 @@ namespace PRJ_MazeWinForms
             {
                 int width = int.Parse(_tbl_advSettings.GetControlFromPosition(1, 1).Text);
                 int height = int.Parse(_tbl_advSettings.GetControlFromPosition(1, 2).Text);
-                string algorithm = "AldousBroder";
+                ComboBox AlgorithmSelector = _tbl_advSettings.GetControlFromPosition(1, 3) as ComboBox;
+                GenAlgorithm algorithm = (GenAlgorithm) AlgorithmSelector.SelectedIndex;
 
 
                 MazeSettings = new Settings(width, height, algorithm);
@@ -243,11 +244,11 @@ namespace PRJ_MazeWinForms
     {
         public int Width { get; }
         public int Height { get; }
-        public string Algorithm { get;  }
+        public GenAlgorithm Algorithm { get;  }
 
         
         // Different constructors for difficulty parameters and advanced parameters
-        public Settings(int width, int height, string algorithm)
+        public Settings(int width, int height, GenAlgorithm algorithm)
         {
             // Advanced
             Width = width;

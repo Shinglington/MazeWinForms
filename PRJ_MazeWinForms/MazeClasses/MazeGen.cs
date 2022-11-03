@@ -1,45 +1,40 @@
 ﻿using MazeConsole.MyDataStructures;
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Runtime.CompilerServices;
 
 namespace MazeConsole
 {
+
+    public enum GenAlgorithm
+    {
+        AldousBroder,
+        Wilsons,
+        BinaryTree,
+        Sidewinder,
+        Ellers,
+        HuntAndKill,
+        RecursiveBacktracker,
+        RecursiveDivision,
+        Kruskals,
+        Prims,
+        GrowingTree
+    }
     class MazeGen
     {
         public static Random rand = new Random();
 
-        public static bool GenerateMaze(Graph _graph, GenAlgorithms Algorithm)
+        public static bool GenerateMaze(Graph _graph, GenAlgorithm Algorithm)
         {
 
             bool success = false;
-            try
+            success = (bool)typeof(MazeGen).GetMethod(Algorithm.ToString()).Invoke(null, new object[] { _graph });
+
+            if (!success)
             {
-                success = (bool) typeof(MazeGen).GetMethod(Algorithm.ToString()).Invoke(null, new object[] { _graph });
-            }
-            catch
-            {
-                Console.WriteLine("Error in finding algorithm with name {0}", Algorithm);
+                Console.WriteLine("Error in finding algorithm with name {0}", Algorithm.ToString());
             }
             return success;
         }
-
-        public enum GenAlgorithms
-        {
-            AldousBroder,
-            Wilsons,
-            BinaryTree,
-            Sidewinder,
-            Ellers,
-            HuntAndKill,
-            RecursiveBacktracker,
-            RecursiveDivision,
-            Kruskals,
-            Prims,
-            GrowingTree
-        }
-
 
         public static bool AldousBroder(Graph G)
         {
