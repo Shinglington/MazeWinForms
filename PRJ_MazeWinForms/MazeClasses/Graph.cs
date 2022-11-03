@@ -3,6 +3,7 @@ using System.Drawing;
 
 using System.Windows.Forms;
 using MazeConsole.MyDataStructures;
+
 namespace MazeConsole
 {
     class Graph
@@ -126,6 +127,15 @@ namespace MazeConsole
                     Panel Cell = new Panel() { Parent = GraphPanel, Dock = DockStyle.Fill, Margin = new Padding(0) };
                     GraphPanel.SetCellPosition(Cell, new TableLayoutPanelCellPosition(col, row));
                     Cell.Paint += new PaintEventHandler((sender, e) => PaintNode(sender, e, node));
+                    
+                    if (node == StartNode)
+                    {
+                        new Label() { Parent = Cell, Text = "START"};
+                    }
+                    else if (node == EndNode)
+                    {
+                        new Label() { Parent = Cell, Text = "END"};
+                    }
                 }
             }
         }

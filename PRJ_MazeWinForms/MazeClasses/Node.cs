@@ -1,11 +1,4 @@
-﻿using System;
-using System.Drawing;
-using System.Drawing.Text;
-using System.IO;
-using System.Runtime.Remoting.Channels;
-using System.Windows.Forms;
-
-namespace MazeConsole
+﻿namespace MazeConsole
 {
     class Node
     {

@@ -198,15 +198,26 @@ namespace PRJ_MazeWinForms
                 int width = int.Parse(_tbl_advSettings.GetControlFromPosition(1, 1).Text);
                 int height = int.Parse(_tbl_advSettings.GetControlFromPosition(1, 2).Text);
                 ComboBox AlgorithmSelector = _tbl_advSettings.GetControlFromPosition(1, 3) as ComboBox;
-                GenAlgorithm algorithm = (GenAlgorithm) AlgorithmSelector.SelectedIndex;
-
-
-                MazeSettings = new Settings(width, height, algorithm);
+                GenAlgorithm algorithm = (GenAlgorithm)AlgorithmSelector.SelectedIndex;
+                // Defensive programming
+                if (AlgorithmSelector.SelectedIndex < 0)
+                {
+                    MessageBox.Show("Please select an algorithm");
+                }
+                else if (width < 4 || height < 4)
+                {
+                    MessageBox.Show("Minimum Maze size is 4*4");
+                }
+                else
+                {
+                    MazeSettings = new Settings(width, height, algorithm);
+                } 
             }
             catch
             {
-                Console.WriteLine("Error raised while reading advanced fields");
+                MessageBox.Show("Error while reading advanced fields");
             }
+
 
             return MazeSettings;
         }

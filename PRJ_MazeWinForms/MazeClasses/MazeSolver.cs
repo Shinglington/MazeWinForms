@@ -1,6 +1,8 @@
 ﻿using System;
+
 using MazeConsole;
 using MazeConsole.MyDataStructures;
+
 namespace PRJ_MazeConsole
 {
     class MazeSolver
