@@ -120,7 +120,9 @@ namespace MazeConsole
             {
                 for (int col = 0; col < Width; col++)
                 {
-                    _nodes[col, row].PaintNode(GraphPanel);
+                    Panel Cell = new Panel() { Parent = GraphPanel, Dock = DockStyle.Fill };
+                    GraphPanel.SetCellPosition(Cell, new TableLayoutPanelCellPosition(col, row));
+                    Cell.Paint += new PaintEventHandler(_nodes[col, row].PaintNode);
                 }
             }
 
