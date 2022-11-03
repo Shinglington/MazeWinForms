@@ -253,6 +253,7 @@ namespace PRJ_MazeWinForms
 
     public class Settings 
     {
+
         public int Width { get; }
         public int Height { get; }
         public GenAlgorithm Algorithm { get;  }
@@ -271,14 +272,21 @@ namespace PRJ_MazeWinForms
         {
             switch (difficulty)
             {
+                // Presets for difficulties
                 case (Difficulty)0:
-                    Console.WriteLine(difficulty.ToString());
+                    Width = 5;
+                    Height = 5;
+                    Algorithm = GenAlgorithm.Sidewinder;
                     break;
                 case (Difficulty)1:
-                    Console.WriteLine(difficulty.ToString());
+                    Width = 10;
+                    Height = 10;
+                    Algorithm = GenAlgorithm.BinaryTree;
                     break;
                 case (Difficulty)2:
-                    Console.WriteLine(difficulty.ToString());
+                    Width = 30;
+                    Height = 30;
+                    Algorithm = GenAlgorithm.GrowingTree;
                     break;
             }
         }

@@ -8,12 +8,19 @@ namespace MazeConsole
 {
     class Graph
     {
+
+        // CONSOLE CONSTANTS
         private const char WALL_CHAR = '█';
         private const char SPACE_CHAR = ' ';
 
         private const char START_CHAR = 'S';
         private const char END_CHAR = 'E';
         private const char HIGHLIGHT_CHAR = '?';
+
+
+        // WINFORMS CONSTANTS
+        private readonly Color WALL_COLOUR = Color.Black;
+
 
         private readonly Node[,] _nodes;
         public int Width { get; }
@@ -144,25 +151,21 @@ namespace MazeConsole
         {
             Panel cell = sender as Panel;
             Graphics g = e.Graphics;
-            SolidBrush brush = new SolidBrush(Color.Blue);
+            SolidBrush brush = new SolidBrush(WALL_COLOUR);
             if (node.NorthNode == null)
             {
-                brush = new SolidBrush(Color.Blue);
                 g.FillRectangle(brush, 0, 0, cell.Width, cell.Height / 6);
             }
             if (node.EastNode == null)
             {
-                brush = new SolidBrush(Color.Red);
                 g.FillRectangle(brush, cell.Width - cell.Width / 6, 0, cell.Width / 6, cell.Height);
             }
             if (node.SouthNode == null)
             {
-                brush = new SolidBrush(Color.Green);
                 g.FillRectangle(brush, 0, cell.Height - cell.Height / 6, cell.Width, cell.Height / 6);
             }
             if (node.WestNode == null)
             {
-                brush = new SolidBrush(Color.Yellow);
                 g.FillRectangle(brush, 0, 0, cell.Width / 6, cell.Height);
             }
 
