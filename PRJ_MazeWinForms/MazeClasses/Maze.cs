@@ -1,4 +1,5 @@
 ﻿// System Modules
+using System;
 using System.Windows.Forms;
 
 // My Modules
@@ -18,7 +19,9 @@ namespace MazeConsole
             Width = width;
             Height = height;
             _graph = new Graph(Width, Height);
-            GenerateMaze(GenType);
+
+            MazeGen.GenAlgorithms Algorithm = (MazeGen.GenAlgorithms) Enum.Parse(typeof(MazeGen.GenAlgorithms), GenType);
+            GenerateMaze(Algorithm);
         }
 
 
@@ -38,7 +41,7 @@ namespace MazeConsole
             }
         }
 
-        private bool GenerateMaze(string GenType)
+        private bool GenerateMaze(MazeGen.GenAlgorithms GenType)
         {
             return MazeGen.GenerateMaze(_graph, GenType);
         }

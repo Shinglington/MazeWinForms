@@ -1,6 +1,8 @@
 ﻿using MazeConsole.MyDataStructures;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
+using System.Runtime.CompilerServices;
 
 namespace MazeConsole
 {
@@ -8,42 +10,35 @@ namespace MazeConsole
     {
         public static Random rand = new Random();
 
-        public static bool GenerateMaze(Graph _graph, string Algorithm)
+        public static bool GenerateMaze(Graph _graph, GenAlgorithms Algorithm)
         {
 
             bool success = false;
-
-            switch (Algorithm)
+            try
             {
-                case "AldousBroder":
-                    success = AldousBroder(_graph);
-                    break;
-                case "Wilsons":
-                    success = Wilsons(_graph);
-                    break;
-                case "BinaryTree":
-                    success = BinaryTree(_graph);
-                    break;
-                case "Sidewinder":
-                    success = Sidewinder(_graph);
-                    break;
-                case "HuntAndKill":
-                    success = HuntAndKill(_graph);
-                    break;
-                case "RecursiveBacktracker":
-                    success = RecursiveBacktracker(_graph);
-                    break;
-                case "GrowingTree":
-                    success = GrowingTree(_graph);
-                    break;
-                default:
-                    success = false;
-                    break;
+                success = (bool) typeof(MazeGen).GetMethod(Algorithm.ToString()).Invoke(null, new object[] { _graph });
+            }
+            catch
+            {
+                Console.WriteLine("Error in finding algorithm with name {0}", Algorithm);
             }
             return success;
         }
 
-
+        public enum GenAlgorithms
+        {
+            AldousBroder,
+            Wilsons,
+            BinaryTree,
+            Sidewinder,
+            Ellers,
+            HuntAndKill,
+            RecursiveBacktracker,
+            RecursiveDivision,
+            Kruskals,
+            Prims,
+            GrowingTree
+        }
 
 
         public static bool AldousBroder(Graph G)

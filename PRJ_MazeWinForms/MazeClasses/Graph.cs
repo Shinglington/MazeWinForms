@@ -1,9 +1,8 @@
-﻿using MazeConsole.MyDataStructures;
-using System;
+﻿using System;
 using System.Drawing;
-using System.Security.Cryptography.X509Certificates;
-using System.Windows.Forms;
 
+using System.Windows.Forms;
+using MazeConsole.MyDataStructures;
 namespace MazeConsole
 {
     class Graph
@@ -124,7 +123,7 @@ namespace MazeConsole
                 for (int col = 0; col < Width; col++)
                 {
                     Node node = _nodes[col, row];
-                    Panel Cell = new Panel() { Parent = GraphPanel, Dock = DockStyle.Fill };
+                    Panel Cell = new Panel() { Parent = GraphPanel, Dock = DockStyle.Fill, Margin = new Padding(0) };
                     GraphPanel.SetCellPosition(Cell, new TableLayoutPanelCellPosition(col, row));
                     Cell.Paint += new PaintEventHandler((sender, e) => PaintNode(sender, e, node));
                 }

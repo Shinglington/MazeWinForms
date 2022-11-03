@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MazeConsole;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 namespace PRJ_MazeWinForms
@@ -161,6 +162,12 @@ namespace PRJ_MazeWinForms
             Table.RowStyles.Add(new RowStyle(SizeType.Percent, 0.3F));
             Label Algorithm = new Label() { Text = "Algorithm", Font = new Font(TEXT_FONT, 10), Dock = DockStyle.Fill, Parent = Table };
             Table.SetCellPosition(Algorithm, new TableLayoutPanelCellPosition(0, 3));
+            ComboBox AlgSelection = new ComboBox() { Parent = Table, Dock = DockStyle.Fill, DropDownStyle = ComboBoxStyle.DropDownList };
+            foreach(MazeGen.GenAlgorithms alg in Enum.GetValues(typeof(MazeGen.GenAlgorithms)))
+            {
+                AlgSelection.Items.Add(alg.ToString());
+            }
+            Table.SetCellPosition(AlgSelection, new TableLayoutPanelCellPosition(1, 3));
 
             _tbl_advSettings = Table;
         }
