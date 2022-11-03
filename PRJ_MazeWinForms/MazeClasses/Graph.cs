@@ -1,5 +1,7 @@
 ﻿using MazeConsole.MyDataStructures;
 using System;
+using System.Drawing;
+using System.Security.Cryptography.X509Certificates;
 using System.Windows.Forms;
 
 namespace MazeConsole
@@ -116,15 +118,45 @@ namespace MazeConsole
             {
                 GraphPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F / Width));
             }
+
             for (int row = 0; row < Height; row++)
             {
                 for (int col = 0; col < Width; col++)
                 {
+                    Node node = _nodes[col, row];
                     Panel Cell = new Panel() { Parent = GraphPanel, Dock = DockStyle.Fill };
                     GraphPanel.SetCellPosition(Cell, new TableLayoutPanelCellPosition(col, row));
-                    Cell.Paint += new PaintEventHandler(_nodes[col, row].PaintNode);
+                    Cell.Paint += new PaintEventHandler((sender, e) => PaintNode(sender, e, node));
                 }
             }
+        }
+
+        private void PaintNode(object sender, PaintEventArgs e, Node node)
+        {
+            Panel cell = sender as Panel;
+            Graphics g = e.Graphics;
+            SolidBrush brush = new SolidBrush(Color.Blue);
+            if (node.NorthNode == null)
+            {
+                brush = new SolidBrush(Color.Blue);
+                g.FillRectangle(brush, 0, 0, cell.Width, cell.Height / 6);
+            }
+            if (node.EastNode == null)
+            {
+                brush = new SolidBrush(Color.Red);
+                g.FillRectangle(brush, cell.Width - cell.Width / 6, 0, cell.Width / 6, cell.Height);
+            }
+            if (node.SouthNode == null)
+            {
+                brush = new SolidBrush(Color.Green);
+                g.FillRectangle(brush, 0, cell.Height - cell.Height / 6, cell.Width, cell.Height / 6);
+            }
+            if (node.WestNode == null)
+            {
+                brush = new SolidBrush(Color.Yellow);
+                g.FillRectangle(brush, 0, 0, cell.Width / 6, cell.Height);
+            }
+
 
         }
 

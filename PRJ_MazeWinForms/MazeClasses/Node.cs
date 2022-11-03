@@ -89,22 +89,6 @@ namespace MazeConsole
             return success;
         }
 
-        public void PaintNode(object sender, PaintEventArgs e)
-        {
-            Panel Cell = sender as Panel;
-            Graphics g = e.Graphics;
-            SolidBrush brush = new SolidBrush(Color.Blue);
-            if (SouthNode == null)
-            {
-                g.FillRectangle(brush, 0, Cell.Height - Cell.Height / 6, Cell.Width, Cell.Height / 6);
-            }
-            if (EastNode == null)
-            {
-                g.FillRectangle(brush, Cell.Width - Cell.Width / 6, 0, Cell.Width / 6, Cell.Height);
-            }
-        }
-
-
         enum Direction
         {
             North,
