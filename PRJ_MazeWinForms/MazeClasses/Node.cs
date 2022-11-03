@@ -46,7 +46,6 @@ namespace MazeConsole
         {
             Visited = newValue;
         }
-
         public bool UpdateNorthEdge(Node node)
         {
             return UpdateEdge(node, Direction.North);
@@ -63,8 +62,6 @@ namespace MazeConsole
         {
             return UpdateEdge(node, Direction.West);
         }
-
-
         private bool UpdateEdge(Node node, Direction direction)
         {
             bool success = false;

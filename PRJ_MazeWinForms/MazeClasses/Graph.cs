@@ -180,21 +180,19 @@ namespace MazeConsole
         public bool AddEdge(Node NodeA, Node NodeB)
         {
             bool success = false;
-            // Check if they are adjacent
             if (!AreAdjacent(NodeA, NodeB)) return false;
-
             // If x coords are next to each other
             if (Math.Abs(NodeA.Location.Item1 - NodeB.Location.Item1) == 1)
             {
                 // If A has greater x coord than B, A is to the east of B
                 if (NodeA.Location.Item1 > NodeB.Location.Item1)
                 {
-                    success = NodeB.UpdateEastEdge(NodeA);
+                    success = NodeB.UpdateEastEdge(NodeA) && NodeA.UpdateWestEdge(NodeB);
                 }
                 // Otherwise, B is to the east of A
                 else
                 {
-                    success = NodeA.UpdateEastEdge(NodeB);
+                    success = NodeA.UpdateEastEdge(NodeB) && NodeB.UpdateWestEdge(NodeA);
                 }
             }
             // If y coords are next to each other
@@ -203,12 +201,12 @@ namespace MazeConsole
                 // If A has greater y coord than B, then A is south of B
                 if (NodeA.Location.Item2 > NodeB.Location.Item2)
                 {
-                    success = NodeB.UpdateSouthEdge(NodeA);
+                    success = NodeB.UpdateSouthEdge(NodeA) && NodeA.UpdateNorthEdge(NodeB);
                 }
                 // Otherwise, B south of A
                 else
                 {
-                    success = NodeA.UpdateSouthEdge(NodeB);
+                    success = NodeA.UpdateSouthEdge(NodeB) && NodeB.UpdateNorthEdge(NodeA);
                 }
             }
             return success;
@@ -227,12 +225,12 @@ namespace MazeConsole
                 // If A has greater x coord than B, A is to the east of B
                 if (NodeA.Location.Item2 > NodeB.Location.Item2)
                 {
-                    success = NodeB.UpdateEastEdge(null);
+                    success = NodeB.UpdateEastEdge(null) && NodeA.UpdateWestEdge(null);
                 }
                 // Otherwise, B is to the east of A
                 else
                 {
-                    success = NodeA.UpdateEastEdge(null);
+                    success = NodeA.UpdateEastEdge(null) && NodeB.UpdateWestEdge(null);
                 }
             }
             // If y coords are next to each other
@@ -241,12 +239,12 @@ namespace MazeConsole
                 // If A has greater y coord than B, then A is south of B
                 if (NodeA.Location.Item2 > NodeB.Location.Item2)
                 {
-                    success = NodeB.UpdateSouthEdge(null);
+                    success = NodeB.UpdateSouthEdge(null) && NodeA.UpdateNorthEdge(null);
                 }
                 // Otherwise, B south of A
                 else
                 {
-                    success = NodeA.UpdateSouthEdge(null);
+                    success = NodeA.UpdateSouthEdge(null) && NodeB.UpdateNorthEdge(null);
                 }
             }
             return success;
