@@ -255,7 +255,6 @@ namespace MazeConsole
 
             while (!G.AllNodesVisited())
             {
-                Console.Write(G.GetConsoleDisplay(new MyList<Node>() { CurrNode }));
                 Console.ReadLine();
                 Path.Push(CurrNode);
                 Node NextNode = null;

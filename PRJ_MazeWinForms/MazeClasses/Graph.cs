@@ -20,6 +20,8 @@ namespace MazeConsole
 
         // WINFORMS CONSTANTS
         private readonly Color WALL_COLOUR = Color.Black;
+        private readonly Color START_COLOUR = Color.Green;
+        private readonly Color END_COLOUR = Color.Red;
 
 
         private readonly Node[,] _nodes;
@@ -134,42 +136,53 @@ namespace MazeConsole
                     Panel Cell = new Panel() { Parent = GraphPanel, Dock = DockStyle.Fill, Margin = new Padding(0) };
                     GraphPanel.SetCellPosition(Cell, new TableLayoutPanelCellPosition(col, row));
                     Cell.Paint += new PaintEventHandler((sender, e) => PaintNode(sender, e, node));
-                    
-                    if (node == StartNode)
-                    {
-                        new Label() { Parent = Cell, Text = "START"};
-                    }
-                    else if (node == EndNode)
-                    {
-                        new Label() { Parent = Cell, Text = "END"};
-                    }
                 }
             }
         }
 
         private void PaintNode(object sender, PaintEventArgs e, Node node)
         {
+            const float WALL_RATIO = 6;
+
             Panel cell = sender as Panel;
             Graphics g = e.Graphics;
             SolidBrush brush = new SolidBrush(WALL_COLOUR);
+
+            // Draw walls
             if (node.NorthNode == null)
             {
-                g.FillRectangle(brush, 0, 0, cell.Width, cell.Height / 6);
+                g.FillRectangle(brush, 0, 0, cell.Width, cell.Height / WALL_RATIO);
             }
             if (node.EastNode == null)
             {
-                g.FillRectangle(brush, cell.Width - cell.Width / 6, 0, cell.Width / 6, cell.Height);
+                g.FillRectangle(brush, cell.Width - cell.Width / WALL_RATIO, 0, cell.Width / WALL_RATIO, cell.Height);
             }
             if (node.SouthNode == null)
             {
-                g.FillRectangle(brush, 0, cell.Height - cell.Height / 6, cell.Width, cell.Height / 6);
+                g.FillRectangle(brush, 0, cell.Height - cell.Height / WALL_RATIO, cell.Width, cell.Height / WALL_RATIO);
             }
             if (node.WestNode == null)
             {
-                g.FillRectangle(brush, 0, 0, cell.Width / 6, cell.Height);
+                g.FillRectangle(brush, 0, 0, cell.Width / WALL_RATIO, cell.Height);
             }
 
+            // Draw wall corners
+            g.FillRectangle(brush, 0, 0, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
+            g.FillRectangle(brush, cell.Width - cell.Width / WALL_RATIO, 0, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
+            g.FillRectangle(brush, cell.Width - cell.Width / WALL_RATIO, cell.Height - cell.Height / WALL_RATIO, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
+            g.FillRectangle(brush, 0, cell.Height - cell.Height / WALL_RATIO, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
 
+            // Colour start and end nodes
+            if (node == StartNode)
+            {
+                brush = new SolidBrush(START_COLOUR);
+                g.FillRectangle(brush, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO, cell.Width - (2 * cell.Width / WALL_RATIO), cell.Height - (2 * cell.Height / WALL_RATIO));
+            }
+            else if (node == EndNode)
+            {
+                brush = new SolidBrush(END_COLOUR);
+                g.FillRectangle(brush, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO, cell.Width - (2 * cell.Width / WALL_RATIO), cell.Height - (2 * cell.Height / WALL_RATIO));
+            }
         }
 
 
