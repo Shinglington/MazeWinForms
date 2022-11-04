@@ -4,13 +4,14 @@ using System.Windows.Forms;
 
 // My Modules
 using MazeConsole.MyDataStructures;
-
+using PRJ_MazeConsole;
 
 namespace MazeConsole
 {
-    class Maze
+    public class Maze
     {
         private Graph _graph;
+        private MyList<Node> _solution;
         public int Width { private set; get; }
         public int Height { private set; get; }
 
@@ -19,6 +20,7 @@ namespace MazeConsole
             Width = width;
             Height = height;
             _graph = new Graph(Width, Height);
+            _solution = null;
             MazeGen.GenerateMaze(_graph, GenType);
         }
 
@@ -39,20 +41,43 @@ namespace MazeConsole
             }
         }
 
+        private MyList<Node> Solution 
+        {
+            get
+            {
+                if (_solution == null)
+                {
+                    _solution = MazeSolver.WallFollower(this);
+                }
+                return _solution;
+            }
+        }
+
         private bool GenerateMaze(GenAlgorithm GenType)
         {
             return MazeGen.GenerateMaze(_graph, GenType);
         }
 
-        public string ConsoleDisplay(MyList<Node> highlightNodes = null)
+        public string ConsoleDisplay(bool ShowSolution = false)
         {
-            return _graph.GetConsoleDisplay(highlightNodes);
+            string display = "";
+            if (ShowSolution)
+            {
+                _graph.GetConsoleDisplay(Solution);
+            }
+            else
+            {
+                display = _graph.GetConsoleDisplay();
+            }
+            return display;
         }
 
         public void FormsDisplay(TableLayoutPanel MazePanel)
         {
             _graph.GetFormsDisplay(MazePanel);
         }
+
+
 
         // Reset visited attribute in nodes
         public void ResetVisited()

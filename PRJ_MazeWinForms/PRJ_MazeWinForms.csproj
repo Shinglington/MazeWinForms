@@ -57,6 +57,12 @@
     <Compile Include="MazeForm.Designer.cs">
       <DependentUpon>MazeForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="MazeInterface.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="MazeInterface.Designer.cs">
+      <DependentUpon>MazeInterface.cs</DependentUpon>
+    </Compile>
     <Compile Include="MenuForm.cs">
       <SubType>Form</SubType>
     </Compile>

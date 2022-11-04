@@ -186,6 +186,15 @@ namespace MazeConsole
         }
 
 
+        // Get adjacent nodes to specified node
+        public Node[] GetAdjacentNodes(int x, int y)
+        {
+            Node node = _nodes[x, y];
+            Node[] AdjNodes = { node.NorthNode, node.EastNode, node.SouthNode, node.WestNode };
+            return AdjNodes;
+        }
+
+
         // Check if all nodes have been visited
         public bool AllNodesVisited()
         {
