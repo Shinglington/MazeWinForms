@@ -1,18 +1,17 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace MazeConsole.MyDataStructures
 {
     class MyQueue<T>
     {
-        private List<T> _items;
+        private MyList<T> _items;
         private int _front;
         private int _back;
         private int _size;
 
         public MyQueue()
         {
-            _items = new List<T>();
+            _items = new MyList<T>();
             _front = 0;
             _back = 0;
             _size = 0;
@@ -51,7 +50,7 @@ namespace MazeConsole.MyDataStructures
         }
 
         // Convert to list
-        public List<T> ToList()
+        public MyList<T> ToList()
         {
             return _items;
         }

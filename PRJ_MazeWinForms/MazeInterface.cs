@@ -37,7 +37,7 @@ namespace PRJ_MazeWinForms
         private void GenerateMaze(bool ShowGeneration)
         {
             _maze = new FormsMaze(_mazeSettings, _mazePanel);
-            _maze.DisplayMaze();
+            _maze.DisplayConsole();
 
         }
     }

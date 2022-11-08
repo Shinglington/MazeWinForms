@@ -7,6 +7,15 @@ namespace MazeConsole
 {
     class Maze
     {
+        // Constants
+        private const char WALL_CHAR = '█';
+        private const char SPACE_CHAR = ' ';
+
+        private const char START_CHAR = 'S';
+        private const char END_CHAR = 'E';
+        private const char HIGHLIGHT_CHAR = '?';
+
+
         protected Graph _graph;
         protected MyList<Node> _solution;
         public int Width { private set; get; }
@@ -17,7 +26,7 @@ namespace MazeConsole
             Width = width;
             Height = height;
             _graph = new Graph(Width, Height);
-            MazeGen.GenerateMaze(_graph, algorithm, showGeneration);
+            MazeGen.GenerateMaze(this, _graph, algorithm, showGeneration);
             _solution = null;
         }
 
@@ -26,7 +35,7 @@ namespace MazeConsole
             Width = Settings.Width;
             Height = Settings.Height;
             _graph = new Graph(Width, Height);
-            MazeGen.GenerateMaze(_graph, Settings.Algorithm, Settings.ShowGeneration);
+            MazeGen.GenerateMaze(this, _graph, Settings.Algorithm, Settings.ShowGeneration);
             _solution = null;
         }
 
@@ -60,26 +69,98 @@ namespace MazeConsole
         }
 
 
-        public void DisplayMaze(Node CurrentNode = null, bool ShowSolution = false, bool ShowHint = false)
+        public void DisplayConsole(Node CurrentNode = null, bool ShowSolution = false, bool ShowHint = false)
         {
             string Display = "";
             if (ShowSolution)
             {
-                Display = _graph.GetDisplay(CurrentNode, Solution);
+                Display = GetStringDisplay(CurrentNode, Solution);
             }
             else if (ShowHint)
             {
-                Display = _graph.GetDisplay(CurrentNode, GetHint(CurrentNode));
+                Display = GetStringDisplay(CurrentNode, GetHint(CurrentNode));
             }
             else
             {
-                Display = _graph.GetDisplay(CurrentNode);
+                Display = GetStringDisplay(CurrentNode);
             }
             Console.WriteLine(Display);
         }
 
+        private string GetStringDisplay(Node CurrentNode = null, MyList<Node> highlightNodes = null)
+        {
+            string mazeString = "";
+            Node[,] nodes = _graph.GetNodes();
+            mazeString += WALL_CHAR;
+            // Generate top wall
+            for (int x = 0; x < Width; x++)
+            {
+                mazeString += string.Format("{0}{1}", WALL_CHAR, WALL_CHAR);
+            }
+            mazeString += "\n";
+            for (int y = 0; y < Height; y++)
+            {
 
-        private MyList<Node> GetHint(Node CurrentNode)
+                string currEastWalls = "";
+                string currSouthWalls = "";
+
+                currEastWalls += WALL_CHAR;
+                currSouthWalls += WALL_CHAR;
+                // East edges
+                for (int x = 0; x < Width; x++)
+                {
+                    Node thisNode = nodes[x, y];
+                    if (thisNode == CurrentNode)
+                    {
+                        currEastWalls += 'C';
+                    }
+                    else if (thisNode == StartNode)
+                    {
+                        currEastWalls += START_CHAR;
+                    }
+                    else if (thisNode == EndNode)
+                    {
+                        currEastWalls += END_CHAR;
+                    }
+                    else if (highlightNodes != null && highlightNodes.Contains(thisNode))
+                    {
+                        currEastWalls += HIGHLIGHT_CHAR;
+                    }
+                    else
+                    {
+                        currEastWalls += SPACE_CHAR;
+                    }
+
+                    // Check east edge
+                    if (thisNode.EastNode != null)
+                    {
+                        currEastWalls += SPACE_CHAR;
+                    }
+                    else
+                    {
+                        currEastWalls += WALL_CHAR;
+                    }
+                    // Check south edge
+                    if (thisNode.SouthNode != null)
+                    {
+                        currSouthWalls += SPACE_CHAR;
+                    }
+                    else
+                    {
+                        currSouthWalls += WALL_CHAR;
+                    }
+                    currSouthWalls += WALL_CHAR;
+                }
+                mazeString += currEastWalls;
+                mazeString += "\n";
+                mazeString += currSouthWalls;
+                mazeString += "\n";
+            }
+            return mazeString;
+        }
+
+
+        protected MyList<Node> GetHint(Node CurrentNode)
         {
             return MazeSolver.WallFollower(_graph, CurrentNode);
         }

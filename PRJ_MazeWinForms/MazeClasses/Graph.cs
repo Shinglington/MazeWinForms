@@ -5,15 +5,6 @@ namespace MazeConsole
 {
     class Graph
     {
-
-        // Constants
-        private const char WALL_CHAR = '█';
-        private const char SPACE_CHAR = ' ';
-
-        private const char START_CHAR = 'S';
-        private const char END_CHAR = 'E';
-        private const char HIGHLIGHT_CHAR = '?';
-
         private readonly Node[,] _nodes;
         private bool _locked;
         public int Width { get; }
@@ -63,77 +54,6 @@ namespace MazeConsole
             EndNode = _nodes[width - 1, height - 1];
         }
 
-        public string GetDisplay(Node CurrentNode = null, MyList<Node> highlightNodes = null)
-        {
-            string mazeString = "";
-            mazeString += WALL_CHAR;
-            // Generate top wall
-            for (int x = 0; x < Width; x++)
-            {
-                mazeString += string.Format("{0}{1}", WALL_CHAR, WALL_CHAR);
-            }
-            mazeString += "\n";
-            for (int y = 0; y < Height; y++)
-            {
-
-                string currEastWalls = "";
-                string currSouthWalls = "";
-
-                currEastWalls += WALL_CHAR;
-                currSouthWalls += WALL_CHAR;
-                // East edges
-                for (int x = 0; x < Width; x++)
-                {
-                    Node thisNode = _nodes[x, y];
-                    if (thisNode == CurrentNode)
-                    {
-                        currEastWalls += 'C';
-                    }
-                    else if (thisNode == StartNode)
-                    {
-                        currEastWalls += START_CHAR;
-                    }
-                    else if (thisNode == EndNode)
-                    {
-                        currEastWalls += END_CHAR;
-                    }
-                    else if (highlightNodes != null && highlightNodes.Contains(thisNode))
-                    {
-                        currEastWalls += HIGHLIGHT_CHAR;
-                    }
-                    else
-                    {
-                        currEastWalls += SPACE_CHAR;
-                    }
-
-                    // Check east edge
-                    if (thisNode.EastNode != null)
-                    {
-                        currEastWalls += SPACE_CHAR;
-                    }
-                    else
-                    {
-                        currEastWalls += WALL_CHAR;
-                    }
-                    // Check south edge
-                    if (thisNode.SouthNode != null)
-                    {
-                        currSouthWalls += SPACE_CHAR;
-                    }
-                    else
-                    {
-                        currSouthWalls += WALL_CHAR;
-                    }
-                    currSouthWalls += WALL_CHAR;
-                }
-                mazeString += currEastWalls;
-                mazeString += "\n";
-                mazeString += currSouthWalls;
-                mazeString += "\n";
-            }
-            return mazeString;
-
-        }
 
         public bool AddEdge(Node NodeA, Node NodeB)
         {

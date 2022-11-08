@@ -20,7 +20,7 @@ namespace PRJ_MazeWinForms
 
         // Classes
         private MazeSettings _mazeSettings;
-        private Maze _maze;
+        private FormsMaze _maze;
 
         // Enums
         private SolutionVisibility _solutionVis;
@@ -36,8 +36,9 @@ namespace PRJ_MazeWinForms
         {
             InitializeComponent();
 
-            CreateMaze(MazeSettings);
             CreateControls();
+            CreateMaze(MazeSettings);
+            DisplayMaze(_tbl_mazePanel);
             _solutionVis = SolutionVisibility.None;
 
         }
@@ -79,13 +80,13 @@ namespace PRJ_MazeWinForms
             _tbl_formPanel.SetCellPosition(_menuStrip, new TableLayoutPanelCellPosition(0, 0));
             SetupMenuStrip(_menuStrip);
 
-            DisplayMaze(_tbl_mazePanel);
+
         }
 
 
         private void DisplayMaze(TableLayoutPanel TableContainer)
         {
-            _maze.DisplayMaze();
+            _maze.DisplayForms();
         }
 
         private void SetupMenuStrip(MenuStrip menuStrip)
@@ -100,29 +101,14 @@ namespace PRJ_MazeWinForms
 
             // Hint header
             ToolStripMenuItem HintStrip = (ToolStripMenuItem) menuStrip.Items[(int)MyMenuItem.Hint];
-            /*
             HintStrip.DropDownItems.Add("Show full solution").Click += new EventHandler(ShowFullSolution);
-            */
         }
 
-        /*
         private void ShowFullSolution(object sender, EventArgs e)
         {
             if (_solutionVis != SolutionVisibility.Full)
             {
-                MyList<Node> FullSolution = MazeSolver.WallFollower(_maze);
-                foreach(Node n in FullSolution)
-                {
-                    int x = n.Location.X;
-                    int y = n.Location.Y;
-
-                    Panel cell = (Panel) _tbl_mazePanel.GetControlFromPosition(x, y);
-                    cell.Paint += new PaintEventHandler(HighlightCell);
-                    cell.Invalidate();
-                    
-
-                }
-
+                _maze.DisplayForms(null, true);
                 _solutionVis = SolutionVisibility.Full;
             }
             else
@@ -130,20 +116,6 @@ namespace PRJ_MazeWinForms
                 MessageBox.Show("Solution already being shown");
             }
         }
-
-
-        // PAINT FUNCTIONS
-        private void HighlightCell(object sender, PaintEventArgs e)
-        {
-            Panel cell = sender as Panel;
-            Graphics g = e.Graphics;
-
-            Brush brush = new SolidBrush(SOLUTION_COLOUR);
-            Point midpoint = new Point(cell.Width / 2, cell.Height / 2);
-            float radius = Math.Min(cell.Width, cell.Height) / 12;
-            g.FillEllipse(brush, midpoint.X - radius, midpoint.Y - radius, radius * 2, radius * 2);
-        }
-        */
     }
 
     public enum MyMenuItem

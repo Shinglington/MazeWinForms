@@ -21,10 +21,10 @@ namespace MazeConsole
     class MazeGen
     {
         public static Random rand = new Random();
-        public static bool GenerateMaze(Graph G, String Algorithm, bool ShowGeneration = false)
+        public static bool GenerateMaze(Maze M, Graph G, String Algorithm, bool ShowGeneration = false)
         {
             bool success = false;
-            success = (bool)typeof(MazeGen).GetMethod(Algorithm).Invoke(null, new object[] { G, ShowGeneration });
+            success = (bool)typeof(MazeGen).GetMethod(Algorithm).Invoke(null, new object[] { M, G, ShowGeneration });
             if (!success)
             {
                 Console.WriteLine("Error in finding algorithm with name {0}", Algorithm);
@@ -32,11 +32,11 @@ namespace MazeConsole
 
             return success;
         }
-        public static bool GenerateMaze(Graph G, GenAlgorithm Algorithm, bool ShowGeneration = false)
+        public static bool GenerateMaze(Maze M, Graph G, GenAlgorithm Algorithm, bool ShowGeneration = false)
         {
-            return GenerateMaze(G, Algorithm.ToString(), ShowGeneration);
+            return GenerateMaze(M, G, Algorithm.ToString(), ShowGeneration);
         }
-        public static bool AldousBroder(Graph G, bool ShowGeneration)
+        public static bool AldousBroder(Maze M, Graph G, bool ShowGeneration)
         {
             bool success = true;
             VisitedNodesTracker visited = new VisitedNodesTracker(G);
@@ -54,7 +54,7 @@ namespace MazeConsole
                     visited.SetVisited(nextNode);
                     if (ShowGeneration)
                     {
-                        Console.WriteLine(G.GetDisplay());
+                        M.DisplayConsole();
                         Console.ReadLine();
                     }
                 }
@@ -63,7 +63,7 @@ namespace MazeConsole
             return success;
         }
 
-        public static bool Wilsons(Graph G, bool ShowGeneration)
+        public static bool Wilsons(Maze M,Graph G, bool ShowGeneration)
         {
             bool success = true;
             VisitedNodesTracker visited = new VisitedNodesTracker(G);
@@ -98,7 +98,7 @@ namespace MazeConsole
                     visited.SetVisited(CurrNode);
                     if (ShowGeneration)
                     {
-                        Console.WriteLine(G.GetDisplay());
+                        M.DisplayConsole();
                         Console.ReadLine();
                     }
                 }
@@ -107,7 +107,7 @@ namespace MazeConsole
 
         }
 
-        public static bool BinaryTree(Graph G, bool ShowGeneration)
+        public static bool BinaryTree(Maze M, Graph G, bool ShowGeneration)
         {
             bool success = true;
             VisitedNodesTracker visited = new VisitedNodesTracker(G);
@@ -149,7 +149,7 @@ namespace MazeConsole
 
                     if (ShowGeneration)
                     {
-                        Console.WriteLine(G.GetDisplay());
+                        M.DisplayConsole();
                         Console.ReadLine();
                     }
                 }
@@ -158,7 +158,7 @@ namespace MazeConsole
             return success;
         }
 
-        public static bool Sidewinder(Graph G, bool ShowGeneration)
+        public static bool Sidewinder(Maze M, Graph G, bool ShowGeneration)
         {
             bool success = true;
             Node[,] nodes = G.GetNodes();
@@ -195,7 +195,7 @@ namespace MazeConsole
                     }
                     if (ShowGeneration)
                     {
-                        Console.WriteLine(G.GetDisplay());
+                        M.DisplayConsole();
                         Console.ReadLine();
                     }
                 }
@@ -218,14 +218,14 @@ namespace MazeConsole
             return success;
         }
 
-        public static bool Ellers(Graph G, bool ShowGeneration)
+        public static bool Ellers(Maze M, Graph G, bool ShowGeneration)
         {
             bool success = false;
             // tbc
             return success;
         }
 
-        public static bool HuntAndKill(Graph G, bool ShowGeneration)
+        public static bool HuntAndKill(Maze M, Graph G, bool ShowGeneration)
         {
             bool success = true;
             VisitedNodesTracker visited = new VisitedNodesTracker(G);
@@ -242,7 +242,7 @@ namespace MazeConsole
                     CurrentNode = NextNode;
                     if (ShowGeneration)
                     {
-                        Console.WriteLine(G.GetDisplay());
+                        M.DisplayConsole();
                         Console.ReadLine();
                     }
                 }
@@ -274,7 +274,7 @@ namespace MazeConsole
             return success;
         }
 
-        public static bool RecursiveBacktracker(Graph G, bool ShowGeneration)
+        public static bool RecursiveBacktracker(Maze M, Graph G, bool ShowGeneration)
         {
             bool success = true;
             VisitedNodesTracker visited = new VisitedNodesTracker(G);
@@ -300,28 +300,28 @@ namespace MazeConsole
                 CurrNode = NextNode;
                 if (ShowGeneration)
                 {
-                    Console.WriteLine(G.GetDisplay());
+                    M.DisplayConsole();
                     Console.ReadLine();
                 }
             }
             return success;
         }
 
-        public static bool RecursiveDivision(Graph G, bool ShowGeneration)
+        public static bool RecursiveDivision(Maze M, Graph G, bool ShowGeneration)
         {
             bool success = false;
             // tbc
             return success;
         }
 
-        public static bool Kruskals(Graph G, bool ShowGeneration)
+        public static bool Kruskals(Maze M, Graph G, bool ShowGeneration)
         {
             bool success = false;
             // tbc
             return success;
         }
 
-        public static bool Prims(Graph G, bool ShowGeneration)
+        public static bool Prims(Maze M, Graph G, bool ShowGeneration)
         {
             bool success = false;
             // tbc
@@ -329,7 +329,7 @@ namespace MazeConsole
         }
 
 
-        public static bool GrowingTree(Graph G, bool ShowGeneration)
+        public static bool GrowingTree(Maze M, Graph G, bool ShowGeneration)
         {
             bool success = true;
             VisitedNodesTracker visited = new VisitedNodesTracker(G);
@@ -349,7 +349,7 @@ namespace MazeConsole
                     visited.SetVisited(Neighbour);
                     if (ShowGeneration)
                     {
-                        Console.WriteLine(G.GetDisplay());
+                        M.DisplayConsole();
                         Console.ReadLine();
                     }
                 }
@@ -478,7 +478,7 @@ namespace MazeConsole
                 Console.WriteLine(algorithm.ToString());
                 Maze M = new Maze(x, y, algorithm.ToString(), ShowGeneration);
 
-                M.DisplayMaze();
+                M.DisplayConsole();
                 Console.WriteLine("\n\n\n");
                 Console.ReadLine();
             }

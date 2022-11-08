@@ -18,6 +18,10 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         private Color WALL_COLOUR;
         private Color BACK_COLOUR;
 
+        private Color SOLUTION_COLOUR;
+
+        private const float WALL_RATIO = 6;
+
         public MazeDisplay(Color wall_colour, Color back_colour, Color start_colour, Color end_colour)
         {
             WALL_COLOUR = wall_colour;
@@ -25,12 +29,11 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
 
             START_COLOUR = start_colour;
             END_COLOUR = end_colour;
+            SOLUTION_COLOUR = Color.Red;
         }
 
         public void PaintNode(object sender, PaintEventArgs e, Node node, Color cell_colour)
         {
-            const float WALL_RATIO = 6;
-
             Panel cell = sender as Panel;
             Graphics g = e.Graphics;
             SolidBrush brush = new SolidBrush(WALL_COLOUR);
@@ -63,6 +66,17 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
             brush = new SolidBrush(cell_colour);
             g.FillRectangle(brush, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO, cell.Width - (2 * cell.Width / WALL_RATIO), cell.Height - (2 * cell.Height / WALL_RATIO));
 
+        }
+
+        public void HighlightCell(object sender, PaintEventArgs e)
+        {
+            Panel cell = sender as Panel;
+            Graphics g = e.Graphics;
+
+            Brush brush = new SolidBrush(SOLUTION_COLOUR);
+            Point midpoint = new Point(cell.Width / 2, cell.Height / 2);
+            float radius = Math.Min(cell.Width, cell.Height) / (WALL_RATIO);
+            g.FillEllipse(brush, midpoint.X - radius, midpoint.Y - radius, radius * 2, radius * 2);
         }
     }
 }

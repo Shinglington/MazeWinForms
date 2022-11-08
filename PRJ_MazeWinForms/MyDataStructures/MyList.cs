@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace MazeConsole.MyDataStructures
 {
-    
+
     class MyList<T> : IList<T>
     {
         private const int _initialCapacity = 4;
@@ -80,7 +80,7 @@ namespace MazeConsole.MyDataStructures
         {
             if (_items.Length < minCapacity)
             {
-                int newCapacity = _items.Length == 0 ? _initialCapacity :  _items.Length * 2;
+                int newCapacity = _items.Length == 0 ? _initialCapacity : _items.Length * 2;
                 if (newCapacity < minCapacity)
                 {
                     newCapacity = minCapacity;
@@ -99,7 +99,7 @@ namespace MazeConsole.MyDataStructures
         }
 
         // Sets or gets element in given index
-        public T this[int index] 
+        public T this[int index]
         {
             get
             {
@@ -141,7 +141,7 @@ namespace MazeConsole.MyDataStructures
             int index = -1;
             for (int i = 0; i < _size; i++)
             {
-                if (_items[i].Equals(item)) 
+                if (_items[i].Equals(item))
                 {
                     index = i;
                     break;
@@ -169,7 +169,7 @@ namespace MazeConsole.MyDataStructures
                 newItems[i + 1] = _items[i];
             }
             _items = newItems;
-      
+
         }
 
         public void RemoveAt(int index)
@@ -181,7 +181,7 @@ namespace MazeConsole.MyDataStructures
                 newItems[i] = _items[i];
             }
             // add items after index remove
-            for (int i = index+1; i < _size; i++)
+            for (int i = index + 1; i < _size; i++)
             {
                 newItems[i - 1] = _items[i];
             }
@@ -229,7 +229,7 @@ namespace MazeConsole.MyDataStructures
                 {
                     removed = true;
                 }
-                else if (!removed) 
+                else if (!removed)
                 {
                     newItems[i] = _items[i];
                 }
@@ -275,7 +275,7 @@ namespace MazeConsole.MyDataStructures
         private MyList<T> list;
         private int index;
         private T current;
-        
+
         internal Enumerator(MyList<T> list)
         {
             this.list = list;
@@ -312,7 +312,7 @@ namespace MazeConsole.MyDataStructures
                 index++;
                 return true;
             }
-  
+
         }
 
         public void Reset()
