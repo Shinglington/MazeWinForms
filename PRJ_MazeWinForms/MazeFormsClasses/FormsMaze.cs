@@ -3,6 +3,7 @@ using MazeConsole.MyDataStructures;
 using System;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -16,7 +17,10 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         private readonly Color PLAYER_COLOUR = Color.DarkBlue;
 
         private TableLayoutPanel _container;
+        
         private bool _formDisplayed;
+        private MyList<(Panel, PaintEventHandler)> _highlights;
+
         public Control Parent { get { return _container; } }
 
         public FormsMaze(MazeSettings Settings, TableLayoutPanel Container) : base(Settings)
@@ -65,12 +69,13 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
             }
             else
             {
-                ResetFormsDisplay(CurrentNode);
+                UpdateFormsDisplay(CurrentNode);
             }
         }
 
         private void GetFormsDisplay(Node CurrentNode = null)
         {
+            _highlights = new MyList<(Panel, PaintEventHandler)>();
             Node[,] nodes = _graph.GetNodes();
             for (int row = 0; row < Height; row++)
             {
@@ -95,17 +100,37 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
                     
                     if (node == CurrentNode)
                     {
-                        Cell.Paint += new PaintEventHandler((sender, e) => MazeDisplay.HighlightCell(sender, e, PLAYER_COLOUR));
+                        PaintEventHandler highlightEvent = new PaintEventHandler((sender, e) => MazeDisplay.HighlightCell(sender, e, PLAYER_COLOUR));
+                        Cell.Paint += highlightEvent;
+                        _highlights.Add((Cell, highlightEvent));
                     }
 
                 }
             }
+            _formDisplayed = true;
         }
 
-        private void ResetFormsDisplay(Node CurrentNode = null)
+        private void UpdateFormsDisplay(Node CurrentNode = null)
         {
-            _container.Controls.Clear();
-            GetFormsDisplay(CurrentNode);
+            foreach((Panel, PaintEventHandler) pair in _highlights)
+            {
+                Panel p = pair.Item1;
+                PaintEventHandler highlightEvent = pair.Item2;
+                p.Paint -= highlightEvent;
+                p.Invalidate();
+            }
+            _highlights = new MyList<(Panel, PaintEventHandler)>();
+
+            // Highlight current node
+            if (CurrentNode != null)
+            {
+                Panel Cell = (Panel)_container.GetControlFromPosition(CurrentNode.Location.X, CurrentNode.Location.Y);
+                PaintEventHandler highlightEvent = new PaintEventHandler((sender, e) => MazeDisplay.HighlightCell(sender, e, PLAYER_COLOUR));
+                Cell.Paint += highlightEvent;
+                _highlights.Add((Cell, highlightEvent));
+                Cell.Invalidate();
+            }
+
         }
 
         private void ShowFormsHint(MyList<Node> highlightNodes)

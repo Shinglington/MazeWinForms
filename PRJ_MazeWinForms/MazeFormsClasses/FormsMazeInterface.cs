@@ -30,7 +30,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
             _player = new FormsPlayer(_maze);
             _solutionVis = SolutionVisibility.None;
 
-            _container.KeyPress += new KeyPressEventHandler(KeyPressed);
+            _container.Parent.Parent.KeyPress += new KeyPressEventHandler(KeyPressed);
             _maze.DisplayForms(_player.CurrentNode);
         }
 
@@ -38,6 +38,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         private void KeyPressed(object sender, KeyPressEventArgs e)
         {
             char key = e.KeyChar;
+            Console.WriteLine("{0} pressed", key);
             for(int i = 0; i < 4; i++)
             {
                 if (MOVE_CONTROLS[i] == key)
