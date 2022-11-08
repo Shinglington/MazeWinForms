@@ -4,7 +4,6 @@ using System.Collections.Generic;
 
 namespace MazeConsole
 {
-
     public enum GenAlgorithm
     {
         AldousBroder,
@@ -22,64 +21,67 @@ namespace MazeConsole
     class MazeGen
     {
         public static Random rand = new Random();
-
-        public static bool GenerateMaze(Graph _graph, GenAlgorithm Algorithm)
+        public static bool GenerateMaze(Graph G, String Algorithm, bool ShowGeneration = false)
         {
-
             bool success = false;
-            success = (bool)typeof(MazeGen).GetMethod(Algorithm.ToString()).Invoke(null, new object[] { _graph });
-
+            success = (bool)typeof(MazeGen).GetMethod(Algorithm).Invoke(null, new object[] { G, ShowGeneration });
             if (!success)
             {
-                Console.WriteLine("Error in finding algorithm with name {0}", Algorithm.ToString());
+                Console.WriteLine("Error in finding algorithm with name {0}", Algorithm);
             }
+
             return success;
         }
-
-        public static bool AldousBroder(Graph G)
+        public static bool GenerateMaze(Graph G, GenAlgorithm Algorithm, bool ShowGeneration = false)
+        {
+            return GenerateMaze(G, Algorithm.ToString(), ShowGeneration);
+        }
+        public static bool AldousBroder(Graph G, bool ShowGeneration)
         {
             bool success = true;
+            VisitedNodesTracker visited = new VisitedNodesTracker(G);
             Node[,] nodes = G.GetNodes();
-
-            (int, int) currLocation = G.StartNode.Location;
-            (int, int) nextLocation;
-            while (!G.AllNodesVisited())
+            Node currentNode = G.StartNode;
+            visited.SetVisited(currentNode);
+            Node nextNode;
+            while (!visited.AllNodesVisited())
             {
                 // Choose random adjacent node
-                nextLocation = GetRandomAdjacentNode(G, G.GetNodes()[currLocation.Item1, currLocation.Item2]).Location;
-                if (nodes[nextLocation.Item1, nextLocation.Item2].Visited == false)
+                nextNode = GetRandomAdjacentNode(G, currentNode);
+                if (!visited.CheckVisited(nextNode))
                 {
-                    success = G.AddEdge(nodes[currLocation.Item1, currLocation.Item2], nodes[nextLocation.Item1, nextLocation.Item2]);
-                    nodes[nextLocation.Item1, nextLocation.Item2].UpdateVisited(true);
-
-                    if (success == false)
+                    G.AddEdge(currentNode, nextNode);
+                    visited.SetVisited(nextNode);
+                    if (ShowGeneration)
                     {
-                        return success;
+                        Console.WriteLine(G.GetDisplay());
+                        Console.ReadLine();
                     }
                 }
-                currLocation = nextLocation;
+                currentNode = nextNode;
             }
             return success;
         }
 
-        public static bool Wilsons(Graph G)
+        public static bool Wilsons(Graph G, bool ShowGeneration)
         {
             bool success = true;
+            VisitedNodesTracker visited = new VisitedNodesTracker(G);
             Node[,] nodes = G.GetNodes();
 
             // Add random start node to Maze
-            GetRandomUnvisitedNode(G).UpdateVisited(true);
+            visited.SetVisited(visited.GetRandomUnvisitedNode());
 
             // Add graphs to maze until full
-            while (!G.AllNodesVisited())
+            while (!visited.AllNodesVisited())
             {
-                Node walkStart = GetRandomUnvisitedNode(G);
+                Node walkStart = visited.GetRandomUnvisitedNode();
                 // Track walk path, each dictionary entry linking 2 nodes together
                 Dictionary<Node, Node> walkPath = new Dictionary<Node, Node>();
 
                 Node CurrNode = walkStart;
                 // Do "drunkards" walk until path between start and maze is found
-                while (!CurrNode.Visited)
+                while (!visited.CheckVisited(CurrNode))
                 {
                     Node NextNode = GetRandomAdjacentNode(G, CurrNode);
                     if (!walkPath.ContainsKey(NextNode))
@@ -93,55 +95,70 @@ namespace MazeConsole
                 {
                     G.AddEdge(CurrNode, walkPath[CurrNode]);
                     CurrNode = walkPath[CurrNode];
-                    CurrNode.UpdateVisited(true);
+                    visited.SetVisited(CurrNode);
+                    if (ShowGeneration)
+                    {
+                        Console.WriteLine(G.GetDisplay());
+                        Console.ReadLine();
+                    }
                 }
             }
             return success;
 
         }
 
-        public static bool BinaryTree(Graph G)
+        public static bool BinaryTree(Graph G, bool ShowGeneration)
         {
             bool success = true;
+            VisitedNodesTracker visited = new VisitedNodesTracker(G);
             Node[,] nodes = G.GetNodes();
-            foreach (Node n in nodes)
+            for (int y = 0; y < G.Height; y++)
             {
-                (int, int) location = n.Location;
-                // if node isn't bottom right node
-                if (location != (G.Width - 1, G.Height - 1))
+                for (int x = 0; x < G.Width; x++)
                 {
-                    // if node is on right column, can't add east edge
-                    if (location.Item1 == G.Width - 1)
+                    Node n = nodes[x, y];
+                    // if node isn't bottom right node
+                    if ((x != G.Width - 1) || (y != G.Height - 1))
                     {
-                        G.AddEdge(n, nodes[location.Item1, location.Item2 + 1]);
-                    }
-                    // if node is on bottom row, can't add south edge
-                    else if (location.Item2 == G.Height - 1)
-                    {
-                        G.AddEdge(n, nodes[location.Item1 + 1, location.Item2]);
-                    }
-                    // otherwise, randomly choose
-                    else
-                    {
-                        if (rand.Next(2) == 1)
+                        Console.WriteLine("{0}, {1}", x, y);
+                        // if node is on right column, can't add east edge
+                        if (x == G.Width - 1)
                         {
-                            // add east edge
-                            G.AddEdge(n, nodes[location.Item1, location.Item2 + 1]);
+                            G.AddEdge(n, nodes[x, y + 1]);
                         }
+                        // if node is on bottom row, can't add south edge
+                        else if (y == G.Height - 1)
+                        {
+                            G.AddEdge(n, nodes[x + 1, y]);
+                        }
+                        // otherwise, randomly choose
                         else
                         {
-                            // add south edge
-                            G.AddEdge(n, nodes[location.Item1 + 1, location.Item2]);
+                            if (rand.Next(2) == 1)
+                            {
+                                // add east edge
+                                G.AddEdge(n, nodes[x + 1, y]);
+                            }
+                            else
+                            {
+                                // add south edge
+                                G.AddEdge(n, nodes[x, y + 1]);
+                            }
                         }
                     }
+
+                    if (ShowGeneration)
+                    {
+                        Console.WriteLine(G.GetDisplay());
+                        Console.ReadLine();
+                    }
                 }
-                n.UpdateVisited(true);
 
             }
             return success;
         }
 
-        public static bool Sidewinder(Graph G)
+        public static bool Sidewinder(Graph G, bool ShowGeneration)
         {
             bool success = true;
             Node[,] nodes = G.GetNodes();
@@ -172,9 +189,14 @@ namespace MazeConsole
                     {
                         selectedNode = path[rand.Next(path.Count)];
                         // Add edge between selectedNode and north node
-                        G.AddEdge(selectedNode, nodes[selectedNode.Location.Item1, selectedNode.Location.Item2 - 1]);
+                        G.AddEdge(selectedNode, nodes[selectedNode.Location.X, selectedNode.Location.Y - 1]);
                         // clear path
                         path.Clear();
+                    }
+                    if (ShowGeneration)
+                    {
+                        Console.WriteLine(G.GetDisplay());
+                        Console.ReadLine();
                     }
                 }
 
@@ -189,48 +211,54 @@ namespace MazeConsole
                         selectedNode = path[rand.Next(path.Count)];
                     }
                     // Add edge between selected node and north node
-                    G.AddEdge(selectedNode, nodes[selectedNode.Location.Item1, selectedNode.Location.Item2 - 1]);
+                    G.AddEdge(selectedNode, nodes[selectedNode.Location.X, selectedNode.Location.Y - 1]);
                 }
 
             }
             return success;
         }
 
-        public static bool Ellers(Graph G)
+        public static bool Ellers(Graph G, bool ShowGeneration)
         {
             bool success = false;
             // tbc
             return success;
         }
 
-        public static bool HuntAndKill(Graph G)
+        public static bool HuntAndKill(Graph G, bool ShowGeneration)
         {
             bool success = true;
+            VisitedNodesTracker visited = new VisitedNodesTracker(G);
             Node[,] nodes = G.GetNodes();
-            Node CurrentNode = GetRandomUnvisitedNode(G);
-            while (!G.AllNodesVisited())
+            Node CurrentNode = visited.GetRandomUnvisitedNode();
+            while (!visited.AllNodesVisited())
             {
                 // Kill Mode
-                CurrentNode.UpdateVisited(true);
-                Node NextNode = GetRandomAdjacentNode(G, CurrentNode, true);
+                visited.SetVisited(CurrentNode);
+                Node NextNode = GetRandomAdjacentNode(G, CurrentNode, true, visited);
                 if (NextNode != null)
                 {
                     G.AddEdge(CurrentNode, NextNode);
                     CurrentNode = NextNode;
+                    if (ShowGeneration)
+                    {
+                        Console.WriteLine(G.GetDisplay());
+                        Console.ReadLine();
+                    }
                 }
                 else
                 {
                     // Hunt Mode
                     bool TargetFound = false;
-                    Node[] UnvisitedNodes = G.GetUnvisitedNodes();
+                    Node[] UnvisitedNodes = visited.GetUnvisitedNodes();
                     foreach (Node N in UnvisitedNodes)
                     {
                         Node[] AdjNodes = G.GetAdjacentNodes(N);
                         foreach (Node Neighbour in AdjNodes)
                         {
-                            if (Neighbour.Visited)
+                            if (visited.CheckVisited(Neighbour))
                             {
-                                G.AddEdge(CurrentNode, Neighbour);
+                                G.AddEdge(N, Neighbour);
                                 CurrentNode = Neighbour;
                                 TargetFound = true;
                                 break;
@@ -246,49 +274,54 @@ namespace MazeConsole
             return success;
         }
 
-        public static bool RecursiveBacktracker(Graph G)
+        public static bool RecursiveBacktracker(Graph G, bool ShowGeneration)
         {
             bool success = true;
+            VisitedNodesTracker visited = new VisitedNodesTracker(G);
             MyStack<Node> Path = new MyStack<Node>();
-            Node CurrNode = GetRandomUnvisitedNode(G);
-            CurrNode.UpdateVisited(true);
+            Node CurrNode = visited.GetRandomUnvisitedNode();
+            visited.SetVisited(CurrNode);
 
-            while (!G.AllNodesVisited())
+            while (!visited.AllNodesVisited())
             {
-                Console.ReadLine();
                 Path.Push(CurrNode);
                 Node NextNode = null;
                 while (NextNode == null)
                 {
                     CurrNode = Path.Peek();
-                    NextNode = GetRandomAdjacentNode(G, CurrNode, true);
+                    NextNode = GetRandomAdjacentNode(G, CurrNode, true, visited);
                     if (NextNode == null)
                     {
                         Path.Pull();
                     }
                 }
                 G.AddEdge(CurrNode, NextNode);
-                NextNode.UpdateVisited(true);
+                visited.SetVisited(NextNode);
                 CurrNode = NextNode;
+                if (ShowGeneration)
+                {
+                    Console.WriteLine(G.GetDisplay());
+                    Console.ReadLine();
+                }
             }
             return success;
         }
 
-        public static bool RecursiveDivision(Graph G)
+        public static bool RecursiveDivision(Graph G, bool ShowGeneration)
         {
             bool success = false;
             // tbc
             return success;
         }
 
-        public static bool Kruskals(Graph G)
+        public static bool Kruskals(Graph G, bool ShowGeneration)
         {
             bool success = false;
             // tbc
             return success;
         }
 
-        public static bool Prims(Graph G)
+        public static bool Prims(Graph G, bool ShowGeneration)
         {
             bool success = false;
             // tbc
@@ -296,23 +329,29 @@ namespace MazeConsole
         }
 
 
-        public static bool GrowingTree(Graph G)
+        public static bool GrowingTree(Graph G, bool ShowGeneration)
         {
             bool success = true;
+            VisitedNodesTracker visited = new VisitedNodesTracker(G);
             MyList<Node> ActiveSet = new MyList<Node>();
-            Node SelectedNode = GetRandomUnvisitedNode(G);
+            Node SelectedNode = visited.GetRandomUnvisitedNode();
             ActiveSet.Add(SelectedNode);
-            SelectedNode.UpdateVisited(true);
+            visited.SetVisited(SelectedNode);
             while (ActiveSet.Count > 0)
             {
                 SelectedNode = ActiveSet[rand.Next(ActiveSet.Count)];
                 // Can customize "way" that neighbour is selected
-                Node Neighbour = GetRandomAdjacentNode(G, SelectedNode, true);
+                Node Neighbour = GetRandomAdjacentNode(G, SelectedNode, true, visited);
                 if (Neighbour != null)
                 {
                     G.AddEdge(SelectedNode, Neighbour);
                     ActiveSet.Add(Neighbour);
-                    Neighbour.UpdateVisited(true);
+                    visited.SetVisited(Neighbour);
+                    if (ShowGeneration)
+                    {
+                        Console.WriteLine(G.GetDisplay());
+                        Console.ReadLine();
+                    }
                 }
                 else
                 {
@@ -334,13 +373,8 @@ namespace MazeConsole
 
 
         // Other commonly used functions in maze gen
-        private static Node GetRandomUnvisitedNode(Graph G)
-        {
-            Node[] UnvisitedNodes = G.GetUnvisitedNodes();
-            return UnvisitedNodes[rand.Next(UnvisitedNodes.Length)];
-        }
 
-        private static Node GetRandomAdjacentNode(Graph G, Node N, bool Unvisited = false)
+        private static Node GetRandomAdjacentNode(Graph G, Node N, bool Unvisited = false, VisitedNodesTracker visited = null)
         {
             Node[] adjNodes = G.GetAdjacentNodes(N);
             if (Unvisited)
@@ -348,7 +382,7 @@ namespace MazeConsole
                 MyList<Node> unvisitedAdjNodes = new MyList<Node>();
                 foreach (Node A in adjNodes)
                 {
-                    if (!A.Visited)
+                    if (!visited.CheckVisited(A))
                     {
                         unvisitedAdjNodes.Add(A);
                     }
@@ -362,5 +396,96 @@ namespace MazeConsole
             return adjNodes[rand.Next(adjNodes.Length)];
 
         }
+
+        private class VisitedNodesTracker
+        {
+            private Graph _graph;
+            private bool[,] _visitedStatuses;
+            public VisitedNodesTracker(Graph G)
+            {
+                _graph = G;
+                _visitedStatuses = new bool[_graph.Width, _graph.Height];
+                for (int x = 0; x < _graph.Width; x++)
+                {
+                    for (int y = 0; y < _graph.Height; y++)
+                    {
+                        _visitedStatuses[x, y] = false;
+                    }
+                }
+            }
+
+            public bool CheckVisited(Node N)
+            {
+                return _visitedStatuses[N.Location.X, N.Location.Y];
+            }
+
+            public void SetVisited(Node N)
+            {
+                _visitedStatuses[N.Location.X, N.Location.Y] = true;
+            }
+
+            public bool AllNodesVisited()
+            {
+                bool AllVisited = true;
+
+                for (int x = 0; x < _graph.Width; x++)
+                {
+                    for (int y = 0; y < _graph.Height; y++)
+                    {
+                        if (!_visitedStatuses[x, y])
+                        {
+                            AllVisited = false;
+                            return AllVisited;
+                        }
+                    }
+                }
+                return AllVisited;
+            }
+
+            public Node GetRandomUnvisitedNode()
+            {
+
+                Node[] UnvisitedNodes = GetUnvisitedNodes();
+                return UnvisitedNodes[rand.Next(UnvisitedNodes.Length)];
+
+            }
+
+
+            public Node[] GetUnvisitedNodes()
+            {
+                MyList<Node> UnvisitedNodes = new MyList<Node>();
+                for (int x = 0; x < _graph.Width; x++)
+                {
+                    for (int y = 0; y < _graph.Height; y++)
+                    {
+                        if (!_visitedStatuses[x, y])
+                        {
+                            UnvisitedNodes.Add(_graph.GetNodes()[x, y]);
+                        }
+                    }
+                }
+                return UnvisitedNodes.ToArray();
+            }
+        }
+
+
+
+        public static bool TestAllAlgorithms(int x, int y, bool ShowGeneration = false)
+        {
+            bool success = true;
+            foreach (GenAlgorithm algorithm in Enum.GetValues(typeof(GenAlgorithm)))
+            {
+                Console.WriteLine(algorithm.ToString());
+                Maze M = new Maze(x, y, algorithm.ToString(), ShowGeneration);
+
+                M.DisplayMaze();
+                Console.WriteLine("\n\n\n");
+                Console.ReadLine();
+            }
+
+
+            return success;
+        }
+
     }
 }

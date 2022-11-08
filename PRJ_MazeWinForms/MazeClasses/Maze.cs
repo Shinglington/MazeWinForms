@@ -1,27 +1,33 @@
-﻿// System Modules
+﻿using MazeConsole.MyDataStructures;
 using System;
+using System.Drawing;
 using System.Windows.Forms;
-
-// My Modules
-using MazeConsole.MyDataStructures;
-using PRJ_MazeConsole;
 
 namespace MazeConsole
 {
-    public class Maze
+    class Maze
     {
-        private Graph _graph;
-        private MyList<Node> _solution;
+        protected Graph _graph;
+        protected MyList<Node> _solution;
         public int Width { private set; get; }
         public int Height { private set; get; }
 
-        public Maze(int width, int height, GenAlgorithm GenType)
+        public Maze(int width, int height, string algorithm, bool showGeneration)
         {
             Width = width;
             Height = height;
             _graph = new Graph(Width, Height);
+            MazeGen.GenerateMaze(_graph, algorithm, showGeneration);
             _solution = null;
-            MazeGen.GenerateMaze(_graph, GenType);
+        }
+
+        public Maze(MazeSettings Settings)
+        {
+            Width = Settings.Width;
+            Height = Settings.Height;
+            _graph = new Graph(Width, Height);
+            MazeGen.GenerateMaze(_graph, Settings.Algorithm, Settings.ShowGeneration);
+            _solution = null;
         }
 
 
@@ -41,69 +47,98 @@ namespace MazeConsole
             }
         }
 
-        private MyList<Node> Solution 
+        public MyList<Node> Solution
         {
             get
             {
                 if (_solution == null)
                 {
-                    _solution = MazeSolver.WallFollower(this);
+                    _solution = MazeSolver.WallFollower(_graph);
                 }
                 return _solution;
             }
         }
 
-        private bool GenerateMaze(GenAlgorithm GenType)
-        {
-            return MazeGen.GenerateMaze(_graph, GenType);
-        }
 
-        public string ConsoleDisplay(bool ShowSolution = false)
+        public void DisplayMaze(Node CurrentNode = null, bool ShowSolution = false, bool ShowHint = false)
         {
-            string display = "";
+            string Display = "";
             if (ShowSolution)
             {
-                _graph.GetConsoleDisplay(Solution);
+                Display = _graph.GetDisplay(CurrentNode, Solution);
+            }
+            else if (ShowHint)
+            {
+                Display = _graph.GetDisplay(CurrentNode, GetHint(CurrentNode));
             }
             else
             {
-                display = _graph.GetConsoleDisplay();
+                Display = _graph.GetDisplay(CurrentNode);
             }
-            return display;
-        }
-
-        public void FormsDisplay(TableLayoutPanel MazePanel)
-        {
-            _graph.GetFormsDisplay(MazePanel);
+            Console.WriteLine(Display);
         }
 
 
-
-        // Reset visited attribute in nodes
-        public void ResetVisited()
+        private MyList<Node> GetHint(Node CurrentNode)
         {
-            _graph.ResetVisited();
+            return MazeSolver.WallFollower(_graph, CurrentNode);
         }
 
-        // Get the nodes accessible to N (i.e. ones with edges connected to N)
-        public Node[] GetAccessibleNodes(Node N)
+        public bool CheckAccessibility(Node A, Node B)
         {
-            if (N is null)
+            return _graph.AreConnected(A, B);
+        }
+    }
+
+
+
+    public class MazeSettings
+    {
+        public int Width { get; }
+        public int Height { get; }
+        public GenAlgorithm Algorithm { get; }
+        public bool ShowGeneration { get; }
+
+
+        // Different constructors for difficulty parameters and advanced parameters
+        public MazeSettings(int width, int height, GenAlgorithm algorithm, bool showGeneration)
+        {
+            // Advanced
+            Width = width;
+            Height = height;
+            Algorithm = algorithm;
+            ShowGeneration = showGeneration;
+        }
+
+        public MazeSettings(Difficulty difficulty)
+        {
+            ShowGeneration = false;
+            switch (difficulty)
             {
-                return new Node[0];
+                // Presets for difficulties
+                case (Difficulty)0:
+                    Width = 5;
+                    Height = 5;
+                    Algorithm = GenAlgorithm.Sidewinder;
+                    break;
+                case (Difficulty)1:
+                    Width = 10;
+                    Height = 10;
+                    Algorithm = GenAlgorithm.BinaryTree;
+                    break;
+                case (Difficulty)2:
+                    Width = 30;
+                    Height = 30;
+                    Algorithm = GenAlgorithm.GrowingTree;
+                    break;
             }
-            MyList<Node> AccessibleNodes = new MyList<Node>();
-            Node[] AdjNodes = _graph.GetAdjacentNodes(N);
-
-            foreach (Node neighbour in AdjNodes)
-            {
-                if (_graph.AreConnected(N, neighbour))
-                {
-                    AccessibleNodes.Add(neighbour);
-                }
-            }
-            return AccessibleNodes.ToArray();
-
         }
+
+    }
+    public enum Difficulty
+    {
+        Easy,
+        Medium,
+        Hard
     }
 }

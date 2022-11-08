@@ -2,92 +2,89 @@
 {
     class Node
     {
-        public (int, int) Location { get; private set; }
-
+        // private attributes
         private Node[] _adjNodes;
-        public Node NorthNode 
+        private bool _locked;
+        // public attributes
+        public NodeLocation Location { get; private set; }
+        public Node(int x, int y)
+        {
+            Location = new NodeLocation(x, y);
+            _adjNodes = new Node[] { null, null, null, null };
+            _locked = false;
+        }
+
+        // Attributes with custom getters / setters
+        public bool Locked
+        {
+            get { return _locked; }
+            set { if (!_locked) _locked = value; }
+        }
+
+        // Adjacent Nodes
+        public Node NorthNode
         {
             get { return _adjNodes[(int)Direction.North]; }
-            private set { _adjNodes[(int)Direction.North] = value;  }
+            set { UpdateEdge(value, Direction.North); }
         }
         public Node EastNode
         {
             get { return _adjNodes[(int)Direction.East]; }
-            private set { _adjNodes[(int)Direction.East] = value; }
+            set { UpdateEdge(value, Direction.East); }
         }
         public Node SouthNode
         {
             get { return _adjNodes[(int)Direction.South]; }
-            private set { _adjNodes[(int)Direction.South] = value; }
+            set { UpdateEdge(value, Direction.South); }
         }
         public Node WestNode
         {
             get { return _adjNodes[(int)Direction.West]; }
-            private set { _adjNodes[(int)Direction.West] = value; }
+            set { UpdateEdge(value, Direction.West); }
         }
 
-        public bool Visited { get; private set; }
-        public Node(int x, int y)
+        private void UpdateEdge(Node node, Direction direction)
         {
-            Location = (x, y);
-            Visited = false;
-
-            _adjNodes = new Node[4] {null, null, null, null};
-        }
-
-        public void UpdateVisited(bool newValue)
-        {
-            Visited = newValue;
-        }
-        public bool UpdateNorthEdge(Node node)
-        {
-            return UpdateEdge(node, Direction.North);
-        }
-        public bool UpdateEastEdge(Node node)
-        {
-            return UpdateEdge(node, Direction.East);
-        }
-        public bool UpdateSouthEdge(Node node)
-        {
-            return UpdateEdge(node, Direction.South);
-        }
-        public bool UpdateWestEdge(Node node)
-        {
-            return UpdateEdge(node, Direction.West);
-        }
-        private bool UpdateEdge(Node node, Direction direction)
-        {
-            bool success = false;
-            if (node == null)
+            if (!_locked)
             {
-                _adjNodes[(int)direction] = null;
-                success = true;
-            }
-            else
-            {
-                if (node.Location.Item1 == node.Location.Item1 && 
-                    (direction == Direction.North || direction == Direction.South))
+                if (node == null)
                 {
-                    _adjNodes[(int)direction] = node;
-                    success = true;
+                    _adjNodes[(int)direction] = null;
                 }
-                else if (node.Location.Item2 == node.Location.Item2 &&
-                    (direction == Direction.East || direction == Direction.West))
+                else
                 {
-                    _adjNodes[(int)direction] = node;
-                    success = true;
+                    if (node.Location.X == node.Location.X &&
+                        (direction == Direction.North || direction == Direction.South))
+                    {
+                        _adjNodes[(int)direction] = node;
+                    }
+                    else if (node.Location.Y == node.Location.Y &&
+                        (direction == Direction.East || direction == Direction.West))
+                    {
+                        _adjNodes[(int)direction] = node;
+                    }
                 }
             }
-
-            return success;
         }
+    }
 
-        enum Direction
+    class NodeLocation
+    {
+        private (int, int) _location;
+
+        public NodeLocation(int x, int y)
         {
-            North,
-            East,
-            South,
-            West
+            _location = (x, y);
         }
+        public int X { get { return _location.Item1; } }
+        public int Y { get { return _location.Item2; } }
+    }
+
+    public enum Direction
+    {
+        North,
+        East,
+        South,
+        West
     }
 }

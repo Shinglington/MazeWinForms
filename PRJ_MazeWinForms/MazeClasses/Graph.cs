@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Drawing;
-
-using System.Windows.Forms;
 using MazeConsole.MyDataStructures;
 
 namespace MazeConsole
@@ -9,7 +6,7 @@ namespace MazeConsole
     class Graph
     {
 
-        // CONSOLE CONSTANTS
+        // Constants
         private const char WALL_CHAR = '█';
         private const char SPACE_CHAR = ' ';
 
@@ -17,21 +14,38 @@ namespace MazeConsole
         private const char END_CHAR = 'E';
         private const char HIGHLIGHT_CHAR = '?';
 
-
-        // WINFORMS CONSTANTS
-        private readonly Color WALL_COLOUR = Color.Black;
-        private readonly Color START_COLOUR = Color.Green;
-        private readonly Color END_COLOUR = Color.Red;
-
-
         private readonly Node[,] _nodes;
+        private bool _locked;
         public int Width { get; }
         public int Height { get; }
         public Node StartNode { get; }
         public Node EndNode { get; }
+        public bool Locked
+        {
+            get { return _locked; }
+            set
+            {
+                if (!_locked)
+                {
+                    _locked = value;
+                    if (_locked)
+                    {
+                        for (int x = 0; x < Width; x++)
+                        {
+                            for (int y = 0; y < Width; y++)
+                            {
+                                _nodes[x, y].Locked = true;
+                            }
+                        }
+                    }
+                }
+
+            }
+        }
 
         public Graph(int width, int height)
         {
+            _locked = false;
             _nodes = new Node[width, height];
             this.Width = width;
             this.Height = height;
@@ -47,9 +61,9 @@ namespace MazeConsole
             // temporary start and end nodes
             StartNode = _nodes[0, 0];
             EndNode = _nodes[width - 1, height - 1];
-
         }
-        public string GetConsoleDisplay(MyList<Node> highlightNodes = null)
+
+        public string GetDisplay(Node CurrentNode = null, MyList<Node> highlightNodes = null)
         {
             string mazeString = "";
             mazeString += WALL_CHAR;
@@ -70,15 +84,20 @@ namespace MazeConsole
                 // East edges
                 for (int x = 0; x < Width; x++)
                 {
-                    if (StartNode.Location == (x, y))
+                    Node thisNode = _nodes[x, y];
+                    if (thisNode == CurrentNode)
+                    {
+                        currEastWalls += 'C';
+                    }
+                    else if (thisNode == StartNode)
                     {
                         currEastWalls += START_CHAR;
                     }
-                    else if (EndNode.Location == (x, y))
+                    else if (thisNode == EndNode)
                     {
                         currEastWalls += END_CHAR;
                     }
-                    else if (highlightNodes != null && highlightNodes.Contains(_nodes[x, y]))
+                    else if (highlightNodes != null && highlightNodes.Contains(thisNode))
                     {
                         currEastWalls += HIGHLIGHT_CHAR;
                     }
@@ -86,8 +105,9 @@ namespace MazeConsole
                     {
                         currEastWalls += SPACE_CHAR;
                     }
+
                     // Check east edge
-                    if (_nodes[x, y].EastNode != null)
+                    if (thisNode.EastNode != null)
                     {
                         currEastWalls += SPACE_CHAR;
                     }
@@ -96,7 +116,7 @@ namespace MazeConsole
                         currEastWalls += WALL_CHAR;
                     }
                     // Check south edge
-                    if (_nodes[x, y].SouthNode != null)
+                    if (thisNode.SouthNode != null)
                     {
                         currSouthWalls += SPACE_CHAR;
                     }
@@ -115,170 +135,56 @@ namespace MazeConsole
 
         }
 
-        public void GetFormsDisplay(TableLayoutPanel GraphPanel)
-        {
-            GraphPanel.RowStyles.Clear();
-            GraphPanel.ColumnStyles.Clear();
-            for (int row = 0; row < Height; row++)
-            {
-                GraphPanel.RowStyles.Add(new RowStyle(SizeType.Percent, 100F / Height));
-            }
-            for (int col = 0; col < Width; col++)
-            {
-                GraphPanel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F / Width));
-            }
-
-            for (int row = 0; row < Height; row++)
-            {
-                for (int col = 0; col < Width; col++)
-                {
-                    Node node = _nodes[col, row];
-                    Panel Cell = new Panel() { Parent = GraphPanel, Dock = DockStyle.Fill, Margin = new Padding(0) };
-                    GraphPanel.SetCellPosition(Cell, new TableLayoutPanelCellPosition(col, row));
-                    Cell.Paint += new PaintEventHandler((sender, e) => PaintNode(sender, e, node));
-                }
-            }
-        }
-
-        private void PaintNode(object sender, PaintEventArgs e, Node node)
-        {
-            const float WALL_RATIO = 6;
-
-            Panel cell = sender as Panel;
-            Graphics g = e.Graphics;
-            SolidBrush brush = new SolidBrush(WALL_COLOUR);
-
-            // Draw walls
-            if (node.NorthNode == null)
-            {
-                g.FillRectangle(brush, 0, 0, cell.Width, cell.Height / WALL_RATIO);
-            }
-            if (node.EastNode == null)
-            {
-                g.FillRectangle(brush, cell.Width - cell.Width / WALL_RATIO, 0, cell.Width / WALL_RATIO, cell.Height);
-            }
-            if (node.SouthNode == null)
-            {
-                g.FillRectangle(brush, 0, cell.Height - cell.Height / WALL_RATIO, cell.Width, cell.Height / WALL_RATIO);
-            }
-            if (node.WestNode == null)
-            {
-                g.FillRectangle(brush, 0, 0, cell.Width / WALL_RATIO, cell.Height);
-            }
-
-            // Draw wall corners
-            g.FillRectangle(brush, 0, 0, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
-            g.FillRectangle(brush, cell.Width - cell.Width / WALL_RATIO, 0, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
-            g.FillRectangle(brush, cell.Width - cell.Width / WALL_RATIO, cell.Height - cell.Height / WALL_RATIO, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
-            g.FillRectangle(brush, 0, cell.Height - cell.Height / WALL_RATIO, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
-
-            // Colour start and end nodes
-            if (node == StartNode)
-            {
-                brush = new SolidBrush(START_COLOUR);
-                g.FillRectangle(brush, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO, cell.Width - (2 * cell.Width / WALL_RATIO), cell.Height - (2 * cell.Height / WALL_RATIO));
-            }
-            else if (node == EndNode)
-            {
-                brush = new SolidBrush(END_COLOUR);
-                g.FillRectangle(brush, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO, cell.Width - (2 * cell.Width / WALL_RATIO), cell.Height - (2 * cell.Height / WALL_RATIO));
-            }
-        }
-
-
-        // Get adjacent nodes to specified node
-        public Node[] GetAdjacentNodes(int x, int y)
-        {
-            Node node = _nodes[x, y];
-            Node[] AdjNodes = { node.NorthNode, node.EastNode, node.SouthNode, node.WestNode };
-            return AdjNodes;
-        }
-
-
-        // Check if all nodes have been visited
-        public bool AllNodesVisited()
-        {
-            bool allVisited = true;
-            for (int y = 0; y < Height; y++)
-            {
-                for (int x = 0; x < Width; x++)
-                {
-                    if (_nodes[x, y].Visited == false)
-                    {
-                        allVisited = false;
-                        return allVisited;
-                    }
-                }
-            }
-            return allVisited;
-        }
-
-        // Get list of unvisited nodes
-        public Node[] GetUnvisitedNodes()
-        {
-            MyList<Node> unvisitedNodes = new MyList<Node>();
-            for (int y = 0; y < Height; y++)
-            {
-                for (int x = 0; x < Width; x++)
-                {
-                    if (_nodes[x, y].Visited == false)
-                    {
-                        unvisitedNodes.Add(_nodes[x, y]);
-                    }
-                }
-            }
-            return unvisitedNodes.ToArray();
-        }
-
-        // Reset visited attribute in nodes
-        public void ResetVisited()
-        {
-            for (int y = 0; y < Height; y++)
-            {
-                for (int x = 0; x < Width; x++)
-                {
-                    _nodes[x, y].UpdateVisited(false);
-                }
-            }
-        }
-
-        // Add edge between two nodes
         public bool AddEdge(Node NodeA, Node NodeB)
         {
             bool success = false;
-            if (!AreAdjacent(NodeA, NodeB)) return false;
+            // Check if they are adjacent
+            if (!AreAdjacent(NodeA, NodeB))
+            {
+                Console.WriteLine("Nodes at ({0}, {1}) and ({2}, {3}) are not adjacent, so can't add edge", NodeA.Location.X, NodeA.Location.Y, NodeB.Location.X, NodeB.Location.Y);
+                return success;
+            }
+
             // If x coords are next to each other
-            if (Math.Abs(NodeA.Location.Item1 - NodeB.Location.Item1) == 1)
+            if (Math.Abs(NodeA.Location.X - NodeB.Location.X) == 1)
             {
                 // If A has greater x coord than B, A is to the east of B
-                if (NodeA.Location.Item1 > NodeB.Location.Item1)
+                if (NodeA.Location.X > NodeB.Location.X)
                 {
-                    success = NodeB.UpdateEastEdge(NodeA) && NodeA.UpdateWestEdge(NodeB);
+                    NodeB.EastNode = NodeA;
+                    NodeA.WestNode = NodeB;
                 }
                 // Otherwise, B is to the east of A
                 else
                 {
-                    success = NodeA.UpdateEastEdge(NodeB) && NodeB.UpdateWestEdge(NodeA);
+                    NodeA.EastNode = NodeB;
+                    NodeB.WestNode = NodeA;
                 }
             }
             // If y coords are next to each other
-            else if (Math.Abs(NodeA.Location.Item2 - NodeB.Location.Item2) == 1)
+            else if (Math.Abs(NodeA.Location.Y - NodeB.Location.Y) == 1)
             {
                 // If A has greater y coord than B, then A is south of B
-                if (NodeA.Location.Item2 > NodeB.Location.Item2)
+                if (NodeA.Location.Y > NodeB.Location.Y)
                 {
-                    success = NodeB.UpdateSouthEdge(NodeA) && NodeA.UpdateNorthEdge(NodeB);
+                    NodeB.SouthNode = NodeA;
+                    NodeA.NorthNode = NodeB;
                 }
                 // Otherwise, B south of A
                 else
                 {
-                    success = NodeA.UpdateSouthEdge(NodeB) && NodeB.UpdateNorthEdge(NodeA);
+                    NodeA.SouthNode = NodeB;
+                    NodeB.NorthNode = NodeA;
                 }
             }
+            else
+            {
+                Console.WriteLine("Failed to connect edges of nodes ({0}, {1}) and ({2}, {3})", NodeA.Location.X, NodeA.Location.Y, NodeB.Location.X, NodeB.Location.Y);
+            }
+
             return success;
         }
 
-        // Remove edge between two nodes
         public bool RemoveEdge(Node NodeA, Node NodeB)
         {
             bool success = false;
@@ -286,31 +192,35 @@ namespace MazeConsole
             if (!AreAdjacent(NodeA, NodeB)) return false;
 
             // If x coords are next to each other
-            if (Math.Abs(NodeA.Location.Item1 - NodeB.Location.Item1) == 1)
+            if (Math.Abs(NodeA.Location.X - NodeB.Location.X) == 1)
             {
                 // If A has greater x coord than B, A is to the east of B
-                if (NodeA.Location.Item2 > NodeB.Location.Item2)
+                if (NodeA.Location.Y > NodeB.Location.Y)
                 {
-                    success = NodeB.UpdateEastEdge(null) && NodeA.UpdateWestEdge(null);
+                    NodeB.EastNode = null;
+                    NodeA.WestNode = null;
                 }
                 // Otherwise, B is to the east of A
                 else
                 {
-                    success = NodeA.UpdateEastEdge(null) && NodeB.UpdateWestEdge(null);
+                    NodeA.EastNode = null;
+                    NodeB.WestNode = null;
                 }
             }
             // If y coords are next to each other
-            else if (Math.Abs(NodeA.Location.Item2 - NodeB.Location.Item2) == 1)
+            else if (Math.Abs(NodeA.Location.Y - NodeB.Location.Y) == 1)
             {
                 // If A has greater y coord than B, then A is south of B
-                if (NodeA.Location.Item2 > NodeB.Location.Item2)
+                if (NodeA.Location.Y > NodeB.Location.Y)
                 {
-                    success = NodeB.UpdateSouthEdge(null) && NodeA.UpdateNorthEdge(null);
+                    NodeB.SouthNode = null;
+                    NodeA.NorthNode = null;
                 }
                 // Otherwise, B south of A
                 else
                 {
-                    success = NodeA.UpdateSouthEdge(null) && NodeB.UpdateNorthEdge(null);
+                    NodeA.NorthNode = null;
+                    NodeB.SouthNode = null;
                 }
             }
             return success;
@@ -321,88 +231,72 @@ namespace MazeConsole
             return _nodes;
         }
 
-        // Get adjacent nodes to Node N
         public Node[] GetAdjacentNodes(Node N)
         {
             MyList<Node> AdjacentNodes = new MyList<Node>();
             // Get east and west nodes
             for (int xOffset = -1; xOffset <= 1; xOffset += 2)
             {
-                int newX = N.Location.Item1 + xOffset;
+                int newX = N.Location.X + xOffset;
                 if (newX >= 0 && newX < Width)
                 {
-                    AdjacentNodes.Add(_nodes[newX, N.Location.Item2]);
+                    AdjacentNodes.Add(_nodes[newX, N.Location.Y]);
                 }
             }
             // Get north and south nodes
             for (int yOffset = -1; yOffset <= 1; yOffset += 2)
             {
-                int newY = N.Location.Item2 + yOffset;
+                int newY = N.Location.Y + yOffset;
                 if (newY >= 0 && newY < Height)
                 {
-                    AdjacentNodes.Add(_nodes[N.Location.Item1, newY]);
+                    AdjacentNodes.Add(_nodes[N.Location.X, newY]);
                 }
             }
             return AdjacentNodes.ToArray();
         }
 
-        // Check if given nodes are adjacent
+        public Node[] GetConnectedNodes(Node N)
+        {
+            MyList<Node> PossibleAdjacentNodes = new MyList<Node>() { N.NorthNode, N.EastNode, N.SouthNode, N.WestNode };
+            MyList<Node> AdjacentNodes = new MyList<Node>();
+            foreach (Node node in PossibleAdjacentNodes)
+            {
+                if (node != null)
+                {
+                    AdjacentNodes.Add(node);
+                }
+            }
+            return AdjacentNodes.ToArray();
+        }
+
         public bool AreAdjacent(Node NodeA, Node NodeB)
         {
             bool adjacent = false;
-            (int, int) LocA = NodeA.Location;
-            (int, int) LocB = NodeB.Location;
-            // if in same location, return false
-            if (LocA == LocB) return false;
-
-            // if  neither coords are the same, return false
-            if ((LocA.Item1 != LocB.Item1) && (LocA.Item2 != LocB.Item2)) return false;
-
-            // if difference between x or y coord is 1, they are adjacent
-            if (Math.Abs(LocA.Item1 - LocB.Item1) == 1) adjacent = true;
-            else if (Math.Abs(LocA.Item2 - LocB.Item2) == 1) adjacent = true;
-
+            if (NodeA == NodeB)
+            {
+                Console.WriteLine("Node A and B are the same Node");
+                return adjacent;
+            }
+            if ((NodeA.Location.X == NodeB.Location.X) || (NodeA.Location.Y == NodeB.Location.Y))
+            {
+                // if difference between x or y coord is 1, they are adjacent
+                if (Math.Abs(NodeA.Location.X - NodeB.Location.X) == 1) adjacent = true;
+                else if (Math.Abs(NodeA.Location.Y - NodeB.Location.Y) == 1) adjacent = true;
+            }
             return adjacent;
         }
 
-        // Check if given nodes have route between them
+
         public bool AreConnected(Node NodeA, Node NodeB)
         {
             bool Connected = false;
             // if they aren't adjacent, they can't be connected
             if (!AreAdjacent(NodeA, NodeB)) return false;
-
-            (int, int) LocA = NodeA.Location;
-            (int, int) LocB = NodeB.Location;
-            // if x coord same, must be adjacent by y coord
-            if (LocA.Item1 == LocB.Item1)
+            if (NodeA.NorthNode == NodeB || NodeA.EastNode == NodeB || NodeA.SouthNode == NodeB || NodeA.WestNode == NodeB)
             {
-                // if NodeA y is greater, A is the south node of B
-                if (LocA.Item2 > LocB.Item2)
-                {
-                    if (NodeB.SouthNode == NodeA) Connected = true;
-                }
-                else
-                {
-                    if (NodeA.SouthNode == NodeB) Connected = true;
-                }
-
+                Connected = true;
             }
-            // Otherwise y coord same (since they are adjacent), so adjacent by x coord
-            else
-            {
-                if (LocA.Item1 > LocB.Item1)
-                {
-                    if (NodeB.EastNode == NodeA) Connected = true;
-                }
-                else
-                {
-                    if (NodeA.EastNode == NodeB) Connected = true;
-                }
-            }
-
             return Connected;
         }
-
     }
 }

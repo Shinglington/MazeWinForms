@@ -1,25 +1,23 @@
 ﻿using System;
-
-using MazeConsole;
 using MazeConsole.MyDataStructures;
 
-namespace PRJ_MazeConsole
+namespace MazeConsole
 {
     class MazeSolver
     {
         public static Random rand = new Random();
 
         // "Random Mouse Solver" returns list of Nodes which are part of solution
-        public static MyList<Node> RandomMouse(Maze M)
+        public static MyList<Node> RandomMouse(Graph G)
         {
             MyStack<Node> Path = new MyStack<Node>();
-            Node EndNode = M.EndNode;
-            Path.Push(M.StartNode);
+            Node EndNode = G.EndNode;
+            Path.Push(G.StartNode);
             while (Path.Peek() != EndNode)
             {
                 // Randomly traverse maze
                 Node CurrentNode = Path.Pull();
-                Node nextNode = GetRandomAccessibleNode(M, CurrentNode);
+                Node nextNode = GetRandomAccessibleNode(G, CurrentNode);
 
                 if (Path.Count == 0)
                 {
@@ -36,16 +34,22 @@ namespace PRJ_MazeConsole
         }
 
         // "Wall follower", a depth-first search returning solution
-        public static MyList<Node> WallFollower(Maze M)
+        public static MyList<Node> WallFollower(Graph G, Node Start = null, Node End = null)
         {
-            // Reset visited attribute for re-use in the depth-first search
-            M.ResetVisited();
             MyStack<Node> Path = new MyStack<Node>();
-            DepthFirstSearch(M, M.StartNode, Path, M.EndNode);
+            if (Start == null)
+            {
+                Start = G.StartNode;
+            }
+            if (End == null)
+            {
+                End = G.EndNode;
+            }
+            DepthFirstSearch(G, Start, Path, End);
             return Path.ToList();
         }
 
-        private static void DepthFirstSearch(Maze M, Node CurrNode, MyStack<Node> Path, Node Target)
+        private static void DepthFirstSearch(Graph G, Node CurrNode, MyStack<Node> Path, Node Target)
         {
             // Identify the previous node, to remove from child nodes later
             Node PrevNode = null;
@@ -59,12 +63,12 @@ namespace PRJ_MazeConsole
             if (CurrNode == Target) return;
 
             // find and add children nodes
-            Node[] ChildNodes = M.GetAccessibleNodes(CurrNode);
+            Node[] ChildNodes = G.GetConnectedNodes(CurrNode);
             foreach (Node NextNode in ChildNodes)
             {
                 if (NextNode != PrevNode)
                 {
-                    DepthFirstSearch(M, NextNode, Path, Target);
+                    DepthFirstSearch(G, NextNode, Path, Target);
                     if (Path.Peek() == Target) return;
                 }
             }
@@ -72,13 +76,13 @@ namespace PRJ_MazeConsole
         }
 
         // Commonly used functions
-        private static Node GetRandomAccessibleNode(Maze M, Node N)
+        private static Node GetRandomAccessibleNode(Graph G, Node N)
         {
             if (N is null)
             {
                 return null;
             }
-            Node[] AccessibleNodes = M.GetAccessibleNodes(N);
+            Node[] AccessibleNodes = G.GetConnectedNodes(N);
             return AccessibleNodes[rand.Next(AccessibleNodes.Length)];
         }
 

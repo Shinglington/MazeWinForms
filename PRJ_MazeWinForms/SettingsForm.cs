@@ -13,6 +13,8 @@ namespace PRJ_MazeWinForms
         private TableLayoutPanel _tbl_advSettings;
         private SettingMode _mode;
 
+        private bool _showGeneration;
+
 
         private const string TEXT_FONT = "Arial";
         enum SettingMode 
@@ -28,6 +30,7 @@ namespace PRJ_MazeWinForms
             _menu = M;
             _title = lbl_settings;
             _formPanel = tbl_settingPanel;
+            _showGeneration = false;
             _mode = (SettingMode)0;
             SetupControls();
             SetupEvents();
@@ -172,9 +175,9 @@ namespace PRJ_MazeWinForms
             _tbl_advSettings = Table;
         }
 
-        private Settings GetBasicSettings()
+        private MazeSettings GetBasicSettings()
         {
-            Settings MazeSettings = null;
+            MazeSettings MazeSettings = null;
             // loop through radio buttons
             for (int row = 1; row <= 3; row++)
             {
@@ -183,16 +186,16 @@ namespace PRJ_MazeWinForms
                 if (radioButton.Checked)
                 {
                     // Use Difficulty overload
-                    MazeSettings = new Settings(selectedDifficulty);
+                    MazeSettings = new MazeSettings(selectedDifficulty);
                     break;
                 }
             }
             return MazeSettings;
         }
 
-        private Settings GetAdvancedSettings()
+        private MazeSettings GetAdvancedSettings()
         {
-            Settings MazeSettings = null;
+            MazeSettings MazeSettings = null;
             try
             {
                 int width = int.Parse(_tbl_advSettings.GetControlFromPosition(1, 1).Text);
@@ -210,7 +213,7 @@ namespace PRJ_MazeWinForms
                 }
                 else
                 {
-                    MazeSettings = new Settings(width, height, algorithm);
+                    MazeSettings = new MazeSettings(width, height, algorithm, _showGeneration);
                 } 
             }
             catch
@@ -221,9 +224,9 @@ namespace PRJ_MazeWinForms
 
             return MazeSettings;
         }
-        private Settings GetMazeSettings()
+        private MazeSettings GetMazeSettings()
         {
-            Settings MazeSettings = null;
+            MazeSettings MazeSettings = null;
             switch (_mode)
             {
                 case SettingMode.Basic:
@@ -241,7 +244,7 @@ namespace PRJ_MazeWinForms
 
         private void GenerateMaze(object sender, EventArgs e)
         {
-            Settings MazeSettings = GetMazeSettings();
+            MazeSettings MazeSettings = GetMazeSettings();
             if (MazeSettings != null)
             {
                 MazeForm MazeForm = new MazeForm(MazeSettings);
@@ -249,53 +252,5 @@ namespace PRJ_MazeWinForms
                 this.Hide();
             }
         }
-    }
-
-    public class Settings 
-    {
-
-        public int Width { get; }
-        public int Height { get; }
-        public GenAlgorithm Algorithm { get;  }
-
-        
-        // Different constructors for difficulty parameters and advanced parameters
-        public Settings(int width, int height, GenAlgorithm algorithm)
-        {
-            // Advanced
-            Width = width;
-            Height = height;
-            Algorithm = algorithm;
-        }
-
-        public Settings(Difficulty difficulty)
-        {
-            switch (difficulty)
-            {
-                // Presets for difficulties
-                case (Difficulty)0:
-                    Width = 5;
-                    Height = 5;
-                    Algorithm = GenAlgorithm.Sidewinder;
-                    break;
-                case (Difficulty)1:
-                    Width = 10;
-                    Height = 10;
-                    Algorithm = GenAlgorithm.BinaryTree;
-                    break;
-                case (Difficulty)2:
-                    Width = 30;
-                    Height = 30;
-                    Algorithm = GenAlgorithm.GrowingTree;
-                    break;
-            }
-        }
-
-    }
-    public enum Difficulty
-    {
-        Easy,
-        Medium,
-        Hard
     }
 }

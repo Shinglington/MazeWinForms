@@ -1,9 +1,11 @@
-﻿using MazeConsole;
-using MazeConsole.MyDataStructures;
-using PRJ_MazeConsole;
+﻿
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+
+using MazeConsole;
+using MazeConsole.MyDataStructures;
+using PRJ_MazeWinForms.MazeFormsClasses;
 
 namespace PRJ_MazeWinForms
 {
@@ -17,7 +19,7 @@ namespace PRJ_MazeWinForms
         private MenuStrip _menuStrip;
 
         // Classes
-        private Settings _mazeSettings;
+        private MazeSettings _mazeSettings;
         private Maze _maze;
 
         // Enums
@@ -30,7 +32,7 @@ namespace PRJ_MazeWinForms
 
         
 
-        public MazeForm(Settings MazeSettings)
+        public MazeForm(MazeSettings MazeSettings)
         {
             InitializeComponent();
 
@@ -40,10 +42,10 @@ namespace PRJ_MazeWinForms
 
         }
 
-        private void CreateMaze(Settings MazeSettings)
+        private void CreateMaze(MazeSettings MazeSettings)
         {
             _mazeSettings = MazeSettings;
-            _maze = new Maze(_mazeSettings.Width, _mazeSettings.Height, _mazeSettings.Algorithm);
+            _maze = new FormsMaze(_mazeSettings, _tbl_mazePanel);
         }
         private void CreateControls()
         {
@@ -83,8 +85,7 @@ namespace PRJ_MazeWinForms
 
         private void DisplayMaze(TableLayoutPanel TableContainer)
         {
-            _maze.FormsDisplay(TableContainer);
-            Console.Write(_maze.ConsoleDisplay());
+            _maze.DisplayMaze();
         }
 
         private void SetupMenuStrip(MenuStrip menuStrip)
@@ -99,9 +100,12 @@ namespace PRJ_MazeWinForms
 
             // Hint header
             ToolStripMenuItem HintStrip = (ToolStripMenuItem) menuStrip.Items[(int)MyMenuItem.Hint];
+            /*
             HintStrip.DropDownItems.Add("Show full solution").Click += new EventHandler(ShowFullSolution);
+            */
         }
 
+        /*
         private void ShowFullSolution(object sender, EventArgs e)
         {
             if (_solutionVis != SolutionVisibility.Full)
@@ -109,8 +113,8 @@ namespace PRJ_MazeWinForms
                 MyList<Node> FullSolution = MazeSolver.WallFollower(_maze);
                 foreach(Node n in FullSolution)
                 {
-                    int x = n.Location.Item1;
-                    int y = n.Location.Item2;
+                    int x = n.Location.X;
+                    int y = n.Location.Y;
 
                     Panel cell = (Panel) _tbl_mazePanel.GetControlFromPosition(x, y);
                     cell.Paint += new PaintEventHandler(HighlightCell);
@@ -139,52 +143,7 @@ namespace PRJ_MazeWinForms
             float radius = Math.Min(cell.Width, cell.Height) / 12;
             g.FillEllipse(brush, midpoint.X - radius, midpoint.Y - radius, radius * 2, radius * 2);
         }
-
-        private void PaintCell(object sender, PaintEventArgs e)
-        {
-            const float WALL_RATIO = 6;
-
-            Panel cell = sender as Panel;
-            Graphics g = e.Graphics;
-            SolidBrush brush = new SolidBrush(WALL_COLOUR);
-
-            // Draw walls
-            if (node.NorthNode == null)
-            {
-                g.FillRectangle(brush, 0, 0, cell.Width, cell.Height / WALL_RATIO);
-            }
-            if (node.EastNode == null)
-            {
-                g.FillRectangle(brush, cell.Width - cell.Width / WALL_RATIO, 0, cell.Width / WALL_RATIO, cell.Height);
-            }
-            if (node.SouthNode == null)
-            {
-                g.FillRectangle(brush, 0, cell.Height - cell.Height / WALL_RATIO, cell.Width, cell.Height / WALL_RATIO);
-            }
-            if (node.WestNode == null)
-            {
-                g.FillRectangle(brush, 0, 0, cell.Width / WALL_RATIO, cell.Height);
-            }
-
-            // Draw wall corners
-            g.FillRectangle(brush, 0, 0, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
-            g.FillRectangle(brush, cell.Width - cell.Width / WALL_RATIO, 0, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
-            g.FillRectangle(brush, cell.Width - cell.Width / WALL_RATIO, cell.Height - cell.Height / WALL_RATIO, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
-            g.FillRectangle(brush, 0, cell.Height - cell.Height / WALL_RATIO, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
-
-            // Colour start and end nodes
-            if (node == StartNode)
-            {
-                brush = new SolidBrush(START_COLOUR);
-                g.FillRectangle(brush, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO, cell.Width - (2 * cell.Width / WALL_RATIO), cell.Height - (2 * cell.Height / WALL_RATIO));
-            }
-            else if (node == EndNode)
-            {
-                brush = new SolidBrush(END_COLOUR);
-                g.FillRectangle(brush, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO, cell.Width - (2 * cell.Width / WALL_RATIO), cell.Height - (2 * cell.Height / WALL_RATIO));
-            }
-        }
-
+        */
     }
 
     public enum MyMenuItem
