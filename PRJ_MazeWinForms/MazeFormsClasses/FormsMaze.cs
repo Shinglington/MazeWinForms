@@ -2,10 +2,7 @@
 using MazeConsole.MyDataStructures;
 using System;
 using System.Drawing;
-using System.Drawing.Drawing2D;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
 namespace PRJ_MazeWinForms.MazeFormsClasses
 {
@@ -16,8 +13,10 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         private readonly Color HIGHLIGHT_COLOUR = Color.Red;
         private readonly Color PLAYER_COLOUR = Color.DarkBlue;
 
+        private const int HINT_FACTOR = 5;
+
         private TableLayoutPanel _container;
-        
+
         private bool _formDisplayed;
         private MyList<(Panel, PaintEventHandler)> _highlights;
 
@@ -97,7 +96,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
                         cell_colour = Color.Red;
                     }
                     Cell.Paint += new PaintEventHandler((sender, e) => MazeDisplay.PaintNode(sender, e, node, cell_colour, WALL_COLOUR));
-                    
+
                     if (node == CurrentNode)
                     {
                         PaintEventHandler highlightEvent = new PaintEventHandler((sender, e) => MazeDisplay.HighlightCell(sender, e, PLAYER_COLOUR));
@@ -113,7 +112,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         // Removes event handlers from previous display (i.e. removes last location highlight)
         private void UpdateFormsDisplay(Node CurrentNode = null)
         {
-            foreach((Panel, PaintEventHandler) pair in _highlights)
+            foreach ((Panel, PaintEventHandler) pair in _highlights)
             {
                 Panel p = pair.Item1;
                 PaintEventHandler highlightEvent = pair.Item2;
@@ -136,15 +135,17 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
 
         private void ShowFormsHint(MyList<Node> highlightNodes)
         {
-            foreach (Node n in highlightNodes)
+            for (int i = 0; i < Math.Min(HINT_FACTOR, highlightNodes.Count); i++)
             {
+                Node n = highlightNodes[i];
                 Panel panel = (Panel)_container.GetControlFromPosition(n.Location.X, n.Location.Y);
                 panel.Paint += new PaintEventHandler((sender, e) => MazeDisplay.HighlightCell(sender, e, HIGHLIGHT_COLOUR));
                 panel.Invalidate();
             }
+
         }
 
-       
+
     }
 }
 

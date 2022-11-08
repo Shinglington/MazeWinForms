@@ -18,17 +18,14 @@ namespace PRJ_MazeWinForms
         private MenuStrip _menuStrip;
 
         // Classes
-        private MazeSettings _mazeSettings;
         private FormsMazeInterface _interface;
 
-
-        
 
         public MazeForm(MazeSettings MazeSettings)
         {
             InitializeComponent();
             CreateControls();
-            _interface = new FormsMazeInterface(MazeSettings, _tbl_mazePanel);
+            _interface = new FormsMazeInterface(MazeSettings, _tbl_mazePanel, _menuStrip);
 
         }
         private void CreateControls()
@@ -73,11 +70,6 @@ namespace PRJ_MazeWinForms
             {
                 menuStrip.Items.Add(new ToolStripMenuItem(item.ToString()));
             }
-
-            // File header
-
-            // Hint header
-            ToolStripMenuItem HintStrip = (ToolStripMenuItem) menuStrip.Items[(int)MyMenuItem.Hint];
         }
 
     }

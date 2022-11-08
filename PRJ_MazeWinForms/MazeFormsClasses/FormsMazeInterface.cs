@@ -16,25 +16,36 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         private readonly Char[] MOVE_CONTROLS = { 'w', 'd', 's', 'a' };
 
         private TableLayoutPanel _container;
+        private MenuStrip _menuStrip;
 
         private FormsMaze _maze;
         private FormsPlayer _player;
         private SolutionVisibility _solutionVis;
 
 
-        public FormsMazeInterface(MazeSettings Settings, TableLayoutPanel Container)
+        public FormsMazeInterface(MazeSettings Settings, TableLayoutPanel Container, MenuStrip MenuStrip)
         {
             _container = Container;
+            _menuStrip = MenuStrip;
+
             _maze = new FormsMaze(Settings, _container);
 
             _player = new FormsPlayer(_maze);
             _solutionVis = SolutionVisibility.None;
+            AddEventsToMenu();
 
             _container.Parent.Parent.KeyPress += new KeyPressEventHandler(KeyPressed);
             _maze.DisplayForms(_player.CurrentNode);
         }
 
 
+        private void AddEventsToMenu()
+        {
+            // hints
+            ToolStripMenuItem HintStrip = (ToolStripMenuItem)_menuStrip.Items[(int)MyMenuItem.Hint];
+            HintStrip.DropDownItems.Add("Show Full Solution").Click += new EventHandler(ShowFullSolution);
+            HintStrip.DropDownItems.Add("Hint").Click += new EventHandler(ShowPartialSolution);
+        }
 
         private void KeyPressed(object sender, KeyPressEventArgs e)
         {
