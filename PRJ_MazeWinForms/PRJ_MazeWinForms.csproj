@@ -46,11 +46,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MazeClasses\ConsoleMazeInterface.cs" />
     <Compile Include="MazeClasses\Graph.cs" />
     <Compile Include="MazeClasses\Maze.cs" />
     <Compile Include="MazeClasses\MazeGen.cs" />
     <Compile Include="MazeClasses\MazeSolver.cs" />
     <Compile Include="MazeClasses\Node.cs" />
+    <Compile Include="MazeClasses\Player.cs" />
     <Compile Include="MazeForm.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -58,6 +60,8 @@
       <DependentUpon>MazeForm.cs</DependentUpon>
     </Compile>
     <Compile Include="MazeFormsClasses\FormsMaze.cs" />
+    <Compile Include="MazeFormsClasses\FormsMazeInterface.cs" />
+    <Compile Include="MazeFormsClasses\FormsPlayer.cs" />
     <Compile Include="MazeFormsClasses\MazeDisplay.cs" />
     <Compile Include="MazeInterface.cs">
       <SubType>UserControl</SubType>

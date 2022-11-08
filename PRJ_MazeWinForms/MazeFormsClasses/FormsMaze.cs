@@ -2,6 +2,7 @@
 using MazeConsole.MyDataStructures;
 using System;
 using System.Drawing;
+using System.Drawing.Drawing2D;
 using System.Windows.Forms;
 using System.Xml.Linq;
 
@@ -9,8 +10,14 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
 {
     class FormsMaze : Maze
     {
-        private MazeDisplay _display;
+        private readonly Color WALL_COLOUR = Color.Black;
+        private readonly Color CELL_COLOUR = Color.White;
+        private readonly Color HIGHLIGHT_COLOUR = Color.Red;
+        private readonly Color PLAYER_COLOUR = Color.DarkBlue;
+
         private TableLayoutPanel _container;
+        private bool _formDisplayed;
+        public Control Parent { get { return _container; } }
 
         public FormsMaze(MazeSettings Settings, TableLayoutPanel Container) : base(Settings)
         {
@@ -26,8 +33,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
 
         private void SetupAttributes(TableLayoutPanel Container)
         {
-            _display = new MazeDisplay(Color.Black, Color.White, Color.Green, Color.Red);
-
+            _formDisplayed = false;
             // Setup container
             _container = Container;
             _container.RowStyles.Clear();
@@ -44,6 +50,11 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
 
         public void DisplayForms(Node CurrentNode = null, bool ShowSolution = false, bool ShowHint = false)
         {
+            if (!_formDisplayed)
+            {
+                GetFormsDisplay(CurrentNode);
+            }
+
             if (ShowSolution)
             {
                 ShowFormsHint(GetHint(CurrentNode));
@@ -54,11 +65,11 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
             }
             else
             {
-                GetFormsDisplay(CurrentNode);
+                ResetFormsDisplay(CurrentNode);
             }
         }
 
-        private void GetFormsDisplay(Node CurrentNode = null, MyList<Node> highlightNodes = null)
+        private void GetFormsDisplay(Node CurrentNode = null)
         {
             Node[,] nodes = _graph.GetNodes();
             for (int row = 0; row < Height; row++)
@@ -71,7 +82,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
                     _container.SetCellPosition(Cell, new TableLayoutPanelCellPosition(col, row));
 
                     // Figure out which colour cell needs to be
-                    Color cell_colour = Color.White;
+                    Color cell_colour = CELL_COLOUR;
                     if (node == StartNode)
                     {
                         cell_colour = Color.Green;
@@ -80,9 +91,21 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
                     {
                         cell_colour = Color.Red;
                     }
-                    Cell.Paint += new PaintEventHandler((sender, e) => _display.PaintNode(sender, e, node, cell_colour));
+                    Cell.Paint += new PaintEventHandler((sender, e) => MazeDisplay.PaintNode(sender, e, node, cell_colour, WALL_COLOUR));
+                    
+                    if (node == CurrentNode)
+                    {
+                        Cell.Paint += new PaintEventHandler((sender, e) => MazeDisplay.HighlightCell(sender, e, PLAYER_COLOUR));
+                    }
+
                 }
             }
+        }
+
+        private void ResetFormsDisplay(Node CurrentNode = null)
+        {
+            _container.Controls.Clear();
+            GetFormsDisplay(CurrentNode);
         }
 
         private void ShowFormsHint(MyList<Node> highlightNodes)
@@ -90,7 +113,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
             foreach (Node n in highlightNodes)
             {
                 Panel panel = (Panel)_container.GetControlFromPosition(n.Location.X, n.Location.Y);
-                panel.Paint += new PaintEventHandler(_display.HighlightCell);
+                panel.Paint += new PaintEventHandler((sender, e) => MazeDisplay.HighlightCell(sender, e, HIGHLIGHT_COLOUR));
                 panel.Invalidate();
             }
         }

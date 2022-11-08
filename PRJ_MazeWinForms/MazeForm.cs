@@ -14,39 +14,22 @@ namespace PRJ_MazeWinForms
 
         // Controls
         private TableLayoutPanel _tbl_formPanel;
-
         private TableLayoutPanel _tbl_mazePanel;
         private MenuStrip _menuStrip;
 
         // Classes
         private MazeSettings _mazeSettings;
-        private FormsMaze _maze;
+        private FormsMazeInterface _interface;
 
-        // Enums
-        private SolutionVisibility _solutionVis;
-
-
-        // Colours
-        private readonly Color SOLUTION_COLOUR = Color.Red;
-        private readonly Color WALL_COLOUR = Color.Black;
 
         
 
         public MazeForm(MazeSettings MazeSettings)
         {
             InitializeComponent();
-
             CreateControls();
-            CreateMaze(MazeSettings);
-            DisplayMaze(_tbl_mazePanel);
-            _solutionVis = SolutionVisibility.None;
+            _interface = new FormsMazeInterface(MazeSettings, _tbl_mazePanel);
 
-        }
-
-        private void CreateMaze(MazeSettings MazeSettings)
-        {
-            _mazeSettings = MazeSettings;
-            _maze = new FormsMaze(_mazeSettings, _tbl_mazePanel);
         }
         private void CreateControls()
         {
@@ -83,12 +66,6 @@ namespace PRJ_MazeWinForms
 
         }
 
-
-        private void DisplayMaze(TableLayoutPanel TableContainer)
-        {
-            _maze.DisplayForms();
-        }
-
         private void SetupMenuStrip(MenuStrip menuStrip)
         {
             // Populate menu strip
@@ -101,21 +78,8 @@ namespace PRJ_MazeWinForms
 
             // Hint header
             ToolStripMenuItem HintStrip = (ToolStripMenuItem) menuStrip.Items[(int)MyMenuItem.Hint];
-            HintStrip.DropDownItems.Add("Show full solution").Click += new EventHandler(ShowFullSolution);
         }
 
-        private void ShowFullSolution(object sender, EventArgs e)
-        {
-            if (_solutionVis != SolutionVisibility.Full)
-            {
-                _maze.DisplayForms(null, true);
-                _solutionVis = SolutionVisibility.Full;
-            }
-            else
-            {
-                MessageBox.Show("Solution already being shown");
-            }
-        }
     }
 
     public enum MyMenuItem
@@ -123,12 +87,5 @@ namespace PRJ_MazeWinForms
         File,
         Hint,
         Help
-    }
-
-    public enum SolutionVisibility
-    {
-        None,
-        Partial,
-        Full
     }
 }

@@ -182,7 +182,7 @@ namespace MazeConsole
 
 
         // Different constructors for difficulty parameters and advanced parameters
-        public MazeSettings(int width, int height, GenAlgorithm algorithm, bool showGeneration)
+        public MazeSettings(int width, int height, GenAlgorithm algorithm, bool showGeneration = false)
         {
             // Advanced
             Width = width;
