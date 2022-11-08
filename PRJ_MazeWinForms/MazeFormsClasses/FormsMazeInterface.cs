@@ -22,7 +22,6 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         private FormsPlayer _player;
         private SolutionVisibility _solutionVis;
 
-
         public FormsMazeInterface(MazeSettings Settings, TableLayoutPanel Container, MenuStrip MenuStrip)
         {
             _container = Container;
