@@ -110,6 +110,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
             _formDisplayed = true;
         }
 
+        // Removes event handlers from previous display (i.e. removes last location highlight)
         private void UpdateFormsDisplay(Node CurrentNode = null)
         {
             foreach((Panel, PaintEventHandler) pair in _highlights)

@@ -35,6 +35,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         }
 
 
+
         private void KeyPressed(object sender, KeyPressEventArgs e)
         {
             char key = e.KeyChar;
@@ -71,7 +72,22 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
             {
                 _player.Move(NextNode);
                 _maze.DisplayForms(_player.CurrentNode);
+                CheckFinished();
             }
+        }
+
+        private bool CheckFinished()
+        {
+            bool finished = false;
+            if (_player.CurrentNode == _maze.EndNode)
+            {
+                finished = true;
+                // Stop movement
+                _container.Parent.Parent.KeyPress -= KeyPressed;
+                MessageBox.Show("You finished the maze!");
+            }
+
+            return finished;
         }
 
 
