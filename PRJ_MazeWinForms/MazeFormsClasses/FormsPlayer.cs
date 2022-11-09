@@ -4,7 +4,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
 {
     class FormsPlayer : Player
     {
-        public FormsPlayer(FormsMaze M) : base(M)
+        public FormsPlayer(WinFormsMaze M) : base(M)
         {
 
         }

@@ -4,6 +4,8 @@ using System.Windows.Forms;
 using MazeConsole;
 namespace PRJ_MazeWinForms.MazeFormsClasses
 {
+
+
     public enum SolutionVisibility
     {
         None,
@@ -15,19 +17,28 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
     {
         private readonly Char[] MOVE_CONTROLS = { 'w', 'd', 's', 'a' };
 
+        // Forms attributes
         private TableLayoutPanel _container;
         private MenuStrip _menuStrip;
 
-        private FormsMaze _maze;
+        // Classes
+        private WinFormsMaze _maze;
         private FormsPlayer _player;
+
+        // Enums
         private SolutionVisibility _solutionVis;
+
+
+        // Finished event
+        public event MazeFinishedEventHandler OnMazeFinish;
+        public event MazeErrorEventHandler OnMazeError;
 
         public FormsMazeInterface(MazeSettings Settings, TableLayoutPanel Container, MenuStrip MenuStrip)
         {
             _container = Container;
             _menuStrip = MenuStrip;
 
-            _maze = new FormsMaze(Settings, _container);
+            _maze = new WinFormsMaze(Settings, _container);
 
             _player = new FormsPlayer(_maze);
             _solutionVis = SolutionVisibility.None;
@@ -49,7 +60,6 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         private void KeyPressed(object sender, KeyPressEventArgs e)
         {
             char key = e.KeyChar;
-            Console.WriteLine("{0} pressed", key);
             for(int i = 0; i < 4; i++)
             {
                 if (MOVE_CONTROLS[i] == key)
@@ -94,7 +104,18 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
                 finished = true;
                 // Stop movement
                 _container.Parent.Parent.KeyPress -= KeyPressed;
-                MessageBox.Show("You finished the maze!");
+                // Call finished event
+                if (OnMazeFinish != null)
+                {
+                    OnMazeFinish(this, new MazeFinishedEventArgs(finished));
+
+                }
+                else
+                {
+                    Console.WriteLine("Nothing is assigned to this event");
+                }
+
+
             }
 
             return finished;
@@ -130,4 +151,25 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
 
 
     }
+
+
+    // Event args for completed maze
+
+    public delegate void MazeFinishedEventHandler(object source, MazeFinishedEventArgs e);
+    public class MazeFinishedEventArgs : EventArgs 
+    {
+        private bool _mazeFinished;
+        public MazeFinishedEventArgs(bool finished)
+        {
+            _mazeFinished = finished;
+        }
+
+        public bool GetFinished()
+        {
+            return _mazeFinished;
+        }
+    }
+
+
+
 }

@@ -147,9 +147,15 @@ namespace MazeConsole
         }
 
 
-        protected MyList<Node> GetHint(Node CurrentNode)
+        protected MyList<Node> GetHint(Node CurrentNode, int count = 4)
         {
-            return MazeSolver.WallFollower(_graph, CurrentNode);
+            MyList<Node> PathToEnd = MazeSolver.WallFollower(_graph, CurrentNode, EndNode);
+            MyList<Node> hint = new MyList<Node>();
+            for (int i = 0; i < Math.Min(count, PathToEnd.Count); i++)
+            {
+                hint.Add(PathToEnd[i]);
+            }
+            return hint;
         }
 
         public bool CheckAccessibility(Node A, Node B)
@@ -209,4 +215,6 @@ namespace MazeConsole
         Medium,
         Hard
     }
+
+
 }

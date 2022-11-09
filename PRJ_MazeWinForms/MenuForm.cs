@@ -12,11 +12,25 @@ namespace PRJ_MazeWinForms
 {
     public partial class MenuForm : Form
     {
-        private SettingsForm Settings;
+        private SettingsForm _settingsForm;
+        public SettingsForm SettingsForm
+        {
+            get
+            {
+                if (_settingsForm == null)
+                {
+                    _settingsForm = new SettingsForm(this);
+                }
+                else if (_settingsForm.IsDisposed)
+                {
+                    _settingsForm = new SettingsForm(this);
+                }
+                return _settingsForm;
+            }
+        }
         public MenuForm()
         {
             InitializeComponent();
-            Settings = new SettingsForm(this);
             SetupEvents();
         }
         private void SetupEvents()
@@ -27,7 +41,7 @@ namespace PRJ_MazeWinForms
         private void GoToSettings(object sender, EventArgs e)
         {
             this.Hide();
-            Settings.Show();
+            SettingsForm.Show();
         }
 
     }

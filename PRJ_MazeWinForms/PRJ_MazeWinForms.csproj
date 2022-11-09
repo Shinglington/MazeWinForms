@@ -59,7 +59,7 @@
     <Compile Include="MazeForm.Designer.cs">
       <DependentUpon>MazeForm.cs</DependentUpon>
     </Compile>
-    <Compile Include="MazeFormsClasses\FormsMaze.cs" />
+    <Compile Include="MazeFormsClasses\WinFormsMaze.cs" />
     <Compile Include="MazeFormsClasses\FormsMazeInterface.cs" />
     <Compile Include="MazeFormsClasses\FormsPlayer.cs" />
     <Compile Include="MazeFormsClasses\MazeDisplay.cs" />

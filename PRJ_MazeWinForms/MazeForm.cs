@@ -13,6 +13,7 @@ namespace PRJ_MazeWinForms
     {
 
         // Controls
+        private Form _settingsForm;
         private TableLayoutPanel _tbl_formPanel;
         private TableLayoutPanel _tbl_mazePanel;
         private MenuStrip _menuStrip;
@@ -21,11 +22,23 @@ namespace PRJ_MazeWinForms
         private FormsMazeInterface _interface;
 
 
-        public MazeForm(MazeSettings MazeSettings)
+        public MazeForm(Form settingsForm, MazeSettings MazeSettings)
         {
             InitializeComponent();
             CreateControls();
+
+            _settingsForm = settingsForm;
             _interface = new FormsMazeInterface(MazeSettings, _tbl_mazePanel, _menuStrip);
+
+            SetupEvents();
+
+        }
+        private void SetupEvents()
+        {
+            _interface.OnMazeFinish += new MazeFinishedEventHandler(MazeFinished);
+            _interface.OnMazeError += new MazeErrorEventHandler(MazeErrorRaised);
+            this.FormClosing += new FormClosingEventHandler(MazeFormClosing);
+            this.FormClosed += new FormClosedEventHandler(ReturnToSettings);
 
         }
         private void CreateControls()
@@ -34,7 +47,8 @@ namespace PRJ_MazeWinForms
             _tbl_formPanel = new TableLayoutPanel()
             {
                 Parent = this,
-                Dock = DockStyle.Fill
+                Dock = DockStyle.Fill,
+                Padding = new Padding(5)
             };
             _tbl_formPanel.RowStyles.Clear();
             _tbl_formPanel.ColumnStyles.Clear();
@@ -70,9 +84,45 @@ namespace PRJ_MazeWinForms
             {
                 menuStrip.Items.Add(new ToolStripMenuItem(item.ToString()));
             }
+        
+        }
+
+
+        private void MazeFinished(object source, MazeFinishedEventArgs e)
+        {
+            MessageBox.Show("You finished the maze!");
+            ReturnToSettings(this, new EventArgs());
+
+        }
+
+        private void ReturnToSettings(object sender, EventArgs e)
+        {
+            this.Hide();
+            _settingsForm.Show();
+            this.Dispose();
+        }
+
+        private void MazeFormClosing(object sender, FormClosingEventArgs e)
+        {
+            DialogResult result = MessageBox.Show("Are you sure you want to quit?", "Don't Give Up!", MessageBoxButtons.YesNo);
+            if (result == DialogResult.No)
+            {
+                // If user doesn't want to quit, cancel quit
+                e.Cancel = true;
+            }
+        }
+
+        private void MazeErrorRaised(object sender, MazeErrorEventArgs e)
+        {
+            if (e.GetReason() != null)
+            {
+                Console.WriteLine("Error raised: {0}",e.GetReason());
+                MessageBox.Show("Error raised: {0}", e.GetReason());
+            }
         }
 
     }
+
 
     public enum MyMenuItem
     {

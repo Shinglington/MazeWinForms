@@ -42,8 +42,6 @@ namespace PRJ_MazeWinForms
             btn_back.Click += new EventHandler(ReturnToMenu);
 
             btn_advSettings.Click += new EventHandler(SwapSettings);
-
-
             btn_generate.Click += new EventHandler(GenerateMaze);
         }
 
@@ -247,7 +245,7 @@ namespace PRJ_MazeWinForms
             MazeSettings MazeSettings = GetMazeSettings();
             if (MazeSettings != null)
             {
-                MazeForm MazeForm = new MazeForm(MazeSettings);
+                MazeForm MazeForm = new MazeForm(this, MazeSettings);
                 MazeForm.Show();
                 this.Hide();
             }

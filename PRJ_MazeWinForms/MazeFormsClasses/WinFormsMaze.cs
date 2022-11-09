@@ -6,8 +6,9 @@ using System.Windows.Forms;
 
 namespace PRJ_MazeWinForms.MazeFormsClasses
 {
-    class FormsMaze : Maze
+    class WinFormsMaze : Maze
     {
+        // Colour constants
         private readonly Color WALL_COLOUR = Color.Black;
         private readonly Color CELL_COLOUR = Color.White;
         private readonly Color HIGHLIGHT_COLOUR = Color.Red;
@@ -15,19 +16,24 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
 
         private const int HINT_FACTOR = 5;
 
-        private TableLayoutPanel _container;
+        public MazeErrorEventHandler OnMazeError;
 
+        // Forms attributes
+        private TableLayoutPanel _container;
+        public Control Parent { get { return _container; } }
         private bool _formDisplayed;
+
+        // Keep track of which cell is being highlighted (i.e. the cell the player is in)
         private MyList<(Panel, PaintEventHandler)> _highlights;
 
-        public Control Parent { get { return _container; } }
 
-        public FormsMaze(MazeSettings Settings, TableLayoutPanel Container) : base(Settings)
+
+        public WinFormsMaze(MazeSettings Settings, TableLayoutPanel Container) : base(Settings)
         {
             SetupAttributes(Container);
         }
 
-        public FormsMaze(int height, int width, string algorithm, TableLayoutPanel Container, bool ShowGeneration = false)
+        public WinFormsMaze(int height, int width, string algorithm, TableLayoutPanel Container, bool ShowGeneration = false)
             : base(height, width, algorithm, ShowGeneration)
         {
             SetupAttributes(Container);
@@ -60,11 +66,11 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
 
             if (ShowSolution)
             {
-                ShowFormsHint(GetHint(CurrentNode));
+                ShowFormsHint(Solution);
             }
             else if (ShowHint)
             {
-                ShowFormsHint(GetHint(CurrentNode));
+                ShowFormsHint(GetHint(CurrentNode, HINT_FACTOR));
             }
             else
             {
@@ -133,19 +139,31 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
 
         }
 
-        private void ShowFormsHint(MyList<Node> highlightNodes)
+        private void ShowFormsHint(MyList<Node> hintNodes)
         {
-            for (int i = 0; i < Math.Min(HINT_FACTOR, highlightNodes.Count); i++)
+            foreach(Node n in hintNodes)
             {
-                Node n = highlightNodes[i];
                 Panel panel = (Panel)_container.GetControlFromPosition(n.Location.X, n.Location.Y);
                 panel.Paint += new PaintEventHandler((sender, e) => MazeDisplay.HighlightCell(sender, e, HIGHLIGHT_COLOUR));
                 panel.Invalidate();
             }
-
         }
 
 
+    }
+
+    public delegate void MazeErrorEventHandler(object source, MazeErrorEventArgs e);
+    public class MazeErrorEventArgs : EventArgs
+    {
+        private string _errorReason;
+        public MazeErrorEventArgs(string reason)
+        {
+            _errorReason = reason;
+        }
+        public string GetReason()
+        {
+            return _errorReason;
+        }
     }
 }
 
