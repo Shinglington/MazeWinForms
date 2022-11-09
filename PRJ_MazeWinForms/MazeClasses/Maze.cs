@@ -39,23 +39,10 @@ namespace MazeConsole
             _solution = null;
         }
 
+        public Node StartNode { get { return _graph.StartNode; } }
 
-        public Node StartNode
-        {
-            get
-            {
-                return _graph.StartNode;
-            }
-        }
-
-        public Node EndNode
-        {
-            get
-            {
-                return _graph.EndNode;
-            }
-        }
-
+        public Node EndNode { get { return _graph.EndNode; } }
+      
         public MyList<Node> Solution
         {
             get
