@@ -45,6 +45,27 @@ namespace PRJ_MazeWinForms
             }
         }
 
+        public static Padding ComputePadding(TableLayoutPanel table, int minimumPadding)
+        {
+            int minPad = minimumPadding;
+            Rectangle tableArea = table.ClientRectangle;
+            tableArea.Inflate(-minPad, -minPad);
+
+            int cellWidth = tableArea.Width / table.ColumnCount;
+            int cellHeight = tableArea.Height / table.RowCount;
+
+            int xExcess = tableArea.Width - (cellWidth * table.ColumnCount);
+            int yExcess = tableArea.Height - (cellHeight * table.RowCount);
+
+            Padding padding = new Padding(
+                minPad + (xExcess / 2),
+                minPad + (yExcess / 2),
+                minPad + (xExcess / 2) + (xExcess % 2),
+                minPad + (yExcess / 2) + (yExcess % 2)
+                );
+            return padding;
+        }
+
 
         public static List<Control> GetAllControls(Control container, Type controlType)
         {

@@ -15,6 +15,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         private readonly Color PLAYER_COLOUR = Color.DarkBlue;
 
         private const int HINT_FACTOR = 5;
+        private const int MINIMUM_PADDING = 10;
 
         public MazeErrorEventHandler OnMazeError;
 
@@ -46,16 +47,23 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
             // Setup container
             _container = Container;
             _container.RowStyles.Clear();
+            _container.RowCount = 0;
             _container.ColumnStyles.Clear();
+            _container.ColumnCount = 0;
             for (int row = 0; row < Height; row++)
             {
-                _container.RowStyles.Add(new RowStyle(SizeType.Percent, 100F / Height));
+                _container.RowStyles.Add(new RowStyle(SizeType.Percent, 100 / Height));
+                _container.RowCount += 1;
             }
             for (int col = 0; col < Width; col++)
             {
-                _container.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F / Width));
+                _container.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100 / Width));
+                _container.ColumnCount += 1;
             }
+
+            _container.Padding = MyFormMethods.ComputePadding(_container, MINIMUM_PADDING);
         }
+
 
         public void DisplayForms(Node CurrentNode = null, bool ShowSolution = false, bool ShowHint = false)
         {
