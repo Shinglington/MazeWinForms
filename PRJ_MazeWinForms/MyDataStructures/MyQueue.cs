@@ -2,7 +2,7 @@
 
 namespace MazeConsole.MyDataStructures
 {
-    class MyQueue<T>
+    public class MyQueue<T>
     {
         private MyList<T> _items;
         private int _front;

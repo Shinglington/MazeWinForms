@@ -5,7 +5,7 @@ using System.Windows.Forms;
 
 namespace MazeConsole
 {
-    class Maze
+    public class Maze
     {
         // Constants
         private const char WALL_CHAR = '█';

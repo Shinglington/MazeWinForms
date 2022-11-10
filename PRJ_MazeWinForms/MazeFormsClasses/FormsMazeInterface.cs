@@ -23,7 +23,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
 
         // Classes
         private WinFormsMaze _maze;
-        private FormsPlayer _player;
+        private Player _player;
 
         // Enums
         private SolutionVisibility _solutionVis;
@@ -40,7 +40,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
 
             _maze = new WinFormsMaze(Settings, _container);
 
-            _player = new FormsPlayer(_maze);
+            _player = new Player(_maze);
             _solutionVis = SolutionVisibility.None;
             AddEventsToMenu();
 
@@ -107,7 +107,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
                 // Call finished event
                 if (OnMazeFinish != null)
                 {
-                    OnMazeFinish(this, new MazeFinishedEventArgs(finished));
+                    OnMazeFinish(this, new MazeFinishedEventArgs(finished, _player));
 
                 }
                 else
@@ -127,6 +127,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         {
             if (_solutionVis != SolutionVisibility.Full)
             {
+                _player.UseSolution();
                 _maze.DisplayForms(null, true);
                 _solutionVis = SolutionVisibility.Full;
             }
@@ -140,6 +141,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         {
             if (_solutionVis != SolutionVisibility.Full)
             {
+                _player.UseHint();
                 _maze.DisplayForms(_player.CurrentNode, false, true) ;
                 _solutionVis = SolutionVisibility.Partial;
             }
@@ -156,18 +158,24 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
     // Event args for completed maze
 
     public delegate void MazeFinishedEventHandler(object source, MazeFinishedEventArgs e);
+
+    // Event arguments about player stats when maze finished
     public class MazeFinishedEventArgs : EventArgs 
     {
         private bool _mazeFinished;
-        public MazeFinishedEventArgs(bool finished)
+        private Player _player;
+        public MazeFinishedEventArgs(bool finished, Player player)
         {
             _mazeFinished = finished;
+            _player = player;
         }
 
-        public bool GetFinished()
-        {
-            return _mazeFinished;
-        }
+        public bool Finished { get { return _mazeFinished; } }
+        public int MoveCount { get { return _player.MoveCount; } }
+        public int HintCount { get { return _player.HintsUsed; } }
+        public bool SolutionUsed { get { return _player.SolutionUsed; } }
+
+
     }
 
 

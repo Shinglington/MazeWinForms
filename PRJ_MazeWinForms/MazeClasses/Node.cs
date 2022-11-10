@@ -1,6 +1,6 @@
 ﻿namespace MazeConsole
 {
-    class Node
+    public class Node
     {
         // private attributes
         private Node[] _adjNodes;
@@ -68,7 +68,7 @@
         }
     }
 
-    class NodeLocation
+    public class NodeLocation
     {
         private (int, int) _location;
 

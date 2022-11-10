@@ -2,7 +2,7 @@
 
 namespace MazeConsole.MyDataStructures
 {
-    class MyStack<T>
+    public class MyStack<T>
     {
         private MyList<T> _items;
         private int _top;

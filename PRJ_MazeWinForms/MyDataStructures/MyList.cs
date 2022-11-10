@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace MazeConsole.MyDataStructures
 {
 
-    class MyList<T> : IList<T>
+    public class MyList<T> : IList<T>
     {
         private const int _initialCapacity = 4;
 

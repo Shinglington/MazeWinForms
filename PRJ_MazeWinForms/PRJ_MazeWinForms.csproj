@@ -61,7 +61,6 @@
     </Compile>
     <Compile Include="MazeFormsClasses\WinFormsMaze.cs" />
     <Compile Include="MazeFormsClasses\FormsMazeInterface.cs" />
-    <Compile Include="MazeFormsClasses\FormsPlayer.cs" />
     <Compile Include="MazeFormsClasses\MazeDisplay.cs" />
     <Compile Include="MazeInterface.cs">
       <SubType>UserControl</SubType>

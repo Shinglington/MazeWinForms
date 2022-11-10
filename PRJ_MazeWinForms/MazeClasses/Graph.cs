@@ -3,7 +3,7 @@ using MazeConsole.MyDataStructures;
 
 namespace MazeConsole
 {
-    class Graph
+    public class Graph
     {
         private readonly Node[,] _nodes;
         private bool _locked;
