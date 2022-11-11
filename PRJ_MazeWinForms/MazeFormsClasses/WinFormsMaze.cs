@@ -9,10 +9,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
     class WinFormsMaze : Maze
     {
         // Colour constants
-        private readonly Color WALL_COLOUR = Color.Black;
-        private readonly Color CELL_COLOUR = Color.White;
-        private readonly Color HIGHLIGHT_COLOUR = Color.Red;
-        private readonly Color PLAYER_COLOUR = Color.DarkBlue;
+        private MazeDisplay _mazeDisplay;
 
         private const int HINT_FACTOR = 5;
         private const int MINIMUM_PADDING = 10;
@@ -29,23 +26,27 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
 
 
 
-        public WinFormsMaze(MazeSettings Settings, TableLayoutPanel Container) : base(Settings)
+        public WinFormsMaze(MazeSettings Settings, MazeDisplaySettings DisplaySettings, TableLayoutPanel Container) : base(Settings)
         {
-            SetupAttributes(Container);
+
+            _formDisplayed = false;
+            _container = Container;
+            _mazeDisplay = new MazeDisplay(DisplaySettings);
+            SetupContainer();
         }
 
-        public WinFormsMaze(int height, int width, string algorithm, TableLayoutPanel Container, bool ShowGeneration = false)
+        public WinFormsMaze(int height, int width, string algorithm, MazeDisplaySettings DisplaySettings, TableLayoutPanel Container, bool ShowGeneration = false)
             : base(height, width, algorithm, ShowGeneration)
         {
-            SetupAttributes(Container);
+            _formDisplayed = false;
+            _container = Container;
+            _mazeDisplay = new MazeDisplay(DisplaySettings);
+            SetupContainer();
         }
 
 
-        private void SetupAttributes(TableLayoutPanel Container)
+        private void SetupContainer()
         {
-            _formDisplayed = false;
-            // Setup container
-            _container = Container;
             _container.RowStyles.Clear();
             _container.RowCount = 0;
             _container.ColumnStyles.Clear();
@@ -99,21 +100,14 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
                     Panel Cell = new Panel() { Parent = _container, Dock = DockStyle.Fill, Margin = new Padding(0) };
                     _container.SetCellPosition(Cell, new TableLayoutPanelCellPosition(col, row));
 
-                    // Figure out which colour cell needs to be
-                    Color cell_colour = CELL_COLOUR;
-                    if (node == StartNode)
-                    {
-                        cell_colour = Color.Green;
-                    }
-                    else if (node == EndNode)
-                    {
-                        cell_colour = Color.Red;
-                    }
-                    Cell.Paint += new PaintEventHandler((sender, e) => MazeDisplay.PaintNode(sender, e, node, cell_colour, WALL_COLOUR));
+                    // Paint cell
+                    Cell.Paint += new PaintEventHandler((sender, e) => _mazeDisplay.PaintNode(sender, e, node,  node == StartNode, node == EndNode));
+
+
 
                     if (node == CurrentNode)
                     {
-                        PaintEventHandler highlightEvent = new PaintEventHandler((sender, e) => MazeDisplay.HighlightCell(sender, e, PLAYER_COLOUR));
+                        PaintEventHandler highlightEvent = new PaintEventHandler(_mazeDisplay.PaintPlayer);
                         Cell.Paint += highlightEvent;
                         _highlights.Add((Cell, highlightEvent));
                     }
@@ -139,7 +133,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
             if (CurrentNode != null)
             {
                 Panel Cell = (Panel)_container.GetControlFromPosition(CurrentNode.Location.X, CurrentNode.Location.Y);
-                PaintEventHandler highlightEvent = new PaintEventHandler((sender, e) => MazeDisplay.HighlightCell(sender, e, PLAYER_COLOUR));
+                PaintEventHandler highlightEvent = new PaintEventHandler(_mazeDisplay.PaintPlayer);
                 Cell.Paint += highlightEvent;
                 _highlights.Add((Cell, highlightEvent));
                 Cell.Invalidate();
@@ -152,7 +146,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
             foreach(Node n in hintNodes)
             {
                 Panel panel = (Panel)_container.GetControlFromPosition(n.Location.X, n.Location.Y);
-                panel.Paint += new PaintEventHandler((sender, e) => MazeDisplay.HighlightCell(sender, e, HIGHLIGHT_COLOUR));
+                PaintEventHandler highlightEvent = new PaintEventHandler(_mazeDisplay.PaintHint);
                 panel.Invalidate();
             }
         }

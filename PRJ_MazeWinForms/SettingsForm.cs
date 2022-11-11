@@ -1,4 +1,5 @@
 ﻿using MazeConsole;
+using PRJ_MazeWinForms.MazeFormsClasses;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -12,6 +13,8 @@ namespace PRJ_MazeWinForms
         private TableLayoutPanel _tbl_basicSettings;
         private TableLayoutPanel _tbl_advSettings;
         private SettingMode _mode;
+
+        private AppSettings _appSettings;
 
         private bool _showGeneration;
 
@@ -32,6 +35,7 @@ namespace PRJ_MazeWinForms
             _formPanel = tbl_settingPanel;
             _showGeneration = false;
             _mode = (SettingMode)0;
+            LoadAppSettings();
             SetupControls();
             SetupEvents();
         }
@@ -56,6 +60,13 @@ namespace PRJ_MazeWinForms
             {
                 MyFormMethods.ResizeLabelText(l, new EventArgs());
             }
+        }
+
+        private void LoadAppSettings()
+        {
+            AppSettingsManager SettingsManager = new AppSettingsManager();
+            SettingsManager.LoadConfig();
+            _appSettings = SettingsManager.AppSettings;
         }
 
         private void ReturnToMenu(object sender, EventArgs e)
@@ -245,7 +256,7 @@ namespace PRJ_MazeWinForms
             MazeSettings MazeSettings = GetMazeSettings();
             if (MazeSettings != null)
             {
-                MazeForm MazeForm = new MazeForm(this, MazeSettings);
+                MazeForm MazeForm = new MazeForm(this, MazeSettings, _appSettings.DisplaySettings);
                 MazeForm.Show();
                 this.Hide();
             }

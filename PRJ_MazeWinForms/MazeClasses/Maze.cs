@@ -191,18 +191,18 @@ namespace MazeConsole
             {
                 // Presets for difficulties
                 case (Difficulty)0:
-                    Width = 5;
-                    Height = 5;
+                    Width = 10;
+                    Height = 10;
                     Algorithm = GenAlgorithm.Sidewinder;
                     break;
                 case (Difficulty)1:
-                    Width = 10;
-                    Height = 10;
+                    Width = 25;
+                    Height = 25;
                     Algorithm = GenAlgorithm.BinaryTree;
                     break;
                 case (Difficulty)2:
-                    Width = 30;
-                    Height = 30;
+                    Width = 50;
+                    Height = 50;
                     Algorithm = GenAlgorithm.GrowingTree;
                     break;
             }

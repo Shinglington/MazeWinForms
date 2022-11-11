@@ -63,12 +63,6 @@
     <Compile Include="MazeFormsClasses\WinFormsMaze.cs" />
     <Compile Include="MazeFormsClasses\FormsMazeInterface.cs" />
     <Compile Include="MazeFormsClasses\MazeDisplay.cs" />
-    <Compile Include="MazeInterface.cs">
-      <SubType>UserControl</SubType>
-    </Compile>
-    <Compile Include="MazeInterface.Designer.cs">
-      <DependentUpon>MazeInterface.cs</DependentUpon>
-    </Compile>
     <Compile Include="MenuForm.cs">
       <SubType>Form</SubType>
     </Compile>

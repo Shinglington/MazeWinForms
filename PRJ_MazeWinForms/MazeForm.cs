@@ -20,15 +20,18 @@ namespace PRJ_MazeWinForms
 
         // Classes
         private FormsMazeInterface _interface;
+        private MazeDisplaySettings _displaySettings;
+        private MazeDisplay _mazeDisplay;
 
 
-        public MazeForm(Form settingsForm, MazeSettings MazeSettings)
+        public MazeForm(Form settingsForm, MazeSettings MazeSettings, MazeDisplaySettings DisplaySettings)
         {
             InitializeComponent();
             CreateControls();
-
+            _displaySettings = DisplaySettings;
             _settingsForm = settingsForm;
-            _interface = new FormsMazeInterface(MazeSettings, _tbl_mazePanel, _menuStrip);
+            _mazeDisplay = new MazeDisplay(_displaySettings);
+            _interface = new FormsMazeInterface(MazeSettings, DisplaySettings, _tbl_mazePanel, _menuStrip) ;
 
             SetupEvents();
 

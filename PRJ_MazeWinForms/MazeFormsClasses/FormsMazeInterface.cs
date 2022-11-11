@@ -33,12 +33,13 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         public event MazeFinishedEventHandler OnMazeFinish;
         public event MazeErrorEventHandler OnMazeError;
 
-        public FormsMazeInterface(MazeSettings Settings, TableLayoutPanel Container, MenuStrip MenuStrip)
+        public FormsMazeInterface(MazeSettings Settings, MazeDisplaySettings DisplaySettings, TableLayoutPanel Container, MenuStrip MenuStrip)
         {
+
             _container = Container;
             _menuStrip = MenuStrip;
 
-            _maze = new WinFormsMaze(Settings, _container);
+            _maze = new WinFormsMaze(Settings, DisplaySettings, _container);
 
             _player = new Player(_maze);
             _solutionVis = SolutionVisibility.None;
