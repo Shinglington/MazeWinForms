@@ -1,6 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace PRJ_MazeWinForms.MazeFormsClasses
 {
@@ -41,7 +39,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
             _appSettings = new AppSettings();
             try
             {
-
+                _appSettings = GetDefaultConfig();
             }
             catch
             {
@@ -52,7 +50,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
 
         public void SaveConfig()
         {
-            string jsonString = JsonSer
+
         }
 
         private AppSettings GetDefaultConfig()
