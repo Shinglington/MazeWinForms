@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PRJ_MazeWinForms.MazeFormsClasses
 {
@@ -42,31 +39,43 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         public void LoadConfig()
         {
             _appSettings = new AppSettings();
-            DefaultConfig();
+            try
+            {
+
+            }
+            catch
+            {
+                _appSettings = GetDefaultConfig();
+            }
+
         }
 
         public void SaveConfig()
         {
-
+            string jsonString = JsonSer
         }
 
-        private void DefaultConfig()
+        private AppSettings GetDefaultConfig()
         {
-            _appSettings.DisplaySettings.WallColour = Color.Black;
-            _appSettings.DisplaySettings.CellColour = Color.White;
-            _appSettings.DisplaySettings.StartColour = Color.Green;
-            _appSettings.DisplaySettings.EndColour = Color.DarkRed;
-            _appSettings.DisplaySettings.PlayerColour = Color.Blue;
-            _appSettings.DisplaySettings.HintColour = Color.Red;
+            AppSettings DefaultSettings = new AppSettings
+            {
+                DisplaySettings = new MazeDisplaySettings
+                {
+                    WallColour = Color.Black,
+                    CellColour = Color.White,
+                    StartColour = Color.Green,
+                    EndColour = Color.DarkRed,
+                    PlayerColour = Color.Blue,
+                    HintColour = Color.Red,
 
-            _appSettings.DisplaySettings.MinimumPadding = 5;
-
-
-
+                    MinimumPadding = 5
+                }
+            };
+            return DefaultSettings;
         }
     }
 
-    public class MazeDisplaySettings 
+    public class MazeDisplaySettings
     {
         public Color WallColour { get; set; }
         public Color CellColour { get; set; }
@@ -78,9 +87,9 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         public int MinimumPadding { get; set; }
 
 
-        
 
-        
+
+
     }
 
 

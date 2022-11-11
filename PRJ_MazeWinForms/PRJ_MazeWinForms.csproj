@@ -62,7 +62,6 @@
     <Compile Include="MazeFormsClasses\AppSettings.cs" />
     <Compile Include="MazeFormsClasses\WinFormsMaze.cs" />
     <Compile Include="MazeFormsClasses\FormsMazeInterface.cs" />
-    <Compile Include="MazeFormsClasses\MazeDisplay.cs" />
     <Compile Include="MenuForm.cs">
       <SubType>Form</SubType>
     </Compile>
