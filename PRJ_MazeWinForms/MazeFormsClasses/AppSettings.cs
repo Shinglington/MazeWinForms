@@ -59,6 +59,8 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
             _appSettings.DisplaySettings.PlayerColour = Color.Blue;
             _appSettings.DisplaySettings.HintColour = Color.Red;
 
+            _appSettings.DisplaySettings.MinimumPadding = 5;
+
 
 
         }
@@ -68,11 +70,13 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
     {
         public Color WallColour { get; set; }
         public Color CellColour { get; set; }
-
         public Color StartColour { get; set; }
         public Color EndColour { get; set; }
         public Color PlayerColour { get; set; }
         public Color HintColour { get; set; }
+
+        public int MinimumPadding { get; set; }
+
 
         
 

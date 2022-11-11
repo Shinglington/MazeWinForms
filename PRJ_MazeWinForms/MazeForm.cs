@@ -65,7 +65,6 @@ namespace PRJ_MazeWinForms
                 Parent = _tbl_formPanel,
                 Dock = DockStyle.Fill,
                 Margin = new Padding(0)
-
             };
             _tbl_formPanel.SetCellPosition(_tbl_mazePanel, new TableLayoutPanelCellPosition(0, 1));
 
