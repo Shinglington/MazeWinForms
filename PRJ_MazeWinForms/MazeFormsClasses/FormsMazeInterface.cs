@@ -1,18 +1,9 @@
 ﻿using System;
 using System.Windows.Forms;
-
+/*
 using MazeConsole;
 namespace PRJ_MazeWinForms.MazeFormsClasses
 {
-
-
-    public enum SolutionVisibility
-    {
-        None,
-        Partial,
-        Full
-    }
-
     class FormsMazeInterface 
     {
         private readonly Char[] MOVE_CONTROLS = { 'w', 'd', 's', 'a' };
@@ -182,3 +173,4 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
 
 
 }
+*/

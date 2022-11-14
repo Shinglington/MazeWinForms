@@ -10,164 +10,69 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
     class WinFormsMaze : Maze
     {
         // Colour constants
-        private MazeDisplay _mazeDisplay;
         private MazeDisplaySettings _displaySettings;
-
-        private const int HINT_FACTOR = 5;
 
         public MazeErrorEventHandler OnMazeError;
 
         // Forms attributes
         private TableLayoutPanel _container;
         public Control Parent { get { return _container; } }
-        private bool _formDisplayed;
-
-        // Keep track of which cell is being highlighted (i.e. the cell the player is in)
-        private MyList<(Panel, PaintEventHandler)> _highlights;
-
 
 
         public WinFormsMaze(MazeSettings Settings, MazeDisplaySettings DisplaySettings, TableLayoutPanel Container) : base(Settings)
         {
-            _formDisplayed = false;
             _container = Container;
             _displaySettings = DisplaySettings;
-            _mazeDisplay = new MazeDisplay(_displaySettings);
-            SetupContainer();
+            _mazeDisplayer = new FormsMazeDisplayer(DisplaySettings, Container);
         }
 
-        public WinFormsMaze(int height, int width, string algorithm, MazeDisplaySettings DisplaySettings, TableLayoutPanel Container, bool ShowGeneration = false)
+        public WinFormsMaze(int height, int width, GenAlgorithm algorithm, MazeDisplaySettings DisplaySettings, TableLayoutPanel Container, bool ShowGeneration = false)
             : base(height, width, algorithm, ShowGeneration)
         {
-            _formDisplayed = false;
             _container = Container;
             _displaySettings = DisplaySettings;
-            _mazeDisplay = new MazeDisplay(DisplaySettings);
-            SetupContainer();
+            _mazeDisplayer = new FormsMazeDisplayer(DisplaySettings, Container);
         }
 
 
-        private void SetupContainer()
+        public override void Display(bool ShowSolution = false, bool ShowHint = false)
         {
-            _container.RowStyles.Clear();
-            _container.RowCount = 0;
-            _container.ColumnStyles.Clear();
-            _container.ColumnCount = 0;
-            for (int row = 0; row < Height; row++)
-            {
-                _container.RowStyles.Add(new RowStyle(SizeType.Percent, 100 / Height));
-                _container.RowCount += 1;
-            }
-            for (int col = 0; col < Width; col++)
-            {
-                _container.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100 / Width));
-                _container.ColumnCount += 1;
-            }
-
-            _container.Padding = MyFormMethods.ComputePadding(_container, _displaySettings.MinimumPadding);
-        }
-
-
-        public void DisplayForms(Node CurrentNode = null, bool ShowSolution = false, bool ShowHint = false)
-        {
-            if (!_formDisplayed)
-            {
-                GetFormsDisplay(CurrentNode);
-            }
-
             if (ShowSolution)
             {
-                ShowFormsHint(Solution);
+                _mazeDisplayer.DisplaySolution();
             }
             else if (ShowHint)
             {
-                ShowFormsHint(GetHint(CurrentNode, HINT_FACTOR));
+                _mazeDisplayer.DisplaySolution();
             }
             else
             {
-                UpdateFormsDisplay(CurrentNode);
+                _mazeDisplayer.DisplayMaze();
             }
         }
-
-        private void GetFormsDisplay(Node CurrentNode = null)
-        {
-            _highlights = new MyList<(Panel, PaintEventHandler)>();
-            Node[,] nodes = _graph.GetNodes();
-            for (int row = 0; row < Height; row++)
-            {
-                for (int col = 0; col < Width; col++)
-                {
-                    Node node = nodes[col, row];
-                    // Create new panel for cell
-                    Panel Cell = new Panel() { Parent = _container, Dock = DockStyle.Fill, Margin = new Padding(0) };
-                    _container.SetCellPosition(Cell, new TableLayoutPanelCellPosition(col, row));
-
-                    // Paint cell
-                    Cell.Paint += new PaintEventHandler((sender, e) => _mazeDisplay.PaintNode(sender, e, node,  node == StartNode, node == EndNode));
-
-
-
-                    if (node == CurrentNode)
-                    {
-                        PaintEventHandler highlightEvent = new PaintEventHandler(_mazeDisplay.PaintPlayer);
-                        Cell.Paint += highlightEvent;
-                        _highlights.Add((Cell, highlightEvent));
-                    }
-
-                }
-            }
-            _formDisplayed = true;
-        }
-
-        // Removes event handlers from previous display (i.e. removes last location highlight)
-        private void UpdateFormsDisplay(Node CurrentNode = null)
-        {
-            foreach ((Panel, PaintEventHandler) pair in _highlights)
-            {
-                Panel p = pair.Item1;
-                PaintEventHandler highlightEvent = pair.Item2;
-                p.Paint -= highlightEvent;
-                p.Invalidate();
-            }
-            _highlights = new MyList<(Panel, PaintEventHandler)>();
-
-            // Highlight current node
-            if (CurrentNode != null)
-            {
-                Panel Cell = (Panel)_container.GetControlFromPosition(CurrentNode.Location.X, CurrentNode.Location.Y);
-                PaintEventHandler highlightEvent = new PaintEventHandler(_mazeDisplay.PaintPlayer);
-                Cell.Paint += highlightEvent;
-                _highlights.Add((Cell, highlightEvent));
-                Cell.Invalidate();
-            }
-
-        }
-
-        private void ShowFormsHint(MyList<Node> hintNodes)
-        {
-            foreach(Node n in hintNodes)
-            {
-                Panel panel = (Panel)_container.GetControlFromPosition(n.Location.X, n.Location.Y);
-                PaintEventHandler highlightEvent = new PaintEventHandler(_mazeDisplay.PaintHint);
-                panel.Invalidate();
-            }
-        }
-
-
     }
 
-    internal class FormsMazeDisplayer : MazeDisplayer
+    internal class FormsMazeDisplayer : IMazeDisplayer
     {
         private Maze _maze;
         private MazeDisplaySettings _displaySettings;
         private TableLayoutPanel _container;
+
         private bool _isDisplaying;
 
-        public MazeDisplayer(MazeDisplaySettings DisplaySettings, TableLayoutPanel Container)
+        private NodeLocation _displayedPlayerLocation;
+        private PaintEventHandler _playerPaintMethod;
+
+
+        public FormsMazeDisplayer(MazeDisplaySettings DisplaySettings, TableLayoutPanel Container)
         {
             _displaySettings = DisplaySettings;
             _container = Container;
             _isDisplaying = false;
+
+            _playerPaintMethod = null;
+            _displayedPlayerLocation = null;
+
             SetupContainer();
         }
         private void SetupContainer()
@@ -190,15 +95,25 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
             _container.Padding = MyFormMethods.ComputePadding(_container, _displaySettings.MinimumPadding);
         }
 
-        public void DisplayMaze(Node PlayerNode, MyList<Node> HintHighlights) 
+        public void DisplayMaze() 
         {
             if (!_isDisplaying)
             {
                 InitialMazeDisplay();
             }
-            UpdateMazeDisplay(PlayerNode, HintHighlights);
-
+            UpdateMazeDisplay();
         }
+
+        public void DisplaySolution()
+        {
+            if (!_isDisplaying)
+            {
+                InitialMazeDisplay();
+            }
+            UpdateMazeDisplay(_maze.Solution);
+        }
+
+
 
         private void InitialMazeDisplay()
         {
@@ -214,8 +129,33 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
                 }
             }
         }
-        private void UpdateMazeDisplay(Node PlayerNode, MyList<Node> HintHighlights)
+        private void UpdateMazeDisplay(MyList<NodeLocation> HintHighlights = null)
         {
+            // Remove existing player paints
+            if (_displayedPlayerLocation != null)
+            {
+                Panel PreviousCell = (Panel)_container.GetControlFromPosition(_displayedPlayerLocation.X, _displayedPlayerLocation.Y);
+                PreviousCell.Paint -= _playerPaintMethod;
+                PreviousCell.Invalidate();
+            }
+            // Show new player position
+            Panel CurrentCell = (Panel)_container.GetControlFromPosition(_maze.PlayerLocation.X, _maze.PlayerLocation.Y);
+            _playerPaintMethod = new PaintEventHandler(PaintPlayer);
+            CurrentCell.Paint += _playerPaintMethod;
+            CurrentCell.Invalidate();
+
+            // Show hint highlights
+            if (HintHighlights != null)
+            {
+                foreach (NodeLocation location in HintHighlights)
+                {
+                    Panel HintCell = (Panel)_container.GetControlFromPosition(location.X, location.Y);
+                    HintCell.Paint += new PaintEventHandler(PaintHint);
+                    HintCell.Invalidate();
+                }
+            }
+
+
         }
 
         private void PaintNode(object sender, PaintEventArgs e, NodeLocation location, bool IsStartNode = false, bool IsEndNode = false)
@@ -264,64 +204,6 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
             g.FillRectangle(brush, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO, cell.Width - (2 * cell.Width / WALL_RATIO), cell.Height - (2 * cell.Height / WALL_RATIO));
         }
 
-
-    }
-
-    internal class MazeDisplay
-    {
-        private MazeDisplaySettings _displaySettings;
-        private float WALL_RATIO;
-        public MazeDisplay(MazeDisplaySettings DisplaySettings, int WallRatio = 6)
-        {
-            _displaySettings = DisplaySettings;
-            WALL_RATIO = WallRatio;
-        }
-
-        public void PaintNode(object sender, PaintEventArgs e, Node node, bool IsStartNode = false, bool IsEndNode = false)
-        {
-            Panel cell = sender as Panel;
-            Graphics g = e.Graphics;
-            SolidBrush brush = new SolidBrush(_displaySettings.WallColour);
-
-            // Draw walls
-            if (node.NorthNode == null)
-            {
-                g.FillRectangle(brush, 0, 0, cell.Width, cell.Height / WALL_RATIO);
-            }
-            if (node.EastNode == null)
-            {
-                g.FillRectangle(brush, cell.Width - cell.Width / WALL_RATIO, 0, cell.Width / WALL_RATIO, cell.Height);
-            }
-            if (node.SouthNode == null)
-            {
-                g.FillRectangle(brush, 0, cell.Height - cell.Height / WALL_RATIO, cell.Width, cell.Height / WALL_RATIO);
-            }
-            if (node.WestNode == null)
-            {
-                g.FillRectangle(brush, 0, 0, cell.Width / WALL_RATIO, cell.Height);
-            }
-
-            // Draw wall corners
-            g.FillRectangle(brush, 0, 0, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
-            g.FillRectangle(brush, cell.Width - cell.Width / WALL_RATIO, 0, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
-            g.FillRectangle(brush, cell.Width - cell.Width / WALL_RATIO, cell.Height - cell.Height / WALL_RATIO, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
-            g.FillRectangle(brush, 0, cell.Height - cell.Height / WALL_RATIO, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
-
-            // Colour cell
-            brush = new SolidBrush(_displaySettings.CellColour);
-            if (IsStartNode)
-            {
-                Console.WriteLine("Start node at {0},{1}", node.Location.X, node.Location.Y);
-                brush = new SolidBrush(_displaySettings.StartColour);
-            }
-            else if (IsEndNode)
-            {
-                brush = new SolidBrush(_displaySettings.EndColour);
-            }
-            g.FillRectangle(brush, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO, cell.Width - (2 * cell.Width / WALL_RATIO), cell.Height - (2 * cell.Height / WALL_RATIO));
-
-        }
-
         public void PaintPlayer(object sender, PaintEventArgs e)
         {
             Panel cell = sender as Panel;
@@ -329,7 +211,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
 
             Brush brush = new SolidBrush(_displaySettings.PlayerColour);
             Point midpoint = new Point(cell.Width / 2, cell.Height / 2);
-            float radius = Math.Min(cell.Width, cell.Height) / (WALL_RATIO);
+            float radius = Math.Min(cell.Width, cell.Height) / _displaySettings.WallRatio;
             g.FillEllipse(brush, midpoint.X - radius, midpoint.Y - radius, radius * 2, radius * 2);
         }
         public void PaintHint(object sender, PaintEventArgs e)
@@ -339,10 +221,27 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
 
             Brush brush = new SolidBrush(_displaySettings.HintColour);
             Point midpoint = new Point(cell.Width / 2, cell.Height / 2);
-            float radius = Math.Min(cell.Width, cell.Height) / (WALL_RATIO);
+            float radius = Math.Min(cell.Width, cell.Height) / _displaySettings.WallRatio;
             g.FillEllipse(brush, midpoint.X - radius, midpoint.Y - radius, radius * 2, radius * 2);
         }
     }
+
+    public class FormsMazeInterface : IMazeInterface
+    {
+
+
+        public void SetupControls(char[] movementKeys)
+        {
+            throw new NotImplementedException();
+        }
+
+        public bool TryMove(Direction moveDirection)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+
 
     public delegate void MazeErrorEventHandler(object source, MazeErrorEventArgs e);
     public class MazeErrorEventArgs : EventArgs
