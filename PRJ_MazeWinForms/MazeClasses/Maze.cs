@@ -157,10 +157,17 @@ namespace MazeConsole
             }
             return hint;
         }
-
         public bool CheckAccessibility(Node A, Node B)
         {
             return _graph.AreConnected(A, B);
+        }
+
+        public bool GetWalls(NodeLocation coords)
+        {
+            bool[] Walls = new bool[4];
+            Node[] ConnectedNodes = _graph.GetConnectedNodes(_graph.GetNodes()[coords.X], _graph.GetNodes()[coords.Y]);
+
+            return Walls;
         }
     }
 

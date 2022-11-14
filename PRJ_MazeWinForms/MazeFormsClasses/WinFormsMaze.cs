@@ -13,7 +13,6 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         private MazeDisplaySettings _displaySettings;
 
         private const int HINT_FACTOR = 5;
-        private const int MINIMUM_PADDING = 10;
 
         public MazeErrorEventHandler OnMazeError;
 
@@ -151,6 +150,49 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
                 PaintEventHandler highlightEvent = new PaintEventHandler(_mazeDisplay.PaintHint);
                 panel.Invalidate();
             }
+        }
+
+
+    }
+
+    internal class MazeDisplayer
+    {
+        private Maze _maze;
+        private MazeDisplaySettings _displaySettings;
+        private TableLayoutPanel _container;
+        private bool _isDisplaying;
+
+        public MazeDisplayer(MazeDisplaySettings DisplaySettings, TableLayoutPanel Container)
+        {
+            _displaySettings = DisplaySettings;
+            _container = Container;
+            _isDisplaying = false;
+        }
+
+        public void DisplayMaze(Node PlayerNode, MyList<Node> HintHighlights) 
+        {
+            if (!_isDisplaying)
+            {
+                InitialMazeDisplay();
+            }
+            UpdateMazeDisplay(PlayerNode, HintHighlights);
+
+        }
+
+        private void InitialMazeDisplay()
+        {
+            for(int row = 0; row < _maze.Height; row++)
+            {
+                for(int col = 0; col < _maze.Width; col++)
+                {
+
+                }
+            }
+        }
+
+        private void UpdateMazeDisplay(Node PlayerNode, MyList<Node> HintHighlights)
+        {
+
         }
 
 

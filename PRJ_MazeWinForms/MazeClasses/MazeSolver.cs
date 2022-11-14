@@ -66,7 +66,7 @@ namespace MazeConsole
             Node[] ChildNodes = G.GetConnectedNodes(CurrNode);
             foreach (Node NextNode in ChildNodes)
             {
-                if (NextNode != PrevNode)
+                if (NextNode != PrevNode && NextNode != null)
                 {
                     DepthFirstSearch(G, NextNode, Path, Target);
                     if (Path.Peek() == Target) return;
@@ -82,8 +82,16 @@ namespace MazeConsole
             {
                 return null;
             }
-            Node[] AccessibleNodes = G.GetConnectedNodes(N);
-            return AccessibleNodes[rand.Next(AccessibleNodes.Length)];
+            Node[] ConnectedNodes = G.GetConnectedNodes(N);
+            MyList<Node> AccessibleNodes = new MyList<Node>();
+            foreach(Node n in ConnectedNodes)
+            {
+                if (N != null)
+                {
+                    AccessibleNodes.Add(N);
+                }
+            }
+            return AccessibleNodes[rand.Next(AccessibleNodes.Count)];
         }
 
     }

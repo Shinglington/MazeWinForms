@@ -30,7 +30,6 @@ namespace MazeConsole
                         }
                     }
                 }
-
             }
         }
 
@@ -181,10 +180,7 @@ namespace MazeConsole
             MyList<Node> AdjacentNodes = new MyList<Node>();
             foreach (Node node in PossibleAdjacentNodes)
             {
-                if (node != null)
-                {
-                    AdjacentNodes.Add(node);
-                }
+                AdjacentNodes.Add(node);
             }
             return AdjacentNodes.ToArray();
         }
