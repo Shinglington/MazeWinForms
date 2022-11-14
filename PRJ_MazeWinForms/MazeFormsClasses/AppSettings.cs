@@ -81,7 +81,6 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         public Color EndColour { get; set; }
         public Color PlayerColour { get; set; }
         public Color HintColour { get; set; }
-
         public int MinimumPadding { get; set; }
 
 

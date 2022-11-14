@@ -10,6 +10,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
     {
         // Colour constants
         private MazeDisplay _mazeDisplay;
+        private MazeDisplaySettings _displaySettings;
 
         private const int HINT_FACTOR = 5;
         private const int MINIMUM_PADDING = 10;
@@ -28,10 +29,10 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
 
         public WinFormsMaze(MazeSettings Settings, MazeDisplaySettings DisplaySettings, TableLayoutPanel Container) : base(Settings)
         {
-
             _formDisplayed = false;
             _container = Container;
-            _mazeDisplay = new MazeDisplay(DisplaySettings);
+            _displaySettings = DisplaySettings;
+            _mazeDisplay = new MazeDisplay(_displaySettings);
             SetupContainer();
         }
 
@@ -40,6 +41,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         {
             _formDisplayed = false;
             _container = Container;
+            _displaySettings = DisplaySettings;
             _mazeDisplay = new MazeDisplay(DisplaySettings);
             SetupContainer();
         }
@@ -62,7 +64,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
                 _container.ColumnCount += 1;
             }
 
-            _container.Padding = MyFormMethods.ComputePadding(_container, MINIMUM_PADDING);
+            _container.Padding = MyFormMethods.ComputePadding(_container, _displaySettings.MinimumPadding);
         }
 
 
