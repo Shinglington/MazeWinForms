@@ -162,11 +162,17 @@ namespace MazeConsole
             return _graph.AreConnected(A, B);
         }
 
-        public bool GetWalls(NodeLocation coords)
+        public bool[] GetWalls(NodeLocation coords)
         {
             bool[] Walls = new bool[4];
-            Node[] ConnectedNodes = _graph.GetConnectedNodes(_graph.GetNodes()[coords.X], _graph.GetNodes()[coords.Y]);
-
+            Node[] ConnectedNodes = _graph.GetConnectedNodes(_graph.GetNodes()[coords.X, coords.Y]);
+            for(int i = 0; i < 4; i++)
+            {
+                if (ConnectedNodes[i] == null)
+                {
+                    Walls[i] = false;
+                }
+            }
             return Walls;
         }
     }

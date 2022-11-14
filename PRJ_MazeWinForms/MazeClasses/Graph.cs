@@ -176,13 +176,7 @@ namespace MazeConsole
 
         public Node[] GetConnectedNodes(Node N)
         {
-            MyList<Node> PossibleAdjacentNodes = new MyList<Node>() { N.NorthNode, N.EastNode, N.SouthNode, N.WestNode };
-            MyList<Node> AdjacentNodes = new MyList<Node>();
-            foreach (Node node in PossibleAdjacentNodes)
-            {
-                AdjacentNodes.Add(node);
-            }
-            return AdjacentNodes.ToArray();
+            return new Node[] {N.NorthNode, N.EastNode, N.SouthNode, N.WestNode};
         }
 
         public bool AreAdjacent(Node NodeA, Node NodeB)
