@@ -18,7 +18,7 @@ namespace MazeConsole
             _player = new Player(_maze);
             Play();
 
-            _maze.DisplayConsole(null, true);
+            _maze.DisplayConsole(true);
             Console.ReadLine();
 
         }
@@ -33,8 +33,8 @@ namespace MazeConsole
 
         private void Play()
         {
-            _maze.DisplayConsole(_player.CurrentNode);
-            while (_player.CurrentNode != _maze.EndNode)
+            _maze.DisplayConsole();
+            while (_player.Location != _maze.EndNodeLocation)
             {
                 PlayerTurn();
             }
@@ -62,34 +62,35 @@ namespace MazeConsole
 
         private void ShowHint()
         {
-            _maze.DisplayConsole(_player.CurrentNode, false, true);
+            _maze.DisplayConsole(false, true);
         }
+        /*
 
         private void MakeMove(Direction direction)
         {
-            Node NextNode = null;
+            NodeLocation NextLocation = null;
             switch (direction)
             {
                 case Direction.North:
-                    NextNode = _player.CurrentNode.NorthNode;
+                    NextLocation = new NodeLocation()
                     break;
                 case Direction.East:
-                    NextNode = _player.CurrentNode.EastNode;
+                    NextLocation = _player.LocationCurrentNode.EastNode;
                     break;
                 case Direction.South:
-                    NextNode = _player.CurrentNode.SouthNode;
+                    NextLocation = _player.CurrentNode.SouthNode;
                     break;
                 case Direction.West:
-                    NextNode = _player.CurrentNode.WestNode;
+                    NextLocation = _player.CurrentNode.WestNode;
                     break;
             }
-            if (NextNode != null)
+            if (NextLocation != null)
             {
-                _player.Move(NextNode);
+                _player.Move(NextLocation);
                 _maze.DisplayConsole(_player.CurrentNode);
             }
         }
-
+        */
         private char GetKeyInput()
         {
             while (true)

@@ -34,18 +34,18 @@ namespace MazeConsole
         }
 
         // "Wall follower", a depth-first search returning solution
-        public static MyList<Node> WallFollower(Graph G, Node Start = null, Node End = null)
+        public static MyList<Node> WallFollower(Graph G, NodeLocation StartLocation = null, NodeLocation EndLocation = null)
         {
             MyStack<Node> Path = new MyStack<Node>();
-            if (Start == null)
+            if (StartLocation == null)
             {
-                Start = G.StartNode;
+                StartLocation = G.StartNode.Location;
             }
-            if (End == null)
+            if (EndLocation == null)
             {
-                End = G.EndNode;
+                EndLocation = G.EndNode.Location;
             }
-            DepthFirstSearch(G, Start, Path, End);
+            DepthFirstSearch(G, G.GetNodeFromLocation(StartLocation), Path, G.GetNodeFromLocation(EndLocation));
             return Path.ToList();
         }
 

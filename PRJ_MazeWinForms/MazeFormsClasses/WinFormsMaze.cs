@@ -3,6 +3,7 @@ using MazeConsole.MyDataStructures;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
+using System.Xml.Linq;
 
 namespace PRJ_MazeWinForms.MazeFormsClasses
 {
@@ -155,7 +156,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
 
     }
 
-    internal class MazeDisplayer
+    internal class FormsMazeDisplayer : MazeDisplayer
     {
         private Maze _maze;
         private MazeDisplaySettings _displaySettings;
@@ -167,6 +168,26 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
             _displaySettings = DisplaySettings;
             _container = Container;
             _isDisplaying = false;
+            SetupContainer();
+        }
+        private void SetupContainer()
+        {
+            _container.RowStyles.Clear();
+            _container.RowCount = 0;
+            _container.ColumnStyles.Clear();
+            _container.ColumnCount = 0;
+            for (int row = 0; row < _maze.Height; row++)
+            {
+                _container.RowStyles.Add(new RowStyle(SizeType.Percent, 100 / _maze.Height));
+                _container.RowCount += 1;
+            }
+            for (int col = 0; col < _maze.Width; col++)
+            {
+                _container.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100 / _maze.Width));
+                _container.ColumnCount += 1;
+            }
+
+            _container.Padding = MyFormMethods.ComputePadding(_container, _displaySettings.MinimumPadding);
         }
 
         public void DisplayMaze(Node PlayerNode, MyList<Node> HintHighlights) 
@@ -185,14 +206,62 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
             {
                 for(int col = 0; col < _maze.Width; col++)
                 {
-
+                    NodeLocation CurrentLocation = new NodeLocation(col, row);
+                    Panel Cell = new Panel() { Parent = _container, Dock = DockStyle.Fill, Margin = new Padding(0) };
+                    _container.SetCellPosition(Cell, new TableLayoutPanelCellPosition(col, row));
+                    Cell.Paint += new PaintEventHandler((sender, e) => 
+                        PaintNode(sender, e, CurrentLocation, CurrentLocation == _maze.StartNodeLocation, CurrentLocation == _maze.EndNodeLocation));
                 }
             }
         }
-
         private void UpdateMazeDisplay(Node PlayerNode, MyList<Node> HintHighlights)
         {
+        }
 
+        private void PaintNode(object sender, PaintEventArgs e, NodeLocation location, bool IsStartNode = false, bool IsEndNode = false)
+        {
+            Panel cell = sender as Panel;
+            Graphics g = e.Graphics;
+            SolidBrush brush = new SolidBrush(_displaySettings.WallColour);
+
+            int WALL_RATIO = _displaySettings.WallRatio;
+            bool[] Walls = _maze.GetWalls(location);
+
+            // Draw walls
+            if (Walls[0])
+            {
+                g.FillRectangle(brush, 0, 0, cell.Width, cell.Height / WALL_RATIO);
+            }
+            if (Walls[1])
+            {
+                g.FillRectangle(brush, cell.Width - cell.Width / WALL_RATIO, 0, cell.Width / WALL_RATIO, cell.Height);
+            }
+            if (Walls[2])
+            {
+                g.FillRectangle(brush, 0, cell.Height - cell.Height / WALL_RATIO, cell.Width, cell.Height / WALL_RATIO);
+            }
+            if (Walls[3])
+            {
+                g.FillRectangle(brush, 0, 0, cell.Width / WALL_RATIO, cell.Height);
+            }
+
+            // Draw wall corners
+            g.FillRectangle(brush, 0, 0, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
+            g.FillRectangle(brush, cell.Width - cell.Width / WALL_RATIO, 0, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
+            g.FillRectangle(brush, cell.Width - cell.Width / WALL_RATIO, cell.Height - cell.Height / WALL_RATIO, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
+            g.FillRectangle(brush, 0, cell.Height - cell.Height / WALL_RATIO, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
+
+            // Colour cell
+            brush = new SolidBrush(_displaySettings.CellColour);
+            if (IsStartNode)
+            {
+                brush = new SolidBrush(_displaySettings.StartColour);
+            }
+            else if (IsEndNode)
+            {
+                brush = new SolidBrush(_displaySettings.EndColour);
+            }
+            g.FillRectangle(brush, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO, cell.Width - (2 * cell.Width / WALL_RATIO), cell.Height - (2 * cell.Height / WALL_RATIO));
         }
 
 

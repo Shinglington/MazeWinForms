@@ -1,4 +1,5 @@
 ﻿using MazeConsole.MyDataStructures;
+using PRJ_MazeWinForms.MazeClasses;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -17,20 +18,25 @@ namespace MazeConsole
 
 
         protected Graph _graph;
+        protected Player _player;
+        protected MazeDisplayer _mazeDisplayer;
+
         protected MyList<Node> _solution;
         public int Width { private set; get; }
         public int Height { private set; get; }
 
-        public Maze(int width, int height, string algorithm, bool showGeneration)
+        public Maze(int width, int height, GenAlgorithm algorithm, bool showGeneration)
         {
-            Width = width;
-            Height = height;
-            _graph = new Graph(Width, Height);
-            MazeGen.GenerateMaze(this, _graph, algorithm, showGeneration);
-            _solution = null;
+            MazeSettings Settings = new MazeSettings(Width, Height, algorithm, showGeneration);
+            SetupMaze(Settings);
         }
 
         public Maze(MazeSettings Settings)
+        {
+            SetupMaze(Settings);
+        }
+
+        public void SetupMaze(MazeSettings Settings)
         {
             Width = Settings.Width;
             Height = Settings.Height;
@@ -39,9 +45,10 @@ namespace MazeConsole
             _solution = null;
         }
 
-        public Node StartNode { get { return _graph.StartNode; } }
 
-        public Node EndNode { get { return _graph.EndNode; } }
+        public NodeLocation StartNodeLocation { get { return _graph.StartNode.Location; } }
+        public NodeLocation EndNodeLocation { get { return _graph.EndNode.Location; } }
+        public NodeLocation PlayerLocation { get { return _player.Location; } }
       
         public MyList<Node> Solution
         {
@@ -55,29 +62,32 @@ namespace MazeConsole
             }
         }
 
+        public void Display()
+        {
 
-        public void DisplayConsole(Node CurrentNode = null, bool ShowSolution = false, bool ShowHint = false)
+        }
+
+        public void DisplayConsole(bool ShowSolution = false, bool ShowHint = false)
         {
             string Display = "";
             if (ShowSolution)
             {
-                Display = GetStringDisplay(CurrentNode, Solution);
+                Display = GetStringDisplay(Solution);
             }
             else if (ShowHint)
             {
-                Display = GetStringDisplay(CurrentNode, GetHint(CurrentNode));
+                Display = GetStringDisplay(GetHint());
             }
             else
             {
-                Display = GetStringDisplay(CurrentNode);
+                Display = GetStringDisplay();
             }
             Console.WriteLine(Display);
         }
 
-        private string GetStringDisplay(Node CurrentNode = null, MyList<Node> highlightNodes = null)
+        private string GetStringDisplay(MyList<Node> highlightNodes = null)
         {
             string mazeString = "";
-            Node[,] nodes = _graph.GetNodes();
             mazeString += WALL_CHAR;
             // Generate top wall
             for (int x = 0; x < Width; x++)
@@ -96,20 +106,23 @@ namespace MazeConsole
                 // East edges
                 for (int x = 0; x < Width; x++)
                 {
-                    Node thisNode = nodes[x, y];
-                    if (thisNode == CurrentNode)
+                    NodeLocation ThisNodeLocation = new NodeLocation(x, y);
+                    bool[] Walls = GetWalls(ThisNodeLocation);
+
+                    if (ThisNodeLocation == PlayerLocation)
                     {
                         currEastWalls += 'C';
                     }
-                    else if (thisNode == StartNode)
+                    else if (ThisNodeLocation == StartNodeLocation)
                     {
                         currEastWalls += START_CHAR;
                     }
-                    else if (thisNode == EndNode)
+                    else if (ThisNodeLocation == EndNodeLocation)
                     {
                         currEastWalls += END_CHAR;
                     }
-                    else if (highlightNodes != null && highlightNodes.Contains(thisNode))
+
+                    else if (highlightNodes != null && highlightNodes.Contains(_graph.GetNodeFromLocation(ThisNodeLocation)))
                     {
                         currEastWalls += HIGHLIGHT_CHAR;
                     }
@@ -119,23 +132,17 @@ namespace MazeConsole
                     }
 
                     // Check east edge
-                    if (thisNode.EastNode != null)
-                    {
-                        currEastWalls += SPACE_CHAR;
-                    }
-                    else
-                    {
+                    if (Walls[(int)Direction.East])
                         currEastWalls += WALL_CHAR;
-                    }
-                    // Check south edge
-                    if (thisNode.SouthNode != null)
-                    {
-                        currSouthWalls += SPACE_CHAR;
-                    }
                     else
-                    {
+                        currEastWalls += SPACE_CHAR;
+
+                    // Check south edge
+                    if (Walls[(int)Direction.South])
                         currSouthWalls += WALL_CHAR;
-                    }
+                    else
+                        currSouthWalls += SPACE_CHAR;
+
                     currSouthWalls += WALL_CHAR;
                 }
                 mazeString += currEastWalls;
@@ -147,9 +154,9 @@ namespace MazeConsole
         }
 
 
-        protected MyList<Node> GetHint(Node CurrentNode, int count = 4)
+        protected MyList<Node> GetHint(int count = 4)
         {
-            MyList<Node> PathToEnd = MazeSolver.WallFollower(_graph, CurrentNode, EndNode);
+            MyList<Node> PathToEnd = MazeSolver.WallFollower(_graph, PlayerLocation, EndNodeLocation);
             MyList<Node> hint = new MyList<Node>();
             for (int i = 0; i < Math.Min(count, PathToEnd.Count); i++)
             {
@@ -157,25 +164,41 @@ namespace MazeConsole
             }
             return hint;
         }
-        public bool CheckAccessibility(Node A, Node B)
+        public bool CheckAccessibility(NodeLocation A, NodeLocation B)
         {
-            return _graph.AreConnected(A, B);
+            return _graph.AreConnected(_graph.GetNodeFromLocation(A), _graph.GetNodeFromLocation(B));
         }
 
         public bool[] GetWalls(NodeLocation coords)
         {
-            bool[] Walls = new bool[4];
+            bool[] Walls = new bool[4] { false, false, false, false }; 
             Node[] ConnectedNodes = _graph.GetConnectedNodes(_graph.GetNodes()[coords.X, coords.Y]);
             for(int i = 0; i < 4; i++)
             {
                 if (ConnectedNodes[i] == null)
                 {
-                    Walls[i] = false;
+                    Walls[i] = true;
                 }
             }
             return Walls;
         }
     }
+
+    public class ConsoleMazeDisplayer : IMazeDisplayer
+    {
+        protected Maze _maze;
+        public ConsoleMazeDisplayer()
+        {
+            
+        }
+
+        public void DisplayMaze()
+        {
+
+        }
+
+    }
+
 
 
 

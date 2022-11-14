@@ -3,7 +3,7 @@
     public class Player
     {
         private Maze _maze;
-        public Node CurrentNode { get; private set; }
+        public NodeLocation Location { get; private set; }
 
         private int _movesUsed;
         private int _hintsUsed;
@@ -14,7 +14,7 @@
             _movesUsed = 0;
             _hintsUsed = 0;
             _solutionUsed = false;
-            CurrentNode = M.StartNode;
+            Location = M.StartNodeLocation;
 
         }
 
@@ -23,13 +23,13 @@
         public int HintsUsed { get { return _hintsUsed; } }
 
 
-        public bool Move(Node NextNode)
+        public bool Move(NodeLocation Coords)
         {
             bool validMove = false;
-            if (_maze.CheckAccessibility(CurrentNode, NextNode))
+            if (_maze.CheckAccessibility(Location, Coords))
             {
                 validMove = true;
-                CurrentNode = NextNode;
+                Location = Coords;
                 _movesUsed++;
             }
             return validMove;

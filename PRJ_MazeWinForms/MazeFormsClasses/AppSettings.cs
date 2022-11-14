@@ -66,7 +66,8 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
                     PlayerColour = Color.Blue,
                     HintColour = Color.Red,
 
-                    MinimumPadding = 5
+                    MinimumPadding = 5,
+                    WallRatio = 6
                 }
             };
             return DefaultSettings;
@@ -82,6 +83,8 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         public Color PlayerColour { get; set; }
         public Color HintColour { get; set; }
         public int MinimumPadding { get; set; }
+
+        public int WallRatio { get; set; }
 
 
 

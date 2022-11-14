@@ -53,6 +53,10 @@ namespace MazeConsole
             EndNode = _nodes[width - 1, height - 1];
         }
 
+        public Node GetNodeFromLocation(NodeLocation Location)
+        {
+            return _nodes[Location.X, Location.Y];
+        }
 
         public bool AddEdge(Node NodeA, Node NodeB)
         {
