@@ -1,20 +1,20 @@
 ﻿using MazeConsole.MyDataStructures;
 using System;
-using System.Drawing;
 using System.Linq;
-using System.Windows.Forms;
+using System.Security.Cryptography;
 
 namespace MazeConsole
 {
     public class Maze
-    { 
+    {
 
         protected Graph _graph;
         protected Player _player;
         protected IMazeDisplayer _mazeDisplayer;
-        protected IMazeInterface _mazeInterface;
+        protected MazeInterface _mazeInterface;
 
         protected MyList<Node> _solution;
+        private bool _finished;
         public int Width { private set; get; }
         public int Height { private set; get; }
 
@@ -29,21 +29,34 @@ namespace MazeConsole
             SetupMaze(Settings);
         }
 
-        public void SetupMaze(MazeSettings Settings)
+        public void PlayMaze()
+        {
+            _mazeDisplayer.DisplayMaze();
+            _mazeInterface.Play();
+        }
+
+        private void SetupMaze(MazeSettings Settings)
         {
             Width = Settings.Width;
             Height = Settings.Height;
+
             _graph = new Graph(Width, Height);
+            _player = new Player(this);
+
             MazeGen.GenerateMaze(this, _graph, Settings.Algorithm, Settings.ShowGeneration);
             _solution = null;
+            _finished = false;
+
+
             _mazeDisplayer = new ConsoleMazeDisplayer(this);
+            _mazeInterface = new ConsoleMazeInterface(this, _player);
         }
 
 
         public NodeLocation StartNodeLocation { get { return _graph.StartNode.Location; } }
         public NodeLocation EndNodeLocation { get { return _graph.EndNode.Location; } }
         public NodeLocation PlayerLocation { get { return _player.Location; } }
-      
+
         public MyList<NodeLocation> Solution
         {
             get
@@ -94,9 +107,9 @@ namespace MazeConsole
 
         public bool[] GetWalls(NodeLocation coords)
         {
-            bool[] Walls = new bool[4] { false, false, false, false }; 
+            bool[] Walls = new bool[4] { false, false, false, false };
             Node[] ConnectedNodes = _graph.GetConnectedNodes(_graph.GetNodes()[coords.X, coords.Y]);
-            for(int i = 0; i < 4; i++)
+            for (int i = 0; i < 4; i++)
             {
                 if (ConnectedNodes[i] == null)
                 {
@@ -104,6 +117,15 @@ namespace MazeConsole
                 }
             }
             return Walls;
+        }
+
+        public bool CheckFinished()
+        {
+            if (PlayerLocation == EndNodeLocation)
+            {
+                _finished = true;
+            }
+            return _finished;
         }
     }
 
@@ -200,60 +222,18 @@ namespace MazeConsole
         }
     }
 
-    public class ConsoleMazeInterface : IMazeInterface
+    public class ConsoleMazeInterface : MazeInterface
     {
-
-        
-        public void SetupControls(char[] movementKeys)
+        public ConsoleMazeInterface(Maze Maze, Player Player) : base(Maze, Player)
         {
-            throw new NotImplementedException();
+
         }
 
-        public bool TryMove(Direction moveDirection)
+        public override void Play()
         {
-            throw new NotImplementedException();
-        }
-
-        class ConsoleMazeInterface
-        {
-            // CONTROLS
-            private readonly Char[] MOVE_CONTROLS = { 'w', 'd', 's', 'a' };
-            private readonly char HINT_CONTROL = 'h';
-
-            private Maze _maze;
-            private Player _player;
-
-            public ConsoleMazeInterface()
+            while (!_maze.CheckFinished())
             {
-                _maze = new Maze(GetSettings());
-                _player = new Player(_maze);
-                Play();
-
-                _maze.Display(true);
-                Console.ReadLine();
-
-            }
-
-            public MazeSettings GetSettings()
-            {
-                int width = GetIntegerInput("Enter Width");
-                int height = GetIntegerInput("Enter Height");
-                GenAlgorithm algorithm = GetGenAlgorithm();
-                return new MazeSettings(width, height, algorithm);
-            }
-
-            private void Play()
-            {
-                _maze.Display();
-                while (_player.Location != _maze.EndNodeLocation)
-                {
-                    PlayerTurn();
-                }
-            }
-
-            private void PlayerTurn()
-            {
-                char key = GetKeyInput();
+                char key = Console.ReadKey(true).KeyChar;
                 if (key == HINT_CONTROL)
                 {
                     ShowHint();
@@ -262,94 +242,18 @@ namespace MazeConsole
                 {
                     for (int i = 0; i < 4; i++)
                     {
-                        if (MOVE_CONTROLS[i] == key)
+                        if (_movementKeys[i] == key)
                         {
-                            MakeMove((Direction)i);
+                            TryMove((Direction)i);
                             break;
                         }
                     }
                 }
             }
 
-            private void ShowHint()
-            {
-                _maze.Display(false, true);
-            }
-            /*
-
-            private void MakeMove(Direction direction)
-            {
-                NodeLocation NextLocation = null;
-                switch (direction)
-                {
-                    case Direction.North:
-                        NextLocation = new NodeLocation()
-                        break;
-                    case Direction.East:
-                        NextLocation = _player.LocationCurrentNode.EastNode;
-                        break;
-                    case Direction.South:
-                        NextLocation = _player.CurrentNode.SouthNode;
-                        break;
-                    case Direction.West:
-                        NextLocation = _player.CurrentNode.WestNode;
-                        break;
-                }
-                if (NextLocation != null)
-                {
-                    _player.Move(NextLocation);
-                    _maze.DisplayConsole(_player.CurrentNode);
-                }
-            }
-            */
-            private char GetKeyInput()
-            {
-                while (true)
-                {
-                    ConsoleKeyInfo cki = Console.ReadKey(true);
-                    char key = cki.KeyChar;
-                    if (HINT_CONTROL == key || MOVE_CONTROLS.Contains(key))
-                    {
-                        return key;
-                    }
-                }
-            }
-            private int GetIntegerInput(string prompt)
-            {
-                int input;
-                while (true)
-                {
-                    Console.WriteLine(prompt);
-                    if (int.TryParse(Console.ReadLine(), out input))
-                    {
-                        return input;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid integer");
-                    }
-                }
-            }
-
-            private GenAlgorithm GetGenAlgorithm()
-            {
-                string input;
-                GenAlgorithm algorithm;
-                while (true)
-                {
-                    Console.WriteLine("Enter Algorithm Name:");
-                    input = Console.ReadLine();
-                    if (Enum.TryParse<GenAlgorithm>(input, out algorithm))
-                    {
-                        return algorithm;
-                    }
-                    else
-                    {
-                        Console.WriteLine("Invalid algorithm");
-                    }
-                }
-            }
+            Console.WriteLine("You finished!");
         }
+    }
 
 
 

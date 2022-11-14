@@ -19,25 +19,21 @@ namespace PRJ_MazeWinForms
         private MenuStrip _menuStrip;
 
         // Classes
-        private FormsMazeInterface _interface;
-        private MazeDisplaySettings _displaySettings;
+        private WinFormsMaze _maze;
 
 
         public MazeForm(Form settingsForm, MazeSettings MazeSettings, MazeDisplaySettings DisplaySettings)
         {
             InitializeComponent();
             CreateControls();
-            _displaySettings = DisplaySettings;
             _settingsForm = settingsForm;
-            _interface = new FormsMazeInterface(MazeSettings, DisplaySettings, _tbl_mazePanel, _menuStrip) ;
-
+            _maze = new WinFormsMaze(MazeSettings, DisplaySettings, _tbl_mazePanel);
             SetupEvents();
 
+            _maze.PlayMaze();
         }
         private void SetupEvents()
         {
-            _interface.OnMazeFinish += new MazeFinishedEventHandler(MazeFinished);
-            _interface.OnMazeError += new MazeErrorEventHandler(MazeErrorRaised);
             this.FormClosing += new FormClosingEventHandler(MazeFormClosing);
             this.FormClosed += new FormClosedEventHandler(ReturnToSettings);
 
@@ -120,6 +116,27 @@ namespace PRJ_MazeWinForms
                 MessageBox.Show("Error raised: {0}", e.GetReason());
             }
         }
+
+    }
+
+    public delegate void MazeFinishedEventHandler(object source, MazeFinishedEventArgs e);
+
+    // Event arguments about player stats when maze finished
+    public class MazeFinishedEventArgs : EventArgs
+    {
+        private bool _mazeFinished;
+        private Player _player;
+        public MazeFinishedEventArgs(bool finished, Player player)
+        {
+            _mazeFinished = finished;
+            _player = player;
+        }
+
+        public bool Finished { get { return _mazeFinished; } }
+        public int MoveCount { get { return _player.MoveCount; } }
+        public int HintCount { get { return _player.HintsUsed; } }
+        public bool SolutionUsed { get { return _player.SolutionUsed; } }
+
 
     }
 

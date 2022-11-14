@@ -476,7 +476,7 @@ namespace MazeConsole
             foreach (GenAlgorithm algorithm in Enum.GetValues(typeof(GenAlgorithm)))
             {
                 Console.WriteLine(algorithm.ToString());
-                Maze M = new Maze(x, y, algorithm.ToString(), ShowGeneration);
+                Maze M = new Maze(x, y, algorithm, ShowGeneration);
 
                 M.Display();
                 Console.WriteLine("\n\n\n");

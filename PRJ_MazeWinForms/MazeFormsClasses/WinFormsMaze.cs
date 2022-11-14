@@ -23,7 +23,8 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         {
             _container = Container;
             _displaySettings = DisplaySettings;
-            _mazeDisplayer = new FormsMazeDisplayer(DisplaySettings, Container);
+            _mazeDisplayer = new FormsMazeDisplayer(this, DisplaySettings, Container);
+            _mazeInterface = new FormsMazeInterface(this, _player);
         }
 
         public WinFormsMaze(int height, int width, GenAlgorithm algorithm, MazeDisplaySettings DisplaySettings, TableLayoutPanel Container, bool ShowGeneration = false)
@@ -31,7 +32,8 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         {
             _container = Container;
             _displaySettings = DisplaySettings;
-            _mazeDisplayer = new FormsMazeDisplayer(DisplaySettings, Container);
+            _mazeDisplayer = new FormsMazeDisplayer(this, DisplaySettings, Container);
+            _mazeInterface = new FormsMazeInterface(this, _player);
         }
 
 
@@ -64,8 +66,10 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         private PaintEventHandler _playerPaintMethod;
 
 
-        public FormsMazeDisplayer(MazeDisplaySettings DisplaySettings, TableLayoutPanel Container)
+        public FormsMazeDisplayer(WinFormsMaze Maze, MazeDisplaySettings DisplaySettings, TableLayoutPanel Container)
         {
+            _maze = Maze;
+
             _displaySettings = DisplaySettings;
             _container = Container;
             _isDisplaying = false;
@@ -226,21 +230,28 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         }
     }
 
-    public class FormsMazeInterface : IMazeInterface
+    class FormsMazeInterface : MazeInterface
     {
-
-
-        public void SetupControls(char[] movementKeys)
+        public FormsMazeInterface(WinFormsMaze Maze, Player Player) : base(Maze, Player)
         {
-            throw new NotImplementedException();
+
         }
 
-        public bool TryMove(Direction moveDirection)
+        public override void Play()
         {
-            throw new NotImplementedException();
+            WinFormsMaze Maze = (WinFormsMaze)_maze;
+            Form ParentForm = (Form) Maze.Parent.Parent.Parent;
+            for(int i = 0; i < 4; i++)
+            {
+                ParentForm.KeyPress += new KeyPressEventHandler((object sender, KeyPressEventArgs e) => KeyPressed(_movementKeys[i], (Direction)i));
+            }
+        }
+
+        private void KeyPressed(char key, Direction directionBind)
+        {
+            TryMove(directionBind);
         }
     }
-
 
 
     public delegate void MazeErrorEventHandler(object source, MazeErrorEventArgs e);

@@ -47,7 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MazeClasses\Graph.cs" />
-    <Compile Include="MazeClasses\MazeInterfaces.cs" />
+    <Compile Include="MazeClasses\InterfaceTemplates.cs" />
     <Compile Include="MazeClasses\Maze.cs" />
     <Compile Include="MazeClasses\MazeGen.cs" />
     <Compile Include="MazeClasses\MazeSolver.cs" />
@@ -61,7 +61,6 @@
     </Compile>
     <Compile Include="MazeFormsClasses\AppSettings.cs" />
     <Compile Include="MazeFormsClasses\WinFormsMaze.cs" />
-    <Compile Include="MazeFormsClasses\FormsMazeInterface.cs" />
     <Compile Include="MenuForm.cs">
       <SubType>Form</SubType>
     </Compile>
