@@ -146,7 +146,6 @@ namespace MazeConsole
                     }
                 }
             }
-
             Console.WriteLine("You finished!");
         }
     }

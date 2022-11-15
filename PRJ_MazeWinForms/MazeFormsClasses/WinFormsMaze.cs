@@ -153,37 +153,13 @@ namespace MazeFormsClasses
         {
             Panel cell = sender as Panel;
             Graphics g = e.Graphics;
-            SolidBrush brush = new SolidBrush(_displaySettings.WallColour);
+            SolidBrush brush = new SolidBrush(_displaySettings.CellColour);
 
             int WALL_RATIO = _displaySettings.WallRatio;
-            bool[] Walls = _maze.GetWalls(location);
-
-            // Draw walls
-            if (Walls[0])
-            {
-                g.FillRectangle(brush, 0, 0, cell.Width, cell.Height / WALL_RATIO);
-            }
-            if (Walls[1])
-            {
-                g.FillRectangle(brush, cell.Width - cell.Width / WALL_RATIO, 0, cell.Width / WALL_RATIO, cell.Height);
-            }
-            if (Walls[2])
-            {
-                g.FillRectangle(brush, 0, cell.Height - cell.Height / WALL_RATIO, cell.Width, cell.Height / WALL_RATIO);
-            }
-            if (Walls[3])
-            {
-                g.FillRectangle(brush, 0, 0, cell.Width / WALL_RATIO, cell.Height);
-            }
-
-            // Draw wall corners
-            g.FillRectangle(brush, 0, 0, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
-            g.FillRectangle(brush, cell.Width - cell.Width / WALL_RATIO, 0, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
-            g.FillRectangle(brush, cell.Width - cell.Width / WALL_RATIO, cell.Height - cell.Height / WALL_RATIO, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
-            g.FillRectangle(brush, 0, cell.Height - cell.Height / WALL_RATIO, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO);
+            int yThickness = cell.Height / WALL_RATIO;
+            int xThickness = cell.Width / WALL_RATIO;
 
             // Colour cell
-            brush = new SolidBrush(_displaySettings.CellColour);
             if (IsStartNode)
             {
                 brush = new SolidBrush(_displaySettings.StartColour);
@@ -192,7 +168,34 @@ namespace MazeFormsClasses
             {
                 brush = new SolidBrush(_displaySettings.EndColour);
             }
-            g.FillRectangle(brush, cell.Width / WALL_RATIO, cell.Height / WALL_RATIO, cell.Width - (2 * cell.Width / WALL_RATIO), cell.Height - (2 * cell.Height / WALL_RATIO));
+            g.FillRectangle(brush, 0,0, cell.Width, cell.Height);
+
+            // Draw walls
+            bool[] Walls = _maze.GetWalls(location);
+            Rectangle[] WallAreas = new Rectangle[]
+            {
+                new Rectangle(xThickness, 0, cell.Width - (2 * xThickness), yThickness),
+                new Rectangle(cell.Width - xThickness, yThickness, xThickness, cell.Height - (2 * yThickness)),
+                new Rectangle(xThickness, cell.Height - yThickness, cell.Width - (2 * xThickness), yThickness),
+                new Rectangle(0, yThickness, xThickness, cell.Height - (2 * yThickness))
+            };
+            Rectangle[] CornerAreas = new Rectangle[]
+            {
+                new Rectangle(0, 0, xThickness, yThickness),
+                new Rectangle(cell.Width - xThickness, 0, xThickness, yThickness),
+                new Rectangle(cell.Width - xThickness, cell.Height - yThickness, xThickness, yThickness),
+                new Rectangle(0, cell.Height - yThickness, xThickness, yThickness)
+            };
+            brush = new SolidBrush(_displaySettings.WallColour);
+            for (int i = 0; i < Walls.Length; i++)
+            {
+                if (Walls[i])
+                {
+                    g.FillRectangle(brush, WallAreas[i]);
+                }
+                g.FillRectangle(brush, CornerAreas[i]);
+
+            }
         }
 
         public void PaintPlayer(object sender, PaintEventArgs e)

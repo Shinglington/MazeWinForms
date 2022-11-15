@@ -121,7 +121,6 @@ namespace MazeClasses
                     // if node isn't bottom right node
                     if ((x != G.Width - 1) || (y != G.Height - 1))
                     {
-                        Console.WriteLine("{0}, {1}", x, y);
                         // if node is on right column, can't add east edge
                         if (x == G.Width - 1)
                         {

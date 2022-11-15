@@ -15,6 +15,9 @@ namespace MazeClasses
         private bool _finished;
         public int Width { private set; get; }
         public int Height { private set; get; }
+        public NodeLocation StartNodeLocation { get { return _graph.StartNode.Location; } }
+        public NodeLocation EndNodeLocation { get { return _graph.EndNode.Location; } }
+        public NodeLocation PlayerLocation { get { return _player.Location; } }
 
         public Maze(MazeSettings Settings)
         {
@@ -39,12 +42,6 @@ namespace MazeClasses
             _solution = null;
             _finished = false;
         }
-
-
-        public NodeLocation StartNodeLocation { get { return _graph.StartNode.Location; } }
-        public NodeLocation EndNodeLocation { get { return _graph.EndNode.Location; } }
-        public NodeLocation PlayerLocation { get { return _player.Location; } }
-
         public MyList<NodeLocation> Solution
         {
             get
@@ -65,17 +62,13 @@ namespace MazeClasses
         public void Display(bool ShowSolution = false, bool ShowHint = false)
         {
             if (ShowSolution)
-            {
                 _mazeDisplayer.DisplaySolution();
-            }
+
             else if (ShowHint)
-            {
                 _mazeDisplayer.DisplaySolution();
-            }
+
             else
-            {
                 _mazeDisplayer.DisplayMaze();
-            }
         }
 
         protected MyList<Node> GetHint(int count = 4)
@@ -110,9 +103,7 @@ namespace MazeClasses
         public bool CheckFinished()
         {
             if (PlayerLocation.X == EndNodeLocation.X && PlayerLocation.Y == EndNodeLocation.Y)
-            {
                 _finished = true;
-            }
             return _finished;
         }
     }
