@@ -3,6 +3,7 @@ using System;
 
 using System.Windows.Forms;
 
+using MyDataStructures;
 using MazeClasses;
 using MazeFormsClasses;
 
@@ -27,8 +28,8 @@ namespace PRJ_MazeWinForms
             CreateControls();
             _settingsForm = settingsForm;
             _maze = new WinFormsMaze(MazeSettings, DisplaySettings, _tbl_mazePanel);
+            SetupMenuStrip(_menuStrip);
             SetupEvents();
-
             _maze.PlayMaze();
         }
         private void SetupEvents()
@@ -36,7 +37,6 @@ namespace PRJ_MazeWinForms
             this.FormClosing += new FormClosingEventHandler(MazeFormClosing);
             this.FormClosed += new FormClosedEventHandler(ReturnToSettings);
             _maze.OnMazeFinished += new MazeFinishedEventHandler(MazeFinished);
-
         }
         private void CreateControls()
         {
@@ -68,23 +68,28 @@ namespace PRJ_MazeWinForms
                 Dock = DockStyle.Fill,
             };
             _tbl_formPanel.SetCellPosition(_menuStrip, new TableLayoutPanelCellPosition(0, 0));
-            SetupMenuStrip(_menuStrip);
-
-
         }
 
         private void SetupMenuStrip(MenuStrip menuStrip)
         {
-            // Populate menu strip
-            foreach(object item in Enum.GetValues(typeof(MyMenuItem)))
-            {
-                menuStrip.Items.Add(new ToolStripMenuItem(item.ToString()));
-            }
-        
+            // populate menu strip
+
+            ToolStripMenuItem FileMenu = new ToolStripMenuItem("File");
+            FileMenu.DropDownItems.Add("Temp");
+            menuStrip.Items.Add(FileMenu);
+
+            ToolStripMenuItem HintMenu = new ToolStripMenuItem("Hint");
+            HintMenu.DropDownItems.Add("Show Partial Solution").Click += new EventHandler((sender, e) => _maze.Display(false, true));
+            HintMenu.DropDownItems.Add("Show Full Solution").Click += new EventHandler((sender, e) => _maze.Display(true, false));
+            menuStrip.Items.Add(HintMenu);
+
+            ToolStripMenuItem HelpMenu = new ToolStripMenuItem("Help");
+            HelpMenu.DropDownItems.Add("Temp");
+            menuStrip.Items.Add(HelpMenu);
         }
 
 
-        private void MazeFinished(Maze maze, MazeFinishedEventArgs e)
+    private void MazeFinished(Maze maze, MazeFinishedEventArgs e)
         {
             MessageBox.Show("You finished the maze!");
             ReturnToSettings(this, new EventArgs());
@@ -119,10 +124,4 @@ namespace PRJ_MazeWinForms
 
     }
 
-    public enum MyMenuItem
-    {
-        File,
-        Hint,
-        Help
-    }
 }

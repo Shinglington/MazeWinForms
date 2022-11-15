@@ -66,19 +66,19 @@ namespace MazeClasses
                 _mazeDisplayer.DisplaySolution();
 
             else if (ShowHint)
-                _mazeDisplayer.DisplaySolution();
+                _mazeDisplayer.DisplayHint();
 
             else
                 _mazeDisplayer.DisplayMaze();
         }
 
-        protected MyList<Node> GetHint(int count = 4)
+        public MyList<NodeLocation> GetHint(int count = 4)
         {
             MyList<Node> PathToEnd = MazeSolver.WallFollower(_graph, PlayerLocation, EndNodeLocation);
-            MyList<Node> hint = new MyList<Node>();
+            MyList<NodeLocation> hint = new MyList<NodeLocation>();
             for (int i = 0; i < Math.Min(count, PathToEnd.Count); i++)
             {
-                hint.Add(PathToEnd[i]);
+                hint.Add(PathToEnd[i].Location);
             }
             return hint;
         }
@@ -160,6 +160,9 @@ namespace MazeClasses
 
         public bool TryMove(Direction moveDirection)
         {
+            // If maze finished, don't move
+            if (_maze.Finished) return false;
+
             bool success = false;
             NodeLocation NextLocation = null;
             NodeLocation CurrentLocation = _maze.PlayerLocation;
@@ -205,6 +208,8 @@ namespace MazeClasses
         void DisplayMaze();
 
         void DisplaySolution();
+
+        void DisplayHint();
     }
 
     public interface IMazeInterface

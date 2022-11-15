@@ -81,24 +81,19 @@ namespace MazeFormsClasses
             _container.Padding = MyFormMethods.ComputePadding(_container, _displaySettings.MinimumPadding);
         }
 
-        public void DisplayMaze() 
+        public void DisplayMaze() => Display(null);
+        public void DisplaySolution() => Display(_maze.Solution);
+        public void DisplayHint() => Display(_maze.GetHint());
+
+        
+        private void Display(MyList<NodeLocation> Highlights = null)
         {
             if (!_isDisplaying)
             {
                 InitialMazeDisplay();
             }
-            UpdateMazeDisplay();
+            UpdateMazeDisplay(Highlights);
         }
-
-        public void DisplaySolution()
-        {
-            if (!_isDisplaying)
-            {
-                InitialMazeDisplay();
-            }
-            UpdateMazeDisplay(_maze.Solution);
-        }
-
 
 
         private void InitialMazeDisplay()

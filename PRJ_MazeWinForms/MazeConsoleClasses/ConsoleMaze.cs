@@ -40,17 +40,9 @@ namespace MazeConsole
             _maze = Maze;
         }
 
-        public void DisplayMaze()
-        {
-            string MazeString = GetStringDisplay();
-            Console.WriteLine(MazeString);
-        }
-
-        public void DisplaySolution()
-        {
-            string MazeString = GetStringDisplay();
-            Console.WriteLine(MazeString);
-        }
+        public void DisplayMaze() => Console.WriteLine(GetStringDisplay());
+        public void DisplaySolution() => Console.WriteLine(GetStringDisplay(_maze.Solution));
+        public void DisplayHint() => Console.WriteLine(GetStringDisplay(_maze.GetHint()));
 
         private string GetStringDisplay(MyList<NodeLocation> highlightNodes = null)
         {
