@@ -5,7 +5,6 @@ using System.Windows.Forms;
 
 using MazeClasses;
 using MazeFormsClasses;
-using MyDataStructures;
 
 namespace PRJ_MazeWinForms
 {
@@ -36,6 +35,7 @@ namespace PRJ_MazeWinForms
         {
             this.FormClosing += new FormClosingEventHandler(MazeFormClosing);
             this.FormClosed += new FormClosedEventHandler(ReturnToSettings);
+            _maze.OnMazeFinished += new MazeFinishedEventHandler(MazeFinished);
 
         }
         private void CreateControls()
@@ -84,7 +84,7 @@ namespace PRJ_MazeWinForms
         }
 
 
-        private void MazeFinished(object source, MazeFinishedEventArgs e)
+        private void MazeFinished(Maze maze, MazeFinishedEventArgs e)
         {
             MessageBox.Show("You finished the maze!");
             ReturnToSettings(this, new EventArgs());
@@ -118,28 +118,6 @@ namespace PRJ_MazeWinForms
         }
 
     }
-
-    public delegate void MazeFinishedEventHandler(object source, MazeFinishedEventArgs e);
-
-    // Event arguments about player stats when maze finished
-    public class MazeFinishedEventArgs : EventArgs
-    {
-        private bool _mazeFinished;
-        private Player _player;
-        public MazeFinishedEventArgs(bool finished, Player player)
-        {
-            _mazeFinished = finished;
-            _player = player;
-        }
-
-        public bool Finished { get { return _mazeFinished; } }
-        public int MoveCount { get { return _player.MoveCount; } }
-        public int HintCount { get { return _player.HintsUsed; } }
-        public bool SolutionUsed { get { return _player.SolutionUsed; } }
-
-
-    }
-
 
     public enum MyMenuItem
     {

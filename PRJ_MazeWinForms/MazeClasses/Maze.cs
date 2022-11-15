@@ -1,4 +1,5 @@
 ﻿using MyDataStructures;
+using PRJ_MazeWinForms;
 using System;
 
 namespace MazeClasses
@@ -10,15 +11,15 @@ namespace MazeClasses
         protected Player _player;
         protected IMazeDisplayer _mazeDisplayer;
         protected MazeInterface _mazeInterface;
-
         protected MyList<Node> _solution;
-        private bool _finished;
         public int Width { private set; get; }
         public int Height { private set; get; }
         public NodeLocation StartNodeLocation { get { return _graph.StartNode.Location; } }
         public NodeLocation EndNodeLocation { get { return _graph.EndNode.Location; } }
         public NodeLocation PlayerLocation { get { return _player.Location; } }
+        public bool Finished { get { return (_player.Location.X == EndNodeLocation.X && _player.Location.Y == EndNodeLocation.Y); } }
 
+        public MazeFinishedEventHandler OnMazeFinished;
         public Maze(MazeSettings Settings)
         {
             SetupMaze(Settings);
@@ -35,12 +36,12 @@ namespace MazeClasses
             Width = Settings.Width;
             Height = Settings.Height;
 
+
             _graph = new Graph(Width, Height);
             _player = new Player(this);
 
             MazeGen.GenerateMaze(this, _graph, Settings.Algorithm, Settings.ShowGeneration);
             _solution = null;
-            _finished = false;
         }
         public MyList<NodeLocation> Solution
         {
@@ -100,11 +101,9 @@ namespace MazeClasses
             return Walls;
         }
 
-        public bool CheckFinished()
+        public void EndMaze()
         {
-            if (PlayerLocation.X == EndNodeLocation.X && PlayerLocation.Y == EndNodeLocation.Y)
-                _finished = true;
-            return _finished;
+            OnMazeFinished.Invoke(this, new MazeFinishedEventArgs(_player));
         }
     }
 
@@ -184,6 +183,11 @@ namespace MazeClasses
                 _player.Move(NextLocation);
                 _maze.Display();
                 success = true;
+
+                if (_maze.Finished)
+                {
+                    _maze.EndMaze();
+                }
             }
             return success;
         }
@@ -194,6 +198,7 @@ namespace MazeClasses
             _maze.Display(false, true);
         }
     }
+
 
     public interface IMazeDisplayer
     {
@@ -256,6 +261,37 @@ namespace MazeClasses
         Easy,
         Medium,
         Hard
+    }
+
+    public delegate void MazeFinishedEventHandler(Maze sender, MazeFinishedEventArgs e);
+    public class MazeFinishedEventArgs : EventArgs
+    {
+        private Player _player;
+        public MazeFinishedEventArgs(Player player)
+        {
+            _player = player;
+        }
+        public int MoveCount { get { return _player.MoveCount; } }
+        public int HintCount { get { return _player.HintsUsed; } }
+        public bool SolutionUsed { get { return _player.SolutionUsed; } }
+
+
+    }
+
+
+
+    public delegate void MazeErrorEventHandler(object source, MazeErrorEventArgs e);
+    public class MazeErrorEventArgs : EventArgs
+    {
+        private string _errorReason;
+        public MazeErrorEventArgs(string reason)
+        {
+            _errorReason = reason;
+        }
+        public string GetReason()
+        {
+            return _errorReason;
+        }
     }
 
 }

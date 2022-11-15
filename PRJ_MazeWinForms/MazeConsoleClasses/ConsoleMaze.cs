@@ -127,7 +127,7 @@ namespace MazeConsole
 
         public override void Play()
         {
-            while (!_maze.CheckFinished())
+            while (!_maze.Finished)
             {
                 char key = Console.ReadKey(true).KeyChar;
                 if (key == HINT_CONTROL)

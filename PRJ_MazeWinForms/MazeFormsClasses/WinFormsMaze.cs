@@ -10,8 +10,6 @@ namespace MazeFormsClasses
 {
     class WinFormsMaze : Maze
     {
-        // Colour constants
-        public MazeErrorEventHandler OnMazeError;
 
         // Forms attributes
         private TableLayoutPanel _container;
@@ -34,6 +32,7 @@ namespace MazeFormsClasses
             _container = Container;
             _mazeDisplayer = new FormsMazeDisplayer(this, DisplaySettings, Container);
             _mazeInterface = new FormsMazeInterface(this, _player);
+            
         }
     }
 
@@ -241,24 +240,11 @@ namespace MazeFormsClasses
                 if (keyChar == _movementKeys[i]) 
                     TryMove((Direction)i);
             }
-
         }
     }
 
 
-    public delegate void MazeErrorEventHandler(object source, MazeErrorEventArgs e);
-    public class MazeErrorEventArgs : EventArgs
-    {
-        private string _errorReason;
-        public MazeErrorEventArgs(string reason)
-        {
-            _errorReason = reason;
-        }
-        public string GetReason()
-        {
-            return _errorReason;
-        }
-    }
+
 }
 
 
