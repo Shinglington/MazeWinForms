@@ -145,8 +145,6 @@ namespace MazeFormsClasses
                     HintCell.Invalidate();
                 }
             }
-
-
         }
 
         private void PaintNode(object sender, PaintEventArgs e, NodeLocation location, bool IsStartNode = false, bool IsEndNode = false)
@@ -170,7 +168,6 @@ namespace MazeFormsClasses
             }
             g.FillRectangle(brush, 0,0, cell.Width, cell.Height);
 
-            // Draw walls
             bool[] Walls = _maze.GetWalls(location);
             Rectangle[] WallAreas = new Rectangle[]
             {
@@ -187,6 +184,7 @@ namespace MazeFormsClasses
                 new Rectangle(0, cell.Height - yThickness, xThickness, yThickness)
             };
             brush = new SolidBrush(_displaySettings.WallColour);
+            // Draw walls
             for (int i = 0; i < Walls.Length; i++)
             {
                 if (Walls[i])
