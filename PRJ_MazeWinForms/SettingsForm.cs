@@ -1,5 +1,5 @@
-﻿using MazeConsole;
-using PRJ_MazeWinForms.MazeFormsClasses;
+﻿using MazeClasses;
+using MazeFormsClasses;
 using System;
 using System.Drawing;
 using System.Windows.Forms;

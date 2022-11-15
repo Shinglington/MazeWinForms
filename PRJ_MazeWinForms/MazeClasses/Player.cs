@@ -1,4 +1,4 @@
-﻿namespace MazeConsole
+﻿namespace MazeClasses
 {
     public class Player
     {

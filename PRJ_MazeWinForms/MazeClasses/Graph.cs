@@ -1,7 +1,7 @@
 ﻿using System;
-using MazeConsole.MyDataStructures;
+using MyDataStructures;
 
-namespace MazeConsole
+namespace MazeClasses
 {
     public class Graph
     {
@@ -55,7 +55,9 @@ namespace MazeConsole
 
         public Node GetNodeFromLocation(NodeLocation Location)
         {
-            return _nodes[Location.X, Location.Y];
+            if (Location.X >= 0 && Location.X < Width && Location.Y >= 0 && Location.Y < Height)
+                return _nodes[Location.X, Location.Y];
+            return null;
         }
 
         public bool AddEdge(Node NodeA, Node NodeB)
@@ -204,7 +206,7 @@ namespace MazeConsole
         public bool AreConnected(Node NodeA, Node NodeB)
         {
             bool Connected = false;
-            // if they aren't adjacent, they can't be connected
+            if (NodeA == null || NodeB == null) return false;
             if (!AreAdjacent(NodeA, NodeB)) return false;
             if (NodeA.NorthNode == NodeB || NodeA.EastNode == NodeB || NodeA.SouthNode == NodeB || NodeA.WestNode == NodeB)
             {

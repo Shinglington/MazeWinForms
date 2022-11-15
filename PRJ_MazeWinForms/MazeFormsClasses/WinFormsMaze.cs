@@ -1,17 +1,16 @@
-﻿using MazeConsole;
-using MazeConsole.MyDataStructures;
+﻿using MazeClasses;
+using PRJ_MazeWinForms;
+using MyDataStructures;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
-using System.Xml.Linq;
 
-namespace PRJ_MazeWinForms.MazeFormsClasses
+
+namespace MazeFormsClasses
 {
     class WinFormsMaze : Maze
     {
         // Colour constants
-        private MazeDisplaySettings _displaySettings;
-
         public MazeErrorEventHandler OnMazeError;
 
         // Forms attributes
@@ -21,36 +20,20 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
 
         public WinFormsMaze(MazeSettings Settings, MazeDisplaySettings DisplaySettings, TableLayoutPanel Container) : base(Settings)
         {
-            _container = Container;
-            _displaySettings = DisplaySettings;
-            _mazeDisplayer = new FormsMazeDisplayer(this, DisplaySettings, Container);
-            _mazeInterface = new FormsMazeInterface(this, _player);
+            WinFormsMazeSetup(DisplaySettings, Container);
         }
 
         public WinFormsMaze(int height, int width, GenAlgorithm algorithm, MazeDisplaySettings DisplaySettings, TableLayoutPanel Container, bool ShowGeneration = false)
-            : base(height, width, algorithm, ShowGeneration)
+            : base(new MazeSettings(height, width, algorithm, ShowGeneration))
         {
-            _container = Container;
-            _displaySettings = DisplaySettings;
-            _mazeDisplayer = new FormsMazeDisplayer(this, DisplaySettings, Container);
-            _mazeInterface = new FormsMazeInterface(this, _player);
+            WinFormsMazeSetup(DisplaySettings, Container);
         }
 
-
-        public override void Display(bool ShowSolution = false, bool ShowHint = false)
+        private void WinFormsMazeSetup(MazeDisplaySettings DisplaySettings, TableLayoutPanel Container)
         {
-            if (ShowSolution)
-            {
-                _mazeDisplayer.DisplaySolution();
-            }
-            else if (ShowHint)
-            {
-                _mazeDisplayer.DisplaySolution();
-            }
-            else
-            {
-                _mazeDisplayer.DisplayMaze();
-            }
+            _container = Container;
+            _mazeDisplayer = new FormsMazeDisplayer(this, DisplaySettings, Container);
+            _mazeInterface = new FormsMazeInterface(this, _player);
         }
     }
 
@@ -128,10 +111,13 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
                     NodeLocation CurrentLocation = new NodeLocation(col, row);
                     Panel Cell = new Panel() { Parent = _container, Dock = DockStyle.Fill, Margin = new Padding(0) };
                     _container.SetCellPosition(Cell, new TableLayoutPanelCellPosition(col, row));
+                    bool isStartNode = (CurrentLocation.X == _maze.StartNodeLocation.X && CurrentLocation.Y == _maze.StartNodeLocation.Y);
+                    bool isEndNode = (CurrentLocation.X == _maze.EndNodeLocation.X && CurrentLocation.Y == _maze.EndNodeLocation.Y);
                     Cell.Paint += new PaintEventHandler((sender, e) => 
-                        PaintNode(sender, e, CurrentLocation, CurrentLocation == _maze.StartNodeLocation, CurrentLocation == _maze.EndNodeLocation));
+                        PaintNode(sender, e, CurrentLocation, isStartNode, isEndNode));
                 }
             }
+            _isDisplaying = true;
         }
         private void UpdateMazeDisplay(MyList<NodeLocation> HintHighlights = null)
         {
@@ -144,6 +130,7 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
             }
             // Show new player position
             Panel CurrentCell = (Panel)_container.GetControlFromPosition(_maze.PlayerLocation.X, _maze.PlayerLocation.Y);
+            _displayedPlayerLocation = _maze.PlayerLocation;
             _playerPaintMethod = new PaintEventHandler(PaintPlayer);
             CurrentCell.Paint += _playerPaintMethod;
             CurrentCell.Invalidate();
@@ -241,15 +228,19 @@ namespace PRJ_MazeWinForms.MazeFormsClasses
         {
             WinFormsMaze Maze = (WinFormsMaze)_maze;
             Form ParentForm = (Form) Maze.Parent.Parent.Parent;
-            for(int i = 0; i < 4; i++)
-            {
-                ParentForm.KeyPress += new KeyPressEventHandler((object sender, KeyPressEventArgs e) => KeyPressed(_movementKeys[i], (Direction)i));
-            }
+            ParentForm.KeyPress += new KeyPressEventHandler(KeyPressed);
+
         }
 
-        private void KeyPressed(char key, Direction directionBind)
+        private void KeyPressed(object sender, KeyPressEventArgs e)
         {
-            TryMove(directionBind);
+            char keyChar = e.KeyChar;
+            for (int i = 0; i < 4; i++)
+            {
+                if (keyChar == _movementKeys[i]) 
+                    TryMove((Direction)i);
+            }
+
         }
     }
 

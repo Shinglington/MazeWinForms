@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MazeConsole.MyDataStructures
+namespace MyDataStructures
 {
     public class MyQueue<T>
     {

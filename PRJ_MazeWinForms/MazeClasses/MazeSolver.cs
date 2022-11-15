@@ -1,7 +1,7 @@
-﻿using System;
-using MazeConsole.MyDataStructures;
+﻿using MyDataStructures;
+using System;
 
-namespace MazeConsole
+namespace MazeClasses
 {
     class MazeSolver
     {
@@ -84,7 +84,7 @@ namespace MazeConsole
             }
             Node[] ConnectedNodes = G.GetConnectedNodes(N);
             MyList<Node> AccessibleNodes = new MyList<Node>();
-            foreach(Node n in ConnectedNodes)
+            foreach (Node n in ConnectedNodes)
             {
                 if (N != null)
                 {

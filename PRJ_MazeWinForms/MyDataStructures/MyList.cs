@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace MazeConsole.MyDataStructures
+namespace MyDataStructures
 {
 
     public class MyList<T> : IList<T>

@@ -1,11 +1,9 @@
-﻿using MazeConsole.MyDataStructures;
+﻿using MyDataStructures;
 using System;
-using System.Linq;
-using System.Security.Cryptography;
 
-namespace MazeConsole
+namespace MazeClasses
 {
-    public class Maze
+    public abstract class Maze
     {
 
         protected Graph _graph;
@@ -17,12 +15,6 @@ namespace MazeConsole
         private bool _finished;
         public int Width { private set; get; }
         public int Height { private set; get; }
-
-        public Maze(int width, int height, GenAlgorithm algorithm, bool showGeneration)
-        {
-            MazeSettings Settings = new MazeSettings(width, height, algorithm, showGeneration);
-            SetupMaze(Settings);
-        }
 
         public Maze(MazeSettings Settings)
         {
@@ -46,10 +38,6 @@ namespace MazeConsole
             MazeGen.GenerateMaze(this, _graph, Settings.Algorithm, Settings.ShowGeneration);
             _solution = null;
             _finished = false;
-
-
-            _mazeDisplayer = new ConsoleMazeDisplayer(this);
-            _mazeInterface = new ConsoleMazeInterface(this, _player);
         }
 
 
@@ -74,7 +62,7 @@ namespace MazeConsole
             }
         }
 
-        public virtual void Display(bool ShowSolution = false, bool ShowHint = false)
+        public void Display(bool ShowSolution = false, bool ShowHint = false)
         {
             if (ShowSolution)
             {
@@ -121,7 +109,7 @@ namespace MazeConsole
 
         public bool CheckFinished()
         {
-            if (PlayerLocation == EndNodeLocation)
+            if (PlayerLocation.X == EndNodeLocation.X && PlayerLocation.Y == EndNodeLocation.Y)
             {
                 _finished = true;
             }
@@ -129,134 +117,106 @@ namespace MazeConsole
         }
     }
 
-    public class ConsoleMazeDisplayer : IMazeDisplayer
-    {
-        // Constants
-        private const char WALL_CHAR = '█';
-        private const char SPACE_CHAR = ' ';
-        private const char START_CHAR = 'S';
-        private const char END_CHAR = 'E';
-        private const char HIGHLIGHT_CHAR = '?';
 
-        private Maze _maze;
-        public ConsoleMazeDisplayer(Maze Maze)
+
+    public abstract class MazeInterface : IMazeInterface
+    {
+        protected Maze _maze;
+        private Player _player;
+
+        protected Char[] _movementKeys;
+        protected char HINT_CONTROL = 'h';
+
+        public MazeInterface(Maze Maze, Player Player)
         {
             _maze = Maze;
+            _player = Player;
+            SetupControls();
         }
 
-        public void DisplayMaze()
+        public virtual void Play()
         {
-            string MazeString = GetStringDisplay();
-            Console.WriteLine(MazeString);
+
         }
 
-        public void DisplaySolution()
+        public void SetupControls(char[] MoveControls = null)
         {
-            string MazeString = GetStringDisplay();
-            Console.WriteLine(MazeString);
-        }
-
-        private string GetStringDisplay(MyList<NodeLocation> highlightNodes = null)
-        {
+            _movementKeys = new char[4];
+            if (MoveControls == null)
             {
-                string mazeString = "";
-                mazeString += WALL_CHAR;
-                // Generate top wall
-                for (int x = 0; x < _maze.Width; x++)
-                {
-                    mazeString += string.Format("{0}{1}", WALL_CHAR, WALL_CHAR);
-                }
-                mazeString += "\n";
-                for (int y = 0; y < _maze.Height; y++)
-                {
-                    string currEastWalls = "" + WALL_CHAR;
-                    string currSouthWalls = "" + WALL_CHAR;
-
-                    for (int x = 0; x < _maze.Width; x++)
-                    {
-                        NodeLocation ThisNodeLocation = new NodeLocation(x, y);
-                        bool[] Walls = _maze.GetWalls(ThisNodeLocation);
-
-                        if (ThisNodeLocation == _maze.PlayerLocation)
-                            currEastWalls += 'C';
-
-                        else if (ThisNodeLocation == _maze.StartNodeLocation)
-                            currEastWalls += START_CHAR;
-
-                        else if (ThisNodeLocation == _maze.EndNodeLocation)
-                            currEastWalls += END_CHAR;
-
-                        else if (highlightNodes != null && highlightNodes.Contains(ThisNodeLocation))
-                            currEastWalls += HIGHLIGHT_CHAR;
-                        else
-                            currEastWalls += SPACE_CHAR;
-
-                        // Check east edge
-                        if (Walls[(int)Direction.East])
-                            currEastWalls += WALL_CHAR;
-                        else
-                            currEastWalls += SPACE_CHAR;
-
-                        // Check south edge
-                        if (Walls[(int)Direction.South])
-                            currSouthWalls += WALL_CHAR;
-                        else
-                            currSouthWalls += SPACE_CHAR;
-
-                        currSouthWalls += WALL_CHAR;
-                    }
-                    mazeString += currEastWalls;
-                    mazeString += "\n";
-                    mazeString += currSouthWalls;
-                    mazeString += "\n";
-                }
-                return mazeString;
+                _movementKeys = new char[] { 'w', 'd', 's', 'a' };
+                return;
             }
-        }
 
-        public enum SolutionVisibility
-        {
-            None,
-            Partial,
-            Full
-        }
-    }
-
-    public class ConsoleMazeInterface : MazeInterface
-    {
-        public ConsoleMazeInterface(Maze Maze, Player Player) : base(Maze, Player)
-        {
-
-        }
-
-        public override void Play()
-        {
-            while (!_maze.CheckFinished())
+            if (MoveControls.Length == 4)
             {
-                char key = Console.ReadKey(true).KeyChar;
-                if (key == HINT_CONTROL)
-                {
-                    ShowHint();
-                }
-                else
+                try
                 {
                     for (int i = 0; i < 4; i++)
                     {
-                        if (_movementKeys[i] == key)
-                        {
-                            TryMove((Direction)i);
-                            break;
-                        }
+                        _movementKeys[i] = MoveControls[i];
                     }
                 }
+                catch
+                {
+                    _movementKeys = new char[] { 'w', 'd', 's', 'a' };
+                }
             }
+            else
+            {
+                _movementKeys = new char[] { 'w', 'd', 's', 'a' };
+            }
+        }
 
-            Console.WriteLine("You finished!");
+        public bool TryMove(Direction moveDirection)
+        {
+            bool success = false;
+            NodeLocation NextLocation = null;
+            NodeLocation CurrentLocation = _maze.PlayerLocation;
+            switch (moveDirection)
+            {
+                case Direction.North:
+                    NextLocation = new NodeLocation(CurrentLocation.X, CurrentLocation.Y - 1);
+                    break;
+                case Direction.East:
+                    NextLocation = new NodeLocation(CurrentLocation.X + 1, CurrentLocation.Y);
+                    break;
+                case Direction.South:
+                    NextLocation = new NodeLocation(CurrentLocation.X, CurrentLocation.Y + 1);
+                    break;
+                case Direction.West:
+                    NextLocation = new NodeLocation(CurrentLocation.X - 1, CurrentLocation.Y);
+                    break;
+            }
+            if (_maze.CheckAccessibility(CurrentLocation, NextLocation))
+            {
+                _player.Move(NextLocation);
+                _maze.Display();
+                success = true;
+            }
+            return success;
+        }
+
+
+        public void ShowHint()
+        {
+            _maze.Display(false, true);
         }
     }
 
+    public interface IMazeDisplayer
+    {
+        void DisplayMaze();
 
+        void DisplaySolution();
+    }
 
+    public interface IMazeInterface
+    {
+        bool TryMove(Direction moveDirection);
+
+        void SetupControls(char[] movementKeys);
+    }
 
     public class MazeSettings
     {
@@ -306,6 +266,5 @@ namespace MazeConsole
         Medium,
         Hard
     }
-
 
 }

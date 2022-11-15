@@ -1,8 +1,9 @@
-﻿using MazeConsole.MyDataStructures;
+﻿using MazeConsole;
+using MyDataStructures;
 using System;
 using System.Collections.Generic;
 
-namespace MazeConsole
+namespace MazeClasses
 {
     public enum GenAlgorithm
     {
@@ -63,7 +64,7 @@ namespace MazeConsole
             return success;
         }
 
-        public static bool Wilsons(Maze M,Graph G, bool ShowGeneration)
+        public static bool Wilsons(Maze M, Graph G, bool ShowGeneration)
         {
             bool success = true;
             VisitedNodesTracker visited = new VisitedNodesTracker(G);
@@ -476,7 +477,7 @@ namespace MazeConsole
             foreach (GenAlgorithm algorithm in Enum.GetValues(typeof(GenAlgorithm)))
             {
                 Console.WriteLine(algorithm.ToString());
-                Maze M = new Maze(x, y, algorithm, ShowGeneration);
+                Maze M = new ConsoleMaze(x, y, algorithm, ShowGeneration);
 
                 M.Display();
                 Console.WriteLine("\n\n\n");

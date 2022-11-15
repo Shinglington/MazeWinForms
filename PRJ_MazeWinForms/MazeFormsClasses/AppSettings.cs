@@ -1,6 +1,6 @@
 ﻿using System.Drawing;
 
-namespace PRJ_MazeWinForms.MazeFormsClasses
+namespace MazeFormsClasses
 {
     public class AppSettings
     {

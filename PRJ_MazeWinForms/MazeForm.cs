@@ -1,11 +1,11 @@
 ﻿
 using System;
-using System.Drawing;
+
 using System.Windows.Forms;
 
-using MazeConsole;
-using MazeConsole.MyDataStructures;
-using PRJ_MazeWinForms.MazeFormsClasses;
+using MazeClasses;
+using MazeFormsClasses;
+using MyDataStructures;
 
 namespace PRJ_MazeWinForms
 {

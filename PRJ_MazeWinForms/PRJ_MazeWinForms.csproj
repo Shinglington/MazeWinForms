@@ -47,8 +47,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="MazeClasses\Graph.cs" />
-    <Compile Include="MazeClasses\InterfaceTemplates.cs" />
     <Compile Include="MazeClasses\Maze.cs" />
+    <Compile Include="MazeConsoleClasses\ConsoleMaze.cs" />
     <Compile Include="MazeClasses\MazeGen.cs" />
     <Compile Include="MazeClasses\MazeSolver.cs" />
     <Compile Include="MazeClasses\Node.cs" />
