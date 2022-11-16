@@ -1,7 +1,11 @@
-﻿using System.Drawing;
+﻿using System;
+using System.Drawing;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace MazeFormsClasses
 {
+    [Serializable()]
     public class AppSettings
     {
         public MazeDisplaySettings DisplaySettings { get; set; }
@@ -15,17 +19,13 @@ namespace MazeFormsClasses
 
     public class AppSettingsManager
     {
-        private const string DEFAULT_FILENAME = "settings.json";
-        private AppSettings _appSettings = null;
+        private const string FILENAME = "settings.xml";
+        private AppSettings _appSettings = new AppSettings();
 
         public AppSettings AppSettings
         {
             get
             {
-                if (_appSettings == null)
-                {
-                    LoadConfig();
-                }
                 return _appSettings;
             }
             set
@@ -36,21 +36,42 @@ namespace MazeFormsClasses
 
         public void LoadConfig()
         {
-            _appSettings = new AppSettings();
-            try
+            if (File.Exists(FILENAME))
             {
-                _appSettings = GetDefaultConfig();
-            }
-            catch
-            {
-                _appSettings = GetDefaultConfig();
-            }
 
+                StreamReader streamReader = File.OpenText(FILENAME);
+                try
+                {
+                    Type type = _appSettings.GetType();
+                    XmlSerializer xml = new XmlSerializer(type);
+                    object xmlData = xml.Deserialize(streamReader);
+                    _appSettings = (AppSettings)xmlData;
+                    Console.WriteLine("Loaded Settings File, {0}", FILENAME);
+                }
+                catch
+                {
+                    Console.WriteLine("Error loading config file {0}", FILENAME);
+                    _appSettings = GetDefaultConfig();
+                }
+                streamReader.Close();
+            }
+            else
+            {
+                _appSettings = GetDefaultConfig();
+            }
         }
 
         public void SaveConfig()
         {
-
+            StreamWriter streamWriter = File.CreateText(FILENAME);
+            Type type = _appSettings.GetType();
+            if (type.IsSerializable)
+            {
+                XmlSerializer xml = new XmlSerializer(type);
+                xml.Serialize(streamWriter, _appSettings);
+                streamWriter.Close();
+            }
+            Console.WriteLine("Saved Settings File");
         }
 
         private AppSettings GetDefaultConfig()
