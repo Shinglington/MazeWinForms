@@ -26,10 +26,24 @@ namespace MazeClasses
             SetupMaze(Settings);
         }
 
-        public void PlayMaze()
+        public void ShowMaze() => _mazeDisplayer.Display();
+        public bool MakeMove(Direction direction)
         {
-            _mazeDisplayer.DisplayMaze();
-            _mazeInterface.Play();
+            bool success = _mazeInterface.TryMove(direction);
+            return success;
+        }
+
+        public bool ShowHint()
+        {
+            bool success = true;
+            _mazeDisplayer.Display(GetHint());
+            return success;
+        } 
+        public bool ShowSolution()
+        {
+            bool success = true;
+            _mazeDisplayer.Display(Solution);
+            return success;
         }
 
         private void SetupMaze(MazeSettings Settings)
@@ -61,17 +75,6 @@ namespace MazeClasses
             }
         }
 
-        public void Display(bool ShowSolution = false, bool ShowHint = false)
-        {
-            if (ShowSolution)
-                _mazeDisplayer.DisplaySolution();
-
-            else if (ShowHint)
-                _mazeDisplayer.DisplayHint();
-
-            else
-                _mazeDisplayer.DisplayMaze();
-        }
 
         protected MyList<NodeLocation> GetHint(int count = 4)
         {
@@ -156,7 +159,7 @@ namespace MazeClasses
             if (_maze.CheckAccessibility(CurrentLocation, NextLocation))
             {
                 _player.Move(NextLocation);
-                _maze.Display();
+                _maze.ShowMaze();
                 success = true;
 
                 if (_maze.Finished)
@@ -170,18 +173,14 @@ namespace MazeClasses
 
         public void ShowHint()
         {
-            _maze.Display(false, true);
+            _maze.ShowHint();
         }
     }
 
 
     public interface IMazeDisplayer
     {
-        void DisplayMaze();
-
-        void DisplaySolution();
-
-        void DisplayHint();
+        void Display(MyList<NodeLocation> hints = null);
     }
 
     public interface IMazeInterface

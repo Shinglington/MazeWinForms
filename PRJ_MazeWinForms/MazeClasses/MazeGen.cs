@@ -55,7 +55,7 @@ namespace MazeClasses
                     visited.SetVisited(nextNode);
                     if (ShowGeneration)
                     {
-                        M.Display();
+                        M.ShowMaze();
                         Console.ReadLine();
                     }
                 }
@@ -99,7 +99,7 @@ namespace MazeClasses
                     visited.SetVisited(CurrNode);
                     if (ShowGeneration)
                     {
-                        M.Display();
+                        M.ShowMaze();
                         Console.ReadLine();
                     }
                 }
@@ -149,7 +149,7 @@ namespace MazeClasses
 
                     if (ShowGeneration)
                     {
-                        M.Display();
+                        M.ShowMaze();
                         Console.ReadLine();
                     }
                 }
@@ -195,7 +195,7 @@ namespace MazeClasses
                     }
                     if (ShowGeneration)
                     {
-                        M.Display();
+                        M.ShowMaze();
                         Console.ReadLine();
                     }
                 }
@@ -242,7 +242,7 @@ namespace MazeClasses
                     CurrentNode = NextNode;
                     if (ShowGeneration)
                     {
-                        M.Display();
+                        M.ShowMaze();
                         Console.ReadLine();
                     }
                 }
@@ -300,7 +300,7 @@ namespace MazeClasses
                 CurrNode = NextNode;
                 if (ShowGeneration)
                 {
-                    M.Display();
+                    M.ShowMaze();
                     Console.ReadLine();
                 }
             }
@@ -349,7 +349,7 @@ namespace MazeClasses
                     visited.SetVisited(Neighbour);
                     if (ShowGeneration)
                     {
-                        M.Display();
+                        M.ShowMaze();
                         Console.ReadLine();
                     }
                 }
@@ -478,7 +478,7 @@ namespace MazeClasses
                 Console.WriteLine(algorithm.ToString());
                 Maze M = new ConsoleMaze(x, y, algorithm, ShowGeneration);
 
-                M.Display();
+                M.ShowMaze();
                 Console.WriteLine("\n\n\n");
                 Console.ReadLine();
             }

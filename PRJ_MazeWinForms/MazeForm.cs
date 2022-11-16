@@ -7,6 +7,7 @@ using MyDataStructures;
 using MazeClasses;
 using MazeFormsClasses;
 using System.Drawing;
+using System.Runtime.Remoting.Channels;
 
 namespace PRJ_MazeWinForms
 {
@@ -32,13 +33,20 @@ namespace PRJ_MazeWinForms
             _maze = new WinFormsMaze(MazeSettings, _tbl_mazePanel, _appSettings.DisplaySettings, _appSettings.ControlSettings);
             SetupMenuStrip(_menuStrip);
             SetupEvents();
-            _maze.PlayMaze();
+            _maze.ShowMaze();
         }
         private void SetupEvents()
         {
             this.FormClosing += new FormClosingEventHandler(MazeFormClosing);
             this.FormClosed += new FormClosedEventHandler(ReturnToSettings);
             _maze.OnMazeFinished += new MazeFinishedEventHandler(MazeFinished);
+
+            _maze.Parent.Parent.KeyDown += new KeyEventHandler(PlayerKeyPress);
+
+        }
+        private void PlayerKeyPress(object sender, KeyEventArgs e)
+        {
+
         }
         private void CreateControls()
         {
@@ -81,8 +89,8 @@ namespace PRJ_MazeWinForms
             menuStrip.Items.Add(FileMenu);
 
             ToolStripMenuItem HintMenu = new ToolStripMenuItem("Hint");
-            HintMenu.DropDownItems.Add("Show Partial Solution").Click += new EventHandler((sender, e) => _maze.Display(false, true));
-            HintMenu.DropDownItems.Add("Show Full Solution").Click += new EventHandler((sender, e) => _maze.Display(true, false));
+            HintMenu.DropDownItems.Add("Show Partial Solution").Click += new EventHandler((sender, e) => _maze.ShowHint());
+            HintMenu.DropDownItems.Add("Show Full Solution").Click += new EventHandler((sender, e) => _maze.ShowSolution());
             menuStrip.Items.Add(HintMenu);
 
             ToolStripMenuItem HelpMenu = new ToolStripMenuItem("Help");

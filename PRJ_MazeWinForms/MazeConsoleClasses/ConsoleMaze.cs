@@ -18,6 +18,7 @@ namespace MazeConsole
         {
             ConsoleMazeSetup();
         }
+
         private void ConsoleMazeSetup()
         {
             _mazeDisplayer = new ConsoleMazeDisplayer(this);
@@ -40,10 +41,10 @@ namespace MazeConsole
         {
             _maze = Maze;
         }
-
-        public void DisplayMaze() => Console.WriteLine(GetStringDisplay());
-        public void DisplaySolution() => Console.WriteLine(GetStringDisplay(_maze.Solution));
-        public void DisplayHint() => Console.WriteLine(GetStringDisplay(_maze.GetHint()));
+        public void Display(MyList<NodeLocation> Highlights = null)
+        {
+            Console.WriteLine(GetStringDisplay(Highlights));
+        }
 
         private string GetStringDisplay(MyList<NodeLocation> highlightNodes = null)
         {
