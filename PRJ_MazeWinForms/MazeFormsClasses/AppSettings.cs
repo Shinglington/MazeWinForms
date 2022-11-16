@@ -27,9 +27,9 @@ namespace MazeFormsClasses
 
         public void LoadConfig()
         {
+            /*
             if (File.Exists(FILENAME))
             {
-
                 StreamReader streamReader = File.OpenText(FILENAME);
                 try
                 {
@@ -45,11 +45,14 @@ namespace MazeFormsClasses
                     _appSettings = GetDefaultConfig();
                 }
                 streamReader.Close();
+                
             }
             else
             {
                 _appSettings = GetDefaultConfig();
             }
+            */
+            _appSettings = GetDefaultConfig();
         }
 
         public void SaveConfig()

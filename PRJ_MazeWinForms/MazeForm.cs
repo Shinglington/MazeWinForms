@@ -6,6 +6,7 @@ using System.Windows.Forms;
 using MyDataStructures;
 using MazeClasses;
 using MazeFormsClasses;
+using System.Drawing;
 
 namespace PRJ_MazeWinForms
 {
@@ -89,10 +90,41 @@ namespace PRJ_MazeWinForms
             menuStrip.Items.Add(HelpMenu);
         }
 
-
-    private void MazeFinished(Maze maze, MazeFinishedEventArgs e)
+        private void MazeFinished(Maze maze, MazeFinishedEventArgs e)
         {
-            MessageBox.Show("You finished the maze!");
+            int MESSAGEBOX_RATIO = 3;
+
+            // Show player stats in messag eform
+            Form mazeStatsForm = new Form
+            {
+                StartPosition = FormStartPosition.CenterParent,
+                ShowInTaskbar = false,
+                Size = new Size(this.Size.Width / MESSAGEBOX_RATIO, this.Size.Height / MESSAGEBOX_RATIO),
+                Text = "Stats",
+            };
+            TableLayoutPanel statsTable = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill,
+            };
+            statsTable.ColumnStyles.Clear();
+            statsTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            statsTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            statsTable.RowStyles.Clear();
+            MyList<(string, string)> Stats = e.GetStats();
+            for (int i = 0; i < Stats.Count; i++)
+            {
+                (string, string) StatPair = Stats[i];
+                statsTable.RowStyles.Add(new RowStyle(SizeType.Percent, 100 / Stats.Count));
+                Label StatName = new Label() { Text = StatPair.Item1, Dock = DockStyle.Fill };
+                statsTable.Controls.Add(StatName, 0, i);
+
+                Label StatValue = new Label() { Text = StatPair.Item2, Dock = DockStyle.Fill };
+                statsTable.Controls.Add(StatValue, 1, i);
+
+            }
+            mazeStatsForm.Controls.Add(statsTable);
+
+            mazeStatsForm.ShowDialog();
             ReturnToSettings(this, new EventArgs());
 
         }
