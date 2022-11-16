@@ -20,14 +20,15 @@ namespace PRJ_MazeWinForms
 
         // Classes
         private WinFormsMaze _maze;
+        private AppSettings _appSettings;
 
-
-        public MazeForm(Form settingsForm, MazeSettings MazeSettings, MazeDisplaySettings DisplaySettings)
+        public MazeForm(Form settingsForm, MazeSettings MazeSettings,AppSettings AppSettings)
         {
             InitializeComponent();
             CreateControls();
             _settingsForm = settingsForm;
-            _maze = new WinFormsMaze(MazeSettings, DisplaySettings, _tbl_mazePanel);
+            _appSettings = AppSettings;
+            _maze = new WinFormsMaze(MazeSettings, _tbl_mazePanel, _appSettings.DisplaySettings, _appSettings.ControlSettings);
             SetupMenuStrip(_menuStrip);
             SetupEvents();
             _maze.PlayMaze();

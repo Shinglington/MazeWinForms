@@ -16,22 +16,15 @@ namespace MazeFormsClasses
         public Control Parent { get { return _container; } }
 
 
-        public WinFormsMaze(MazeSettings Settings, MazeDisplaySettings DisplaySettings, TableLayoutPanel Container) : base(Settings)
+        public WinFormsMaze(MazeSettings Settings, TableLayoutPanel Container, MazeDisplaySettings DisplaySettings, MazeControlSettings ControlSettings) : base(Settings)
         {
-            WinFormsMazeSetup(DisplaySettings, Container);
+            WinFormsMazeSetup(DisplaySettings, ControlSettings, Container);
         }
-
-        public WinFormsMaze(int height, int width, GenAlgorithm algorithm, MazeDisplaySettings DisplaySettings, TableLayoutPanel Container, bool ShowGeneration = false)
-            : base(new MazeSettings(height, width, algorithm, ShowGeneration))
-        {
-            WinFormsMazeSetup(DisplaySettings, Container);
-        }
-
-        private void WinFormsMazeSetup(MazeDisplaySettings DisplaySettings, TableLayoutPanel Container)
+        private void WinFormsMazeSetup(MazeDisplaySettings DisplaySettings, MazeControlSettings ControlSettings, TableLayoutPanel Container)
         {
             _container = Container;
             _mazeDisplayer = new FormsMazeDisplayer(this, DisplaySettings, Container);
-            _mazeInterface = new FormsMazeInterface(this, _player);
+            _mazeInterface = new FormsMazeInterface(this, _player, ControlSettings);
             
         }
     }
@@ -214,7 +207,7 @@ namespace MazeFormsClasses
 
     class FormsMazeInterface : MazeInterface
     {
-        public FormsMazeInterface(WinFormsMaze Maze, Player Player) : base(Maze, Player)
+        public FormsMazeInterface(WinFormsMaze Maze, Player Player, MazeControlSettings ControlSettings) : base(Maze, Player, ControlSettings)
         {
 
         }

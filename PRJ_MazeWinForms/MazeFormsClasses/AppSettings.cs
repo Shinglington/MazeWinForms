@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MazeFormsClasses;
+using System;
 using System.Drawing;
 using System.IO;
 using System.Xml.Serialization;
@@ -6,14 +7,10 @@ using System.Xml.Serialization;
 namespace MazeFormsClasses
 {
     [Serializable()]
-    public class AppSettings
+    public struct AppSettings
     {
         public MazeDisplaySettings DisplaySettings { get; set; }
-
-        public AppSettings()
-        {
-            DisplaySettings = new MazeDisplaySettings();
-        }
+        public MazeControlSettings ControlSettings { get; set; }
 
     }
 
@@ -24,14 +21,8 @@ namespace MazeFormsClasses
 
         public AppSettings AppSettings
         {
-            get
-            {
-                return _appSettings;
-            }
-            set
-            {
-                _appSettings = value;
-            }
+            get { return _appSettings; }
+            set { _appSettings = value; }
         }
 
         public void LoadConfig()
@@ -50,7 +41,7 @@ namespace MazeFormsClasses
                 }
                 catch
                 {
-                    Console.WriteLine("Error loading config file {0}", FILENAME);
+                    Console.WriteLine("Error loading config file, {0}", FILENAME);
                     _appSettings = GetDefaultConfig();
                 }
                 streamReader.Close();
@@ -67,10 +58,17 @@ namespace MazeFormsClasses
             Type type = _appSettings.GetType();
             if (type.IsSerializable)
             {
-                XmlSerializer xml = new XmlSerializer(type);
-                xml.Serialize(streamWriter, _appSettings);
-                streamWriter.Close();
+                try
+                {
+                    XmlSerializer xml = new XmlSerializer(type);
+                    xml.Serialize(streamWriter, _appSettings);
+                }
+                catch
+                {
+                    Console.WriteLine("Error while saving settings file, {0}", FILENAME);
+                }
             }
+            streamWriter.Close();
             Console.WriteLine("Saved Settings File");
         }
 
@@ -78,24 +76,15 @@ namespace MazeFormsClasses
         {
             AppSettings DefaultSettings = new AppSettings
             {
-                DisplaySettings = new MazeDisplaySettings
-                {
-                    WallColour = Color.Black,
-                    CellColour = Color.White,
-                    StartColour = Color.Green,
-                    EndColour = Color.DarkRed,
-                    PlayerColour = Color.Blue,
-                    HintColour = Color.Red,
-
-                    MinimumPadding = 5,
-                    WallRatio = 6
-                }
+                DisplaySettings = MazeDisplaySettings.Default,
+                ControlSettings = MazeControlSettings.Default
             };
+
             return DefaultSettings;
         }
     }
 
-    public class MazeDisplaySettings
+    public struct MazeDisplaySettings
     {
         public Color WallColour { get; set; }
         public Color CellColour { get; set; }
@@ -104,14 +93,35 @@ namespace MazeFormsClasses
         public Color PlayerColour { get; set; }
         public Color HintColour { get; set; }
         public int MinimumPadding { get; set; }
-
         public int WallRatio { get; set; }
 
 
+        public static readonly MazeDisplaySettings Default = new MazeDisplaySettings
+        {
+            WallColour = Color.Black,
+            CellColour = Color.White,
+            StartColour = Color.Green,
+            EndColour = Color.DarkRed,
+            PlayerColour = Color.Blue,
+            HintColour = Color.Red,
 
-
-
+            MinimumPadding = 5,
+            WallRatio = 6
+        };
     }
+
+    public struct MazeControlSettings 
+    {
+        public char[] Movement { get; set; }
+        public char Hint { get; set; }
+
+        public static readonly MazeControlSettings Default = new MazeControlSettings
+        {
+            Movement = new char[] { 'w', 'd', 's', 'a' },
+            Hint = 'h'
+        };
+    }
+
 
 
 

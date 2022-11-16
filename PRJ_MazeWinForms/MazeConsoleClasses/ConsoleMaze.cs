@@ -1,4 +1,5 @@
 ﻿using MazeClasses;
+using MazeFormsClasses;
 using MyDataStructures;
 using System;
 
@@ -20,7 +21,7 @@ namespace MazeConsole
         private void ConsoleMazeSetup()
         {
             _mazeDisplayer = new ConsoleMazeDisplayer(this);
-            _mazeInterface = new ConsoleMazeInterface(this, _player);
+            _mazeInterface = new ConsoleMazeInterface(this, _player, MazeControlSettings.Default);
         }
 
     }
@@ -112,7 +113,7 @@ namespace MazeConsole
 
     public class ConsoleMazeInterface : MazeInterface
     {
-        public ConsoleMazeInterface(Maze Maze, Player Player) : base(Maze, Player)
+        public ConsoleMazeInterface(Maze Maze, Player Player, MazeControlSettings ControlSettings) : base(Maze, Player, ControlSettings)
         {
 
         }
@@ -122,7 +123,7 @@ namespace MazeConsole
             while (!_maze.Finished)
             {
                 char key = Console.ReadKey(true).KeyChar;
-                if (key == HINT_CONTROL)
+                if (key == _controlSettings.Hint)
                 {
                     ShowHint();
                 }

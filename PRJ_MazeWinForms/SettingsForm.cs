@@ -12,32 +12,35 @@ namespace PRJ_MazeWinForms
         private TableLayoutPanel _formPanel;
         private TableLayoutPanel _tbl_basicSettings;
         private TableLayoutPanel _tbl_advSettings;
-        private SettingMode _mode;
-
+        private SettingsView _mode;
         private AppSettings _appSettings;
-
         private bool _showGeneration;
 
 
         private const string TEXT_FONT = "Arial";
-        enum SettingMode 
+        enum SettingsView 
         {
             Basic,
             Advanced
         }
 
-        public SettingsForm(MenuForm M)
+        public SettingsForm(MenuForm M, AppSettings appSettings)
         {
             InitializeComponent();
             // Indicates which form originally called the settings form
+            SetupAttributes(M, appSettings);
+            SetupControls();
+            SetupEvents();
+        }
+
+        private void SetupAttributes(MenuForm M, AppSettings appSettings)
+        {
             _menu = M;
             _title = lbl_settings;
             _formPanel = tbl_settingPanel;
             _showGeneration = false;
-            _mode = (SettingMode)0;
-            LoadAppSettings();
-            SetupControls();
-            SetupEvents();
+            _mode = SettingsView.Basic;
+            _appSettings = appSettings;
         }
 
         private void SetupEvents()
@@ -62,13 +65,6 @@ namespace PRJ_MazeWinForms
             }
         }
 
-        private void LoadAppSettings()
-        {
-            AppSettingsManager SettingsManager = new AppSettingsManager();
-            SettingsManager.LoadConfig();
-            _appSettings = SettingsManager.AppSettings;
-        }
-
         private void ReturnToMenu(object sender, EventArgs e)
         {
             this.Hide();
@@ -80,17 +76,17 @@ namespace PRJ_MazeWinForms
             Button button = sender as Button;
             int CurrentMode = (int)_mode;
             button.Text = _mode.ToString() + " Settings";
-            _mode = (SettingMode)((CurrentMode + 1) % 2);// go to next mode (mod 2 since enum has 2 values)
+            _mode = (SettingsView)((CurrentMode + 1) % 2);// go to next mode (mod 2 since enum has 2 values)
             // set button text
             _title.Text = _mode.ToString() + " Settings";
 
             switch (_mode)
             {
-                case SettingMode.Basic:
+                case SettingsView.Basic:
                     _tbl_advSettings.Hide();
                     _tbl_basicSettings.Show();
                     break;
-                case SettingMode.Advanced:
+                case SettingsView.Advanced:
                     _tbl_basicSettings.Hide();
                     _tbl_advSettings.Show();
                     break;
@@ -238,10 +234,10 @@ namespace PRJ_MazeWinForms
             MazeSettings MazeSettings = null;
             switch (_mode)
             {
-                case SettingMode.Basic:
+                case SettingsView.Basic:
                     MazeSettings = GetBasicSettings();
                     break;
-                case SettingMode.Advanced:
+                case SettingsView.Advanced:
                     MazeSettings = GetAdvancedSettings();
                     break;
                 default:
@@ -256,7 +252,7 @@ namespace PRJ_MazeWinForms
             MazeSettings MazeSettings = GetMazeSettings();
             if (MazeSettings != null)
             {
-                MazeForm MazeForm = new MazeForm(this, MazeSettings, _appSettings.DisplaySettings);
+                MazeForm MazeForm = new MazeForm(this, MazeSettings, _appSettings);
                 MazeForm.Show();
                 this.Hide();
             }

@@ -21,7 +21,7 @@ namespace PRJ_MazeWinForms
             get
             {
                 if (_settingsForm == null || _settingsForm.IsDisposed)
-                    _settingsForm = new SettingsForm(this);
+                    _settingsForm = new SettingsForm(this, _appSettings);
                 return _settingsForm;
             }
         }

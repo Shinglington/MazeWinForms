@@ -1,4 +1,5 @@
-﻿using MyDataStructures;
+﻿using MazeFormsClasses;
+using MyDataStructures;
 using PRJ_MazeWinForms;
 using System;
 
@@ -113,49 +114,20 @@ namespace MazeClasses
     {
         protected Maze _maze;
         private Player _player;
+        protected MazeControlSettings _controlSettings;
 
-        protected Char[] _movementKeys;
-        protected char HINT_CONTROL = 'h';
+        protected char[] _movementKeys { get { return _controlSettings.Movement; } }
 
-        public MazeInterface(Maze Maze, Player Player)
+        public MazeInterface(Maze Maze, Player Player, MazeControlSettings ControlSettings)
         {
             _maze = Maze;
             _player = Player;
-            SetupControls();
+            _controlSettings = ControlSettings;
         }
 
         public virtual void Play()
         {
 
-        }
-
-        public void SetupControls(char[] MoveControls = null)
-        {
-            _movementKeys = new char[4];
-            if (MoveControls == null)
-            {
-                _movementKeys = new char[] { 'w', 'd', 's', 'a' };
-                return;
-            }
-
-            if (MoveControls.Length == 4)
-            {
-                try
-                {
-                    for (int i = 0; i < 4; i++)
-                    {
-                        _movementKeys[i] = MoveControls[i];
-                    }
-                }
-                catch
-                {
-                    _movementKeys = new char[] { 'w', 'd', 's', 'a' };
-                }
-            }
-            else
-            {
-                _movementKeys = new char[] { 'w', 'd', 's', 'a' };
-            }
         }
 
         public bool TryMove(Direction moveDirection)
@@ -215,8 +187,6 @@ namespace MazeClasses
     public interface IMazeInterface
     {
         bool TryMove(Direction moveDirection);
-
-        void SetupControls(char[] movementKeys);
     }
 
     public class MazeSettings
