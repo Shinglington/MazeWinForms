@@ -18,7 +18,7 @@ namespace MazeClasses
         public NodeLocation StartLocation { get { return _graph.StartNode.Location; } }
         public NodeLocation EndLocation { get { return _graph.EndNode.Location; } }
         public NodeLocation PlayerLocation { get { return _player.Location; } }
-        public bool Finished { get { return (PlayerLocation == EndLocation); } }
+        public bool Finished { get { return PlayerLocation == EndLocation; } }
 
         public MazeFinishedEventHandler OnMazeFinished;
         public Maze(MazeSettings Settings)
@@ -73,7 +73,7 @@ namespace MazeClasses
                 _mazeDisplayer.DisplayMaze();
         }
 
-        public MyList<NodeLocation> GetHint(int count = 4)
+        protected MyList<NodeLocation> GetHint(int count = 4)
         {
             MyList<Node> PathToEnd = MazeSolver.WallFollower(_graph, PlayerLocation, EndLocation);
             MyList<NodeLocation> hint = new MyList<NodeLocation>();

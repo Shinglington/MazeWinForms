@@ -86,12 +86,24 @@
             if (obj is NodeLocation)
             {
                 NodeLocation n = (NodeLocation)obj;
-                return n.X == X && n.Y == Y;
+                return (n.X == X && n.Y == Y);
             }   
             else
             {
                 return false;
             }
+        }
+
+        public static bool operator == (NodeLocation a, NodeLocation b)
+        {
+            if ((object)a == null) return (object)b == null;
+
+            return a.Equals(b);
+        }
+
+        public static bool operator != (NodeLocation a, NodeLocation b)
+        {
+            return !(a == b);
         }
     }
 

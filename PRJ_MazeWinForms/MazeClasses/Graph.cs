@@ -153,7 +153,9 @@ namespace MazeClasses
 
         public Node[,] GetNodes()
         {
-            return _nodes;
+            Node[,] clone = (Node[,])_nodes.Clone();
+            return clone; 
+ 
         }
 
         public Node[] GetAdjacentNodes(Node N)
