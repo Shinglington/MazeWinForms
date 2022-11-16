@@ -14,7 +14,7 @@
             _movesUsed = 0;
             _hintsUsed = 0;
             _solutionUsed = false;
-            Location = M.StartNodeLocation;
+            Location = M.StartLocation;
 
         }
 

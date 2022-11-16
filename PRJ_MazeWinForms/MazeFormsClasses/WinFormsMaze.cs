@@ -98,8 +98,8 @@ namespace MazeFormsClasses
                     NodeLocation CurrentLocation = new NodeLocation(col, row);
                     Panel Cell = new Panel() { Parent = _container, Dock = DockStyle.Fill, Margin = new Padding(0) };
                     _container.SetCellPosition(Cell, new TableLayoutPanelCellPosition(col, row));
-                    bool isStartNode = (CurrentLocation.X == _maze.StartNodeLocation.X && CurrentLocation.Y == _maze.StartNodeLocation.Y);
-                    bool isEndNode = (CurrentLocation.X == _maze.EndNodeLocation.X && CurrentLocation.Y == _maze.EndNodeLocation.Y);
+                    bool isStartNode = CurrentLocation == _maze.StartLocation;
+                    bool isEndNode = CurrentLocation == _maze.EndLocation;
                     Cell.Paint += new PaintEventHandler((sender, e) => 
                         PaintNode(sender, e, CurrentLocation, isStartNode, isEndNode));
                 }

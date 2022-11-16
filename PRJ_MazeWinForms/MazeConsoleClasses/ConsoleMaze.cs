@@ -69,10 +69,10 @@ namespace MazeConsole
                         if (ThisNodeLocation == _maze.PlayerLocation)
                             currEastWalls += 'C';
 
-                        else if (ThisNodeLocation == _maze.StartNodeLocation)
+                        else if (ThisNodeLocation == _maze.StartLocation)
                             currEastWalls += START_CHAR;
 
-                        else if (ThisNodeLocation == _maze.EndNodeLocation)
+                        else if (ThisNodeLocation == _maze.EndLocation)
                             currEastWalls += END_CHAR;
 
                         else if (highlightNodes != null && highlightNodes.Contains(ThisNodeLocation))

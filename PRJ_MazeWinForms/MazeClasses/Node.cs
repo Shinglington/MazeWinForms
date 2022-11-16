@@ -78,6 +78,21 @@
         }
         public int X { get { return _location.Item1; } }
         public int Y { get { return _location.Item2; } }
+
+
+        public override bool Equals(object obj)
+        {
+            // override for equals
+            if (obj is NodeLocation)
+            {
+                NodeLocation n = (NodeLocation)obj;
+                return n.X == X && n.Y == Y;
+            }   
+            else
+            {
+                return false;
+            }
+        }
     }
 
     public enum Direction

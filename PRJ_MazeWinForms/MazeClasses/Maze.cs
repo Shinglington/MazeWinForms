@@ -15,10 +15,10 @@ namespace MazeClasses
         protected MyList<Node> _solution;
         public int Width { private set; get; }
         public int Height { private set; get; }
-        public NodeLocation StartNodeLocation { get { return _graph.StartNode.Location; } }
-        public NodeLocation EndNodeLocation { get { return _graph.EndNode.Location; } }
+        public NodeLocation StartLocation { get { return _graph.StartNode.Location; } }
+        public NodeLocation EndLocation { get { return _graph.EndNode.Location; } }
         public NodeLocation PlayerLocation { get { return _player.Location; } }
-        public bool Finished { get { return (_player.Location.X == EndNodeLocation.X && _player.Location.Y == EndNodeLocation.Y); } }
+        public bool Finished { get { return (PlayerLocation == EndLocation); } }
 
         public MazeFinishedEventHandler OnMazeFinished;
         public Maze(MazeSettings Settings)
@@ -75,7 +75,7 @@ namespace MazeClasses
 
         public MyList<NodeLocation> GetHint(int count = 4)
         {
-            MyList<Node> PathToEnd = MazeSolver.WallFollower(_graph, PlayerLocation, EndNodeLocation);
+            MyList<Node> PathToEnd = MazeSolver.WallFollower(_graph, PlayerLocation, EndLocation);
             MyList<NodeLocation> hint = new MyList<NodeLocation>();
             for (int i = 0; i < Math.Min(count, PathToEnd.Count); i++)
             {
@@ -251,6 +251,16 @@ namespace MazeClasses
         public bool SolutionUsed { get { return _player.SolutionUsed; } }
 
 
+        public MyList<(string, string)> GetStats()
+        {
+            MyList<(string, string)> Stats = new MyList<(string, string)>();
+            Stats.Add(("Moves Used", MoveCount.ToString()));
+            Stats.Add(("Hints Used", HintCount.ToString()));
+            Stats.Add(("Solution Used", SolutionUsed.ToString()));
+
+            return Stats;
+
+        }
     }
 
 
