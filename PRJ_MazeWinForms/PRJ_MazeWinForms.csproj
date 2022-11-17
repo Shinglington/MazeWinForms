@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Authentication\DatabaseHelper.cs" />
     <Compile Include="Logging\MyLogger.cs" />
     <Compile Include="MazeClasses\Graph.cs" />
     <Compile Include="MazeClasses\Maze.cs" />
