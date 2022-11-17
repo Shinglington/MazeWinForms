@@ -1,13 +1,10 @@
 ﻿
-using System;
-
-using System.Windows.Forms;
-
-using MyDataStructures;
 using MazeClasses;
 using MazeFormsClasses;
+using MyDataStructures;
+using System;
 using System.Drawing;
-using System.Runtime.Remoting.Channels;
+using System.Windows.Forms;
 
 namespace PRJ_MazeWinForms
 {
@@ -24,7 +21,7 @@ namespace PRJ_MazeWinForms
         private WinFormsMaze _maze;
         private AppSettings _appSettings;
 
-        public MazeForm(Form settingsForm, MazeSettings MazeSettings,AppSettings AppSettings)
+        public MazeForm(Form settingsForm, MazeSettings MazeSettings, AppSettings AppSettings)
         {
             InitializeComponent();
             CreateControls();
@@ -41,11 +38,15 @@ namespace PRJ_MazeWinForms
             this.FormClosed += new FormClosedEventHandler(ReturnToSettings);
             _maze.OnMazeFinished += new MazeFinishedEventHandler(MazeFinished);
 
-            _maze.Parent.Parent.KeyDown += new KeyEventHandler(PlayerKeyPress);
+            this.KeyPress += new KeyPressEventHandler(PlayerKeyPress);
 
         }
-        private void PlayerKeyPress(object sender, KeyEventArgs e)
+        private void PlayerKeyPress(object sender, KeyPressEventArgs e)
         {
+            char keyChar = e.KeyChar;
+            for (int i = 0; i < 4; i++)
+                if (keyChar == _appSettings.ControlSettings.Movement[i])
+                    _maze.MakeMove((Direction)i);
 
         }
         private void CreateControls()
@@ -158,7 +159,7 @@ namespace PRJ_MazeWinForms
         {
             if (e.GetReason() != null)
             {
-                Console.WriteLine("Error raised: {0}",e.GetReason());
+                Console.WriteLine("Error raised: {0}", e.GetReason());
                 MessageBox.Show("Error raised: {0}", e.GetReason());
             }
         }

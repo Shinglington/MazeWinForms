@@ -181,7 +181,7 @@ namespace MazeFormsClasses
 
             Brush brush = new SolidBrush(_displaySettings.PlayerColour);
             Point midpoint = new Point(cell.Width / 2, cell.Height / 2);
-            float radius = Math.Min(cell.Width, cell.Height) / _displaySettings.WallRatio;
+            float radius = Math.Min(cell.Width, cell.Height) / 3;
             g.FillEllipse(brush, midpoint.X - radius, midpoint.Y - radius, radius * 2, radius * 2);
         }
         public void PaintHint(object sender, PaintEventArgs e)
