@@ -1,5 +1,6 @@
 ﻿using System;
 using MyDataStructures;
+using PRJ_MazeWinForms.Logging;
 
 namespace MazeClasses
 {
@@ -66,7 +67,7 @@ namespace MazeClasses
             // Check if they are adjacent
             if (!AreAdjacent(NodeA, NodeB))
             {
-                Console.WriteLine("Nodes at ({0}, {1}) and ({2}, {3}) are not adjacent, so can't add edge", NodeA.Location.X, NodeA.Location.Y, NodeB.Location.X, NodeB.Location.Y);
+                LogHelper.ErrorLog(string.Format("Failed to connect edges at nodes {0} and {1}, nodes aren't adjacent", NodeA.Location, NodeB.Location));
                 return success;
             }
 
@@ -104,7 +105,7 @@ namespace MazeClasses
             }
             else
             {
-                Console.WriteLine("Failed to connect edges of nodes ({0}, {1}) and ({2}, {3})", NodeA.Location.X, NodeA.Location.Y, NodeB.Location.X, NodeB.Location.Y);
+                LogHelper.ErrorLog(string.Format("Failed to connect edges at nodes {0} and {1}", NodeA.Location, NodeB.Location));
             }
 
             return success;
@@ -191,10 +192,7 @@ namespace MazeClasses
         {
             bool adjacent = false;
             if (NodeA == NodeB)
-            {
-                Console.WriteLine("Node A and B are the same Node");
                 return adjacent;
-            }
             if ((NodeA.Location.X == NodeB.Location.X) || (NodeA.Location.Y == NodeB.Location.Y))
             {
                 // if difference between x or y coord is 1, they are adjacent
@@ -211,9 +209,7 @@ namespace MazeClasses
             if (NodeA == null || NodeB == null) return false;
             if (!AreAdjacent(NodeA, NodeB)) return false;
             if (NodeA.NorthNode == NodeB || NodeA.EastNode == NodeB || NodeA.SouthNode == NodeB || NodeA.WestNode == NodeB)
-            {
                 Connected = true;
-            }
             return Connected;
         }
     }

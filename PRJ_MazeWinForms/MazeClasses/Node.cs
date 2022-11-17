@@ -79,6 +79,10 @@
         public int X { get { return _location.Item1; } }
         public int Y { get { return _location.Item2; } }
 
+        public override string ToString()
+        {
+            return string.Format("({0}, {1})", X.ToString(), Y.ToString());
+        }
 
         public override bool Equals(object obj)
         {
@@ -105,6 +109,8 @@
         {
             return !(a == b);
         }
+
+
     }
 
     public enum Direction
