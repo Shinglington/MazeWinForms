@@ -38,13 +38,9 @@ namespace MazeClasses
         {
             MyStack<Node> Path = new MyStack<Node>();
             if (StartLocation == null)
-            {
                 StartLocation = G.StartNode.Location;
-            }
             if (EndLocation == null)
-            {
                 EndLocation = G.EndNode.Location;
-            }
             DepthFirstSearch(G, G.GetNodeFromLocation(StartLocation), Path, G.GetNodeFromLocation(EndLocation));
             return Path.ToList();
         }
@@ -54,9 +50,7 @@ namespace MazeClasses
             // Identify the previous node, to remove from child nodes later
             Node PrevNode = null;
             if (Path.Count > 0)
-            {
                 PrevNode = Path.Peek();
-            }
 
             Path.Push(CurrNode);
             // If the current node is the target, break the recursion loop
@@ -79,18 +73,14 @@ namespace MazeClasses
         private static Node GetRandomAccessibleNode(Graph G, Node N)
         {
             if (N is null)
-            {
                 return null;
-            }
+
             Node[] ConnectedNodes = G.GetConnectedNodes(N);
             MyList<Node> AccessibleNodes = new MyList<Node>();
             foreach (Node n in ConnectedNodes)
-            {
                 if (N != null)
-                {
                     AccessibleNodes.Add(N);
-                }
-            }
+
             return AccessibleNodes[rand.Next(AccessibleNodes.Count)];
         }
 

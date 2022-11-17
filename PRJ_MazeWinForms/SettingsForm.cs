@@ -1,5 +1,6 @@
 ﻿using MazeClasses;
 using MazeFormsClasses;
+using PRJ_MazeWinForms.Logging;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -91,7 +92,7 @@ namespace PRJ_MazeWinForms
                     _tbl_advSettings.Show();
                     break;
                 default:
-                    Console.WriteLine("Can't identify Setting mode");
+                    LogHelper.ErrorLog(string.Format("Couldn't identify settings view ({0})", _mode.ToString()));
                     break;
             } 
 
@@ -241,7 +242,7 @@ namespace PRJ_MazeWinForms
                     MazeSettings = GetAdvancedSettings();
                     break;
                 default:
-                    Console.WriteLine("Can't identify Setting mode");
+                    LogHelper.ErrorLog(string.Format("Couldnt identify settings view"));
                     break;
             }
             return MazeSettings;

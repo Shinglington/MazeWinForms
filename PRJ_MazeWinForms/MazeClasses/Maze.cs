@@ -1,6 +1,7 @@
 ﻿using MazeFormsClasses;
 using MyDataStructures;
 using PRJ_MazeWinForms;
+using PRJ_MazeWinForms.Logging;
 using System;
 
 namespace MazeClasses
@@ -107,6 +108,7 @@ namespace MazeClasses
 
         public void EndMaze()
         {
+            LogHelper.Log("End Maze called");
             OnMazeFinished.Invoke(this, new MazeFinishedEventArgs(_player));
         }
     }
@@ -158,13 +160,19 @@ namespace MazeClasses
             }
             if (_maze.CheckAccessibility(CurrentLocation, NextLocation))
             {
+                LogHelper.Log(String.Format("Nodes {0} and {1} accessible, so move success", CurrentLocation, NextLocation));
                 _player.Move(NextLocation);
                 _maze.ShowMaze();
                 success = true;
 
                 if (_maze.Finished)
                 {
+                    LogHelper.Log("Player reached the end");
                     _maze.EndMaze();
+                }
+            else
+                {
+                    LogHelper.Log(String.Format("Player tried to move into wall from {0} to {1}", CurrentLocation, NextLocation));
                 }
             }
             return success;

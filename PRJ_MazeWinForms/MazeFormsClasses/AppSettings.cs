@@ -1,4 +1,5 @@
 ﻿using MazeFormsClasses;
+using PRJ_MazeWinForms.Logging;
 using System;
 using System.Drawing;
 using System.IO;
@@ -37,11 +38,11 @@ namespace MazeFormsClasses
                     XmlSerializer xml = new XmlSerializer(type);
                     object xmlData = xml.Deserialize(streamReader);
                     _appSettings = (AppSettings)xmlData;
-                    Console.WriteLine("Loaded Settings File, {0}", FILENAME);
+                    LogHelper.Log(string.Format("Loaded Settings File, {0}", FILENAME));
                 }
                 catch
                 {
-                    Console.WriteLine("Error loading config file, {0}", FILENAME);
+                    LogHelper.Error(string.Format("Error loading config file, {0}", FILENAME));
                     _appSettings = GetDefaultConfig();
                 }
                 streamReader.Close();
@@ -68,11 +69,11 @@ namespace MazeFormsClasses
                 }
                 catch
                 {
-                    Console.WriteLine("Error while saving settings file, {0}", FILENAME);
+                    LogHelper.ErrorLog(string.Format("Error saving settings file, {0}", FILENAME));
                 }
             }
             streamWriter.Close();
-            Console.WriteLine("Saved Settings File");
+            LogHelper.Log(string.Format("Saved settings in {0}", FILENAME));
         }
 
         private AppSettings GetDefaultConfig()

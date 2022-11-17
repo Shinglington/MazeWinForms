@@ -140,13 +140,10 @@ namespace MazeFormsClasses
 
             // Colour cell
             if (IsStartNode)
-            {
                 brush = new SolidBrush(_displaySettings.StartColour);
-            }
             else if (IsEndNode)
-            {
                 brush = new SolidBrush(_displaySettings.EndColour);
-            }
+
             g.FillRectangle(brush, 0,0, cell.Width, cell.Height);
 
             bool[] Walls = _maze.GetWalls(location);
@@ -218,10 +215,8 @@ namespace MazeFormsClasses
         {
             char keyChar = e.KeyChar;
             for (int i = 0; i < 4; i++)
-            {
                 if (keyChar == _movementKeys[i]) 
                     TryMove((Direction)i);
-            }
         }
     }
 

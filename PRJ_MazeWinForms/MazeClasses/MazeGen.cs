@@ -1,5 +1,6 @@
 ﻿using MazeConsole;
 using MyDataStructures;
+using PRJ_MazeWinForms.Logging;
 using System;
 using System.Collections.Generic;
 
@@ -27,9 +28,7 @@ namespace MazeClasses
             bool success = false;
             success = (bool)typeof(MazeGen).GetMethod(Algorithm).Invoke(null, new object[] { M, G, ShowGeneration });
             if (!success)
-            {
-                Console.WriteLine("Error in finding algorithm with name {0}", Algorithm);
-            }
+                LogHelper.ErrorLog(String.Format("Couldn't find algorithm named {0}", Algorithm.ToString()));
 
             return success;
         }
