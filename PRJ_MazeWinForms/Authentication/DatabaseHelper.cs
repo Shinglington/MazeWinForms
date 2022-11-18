@@ -41,24 +41,30 @@ namespace PRJ_MazeWinForms.Authentication
                 "CREATE TABLE Users ("
                 + "UserId SHORT NOT NULL,"
                 + "Username VARCHAR(13) NOT NULL,"
-                + "PassHash VARCHAR(13) NOT NULL,"
+                + "Password VARCHAR(13) NOT NULL,"
                 + "PRIMARY KEY(UserId)"
                 + ");";
 
-            ExecuteSql(_creationString);
+            ExecuteSql(_creationString, new string[0] { });
         }
 
-        private void ExecuteSql(string sqlString)
+        private int ExecuteSql(string sqlString, string[] parameters)
         {
+            int linesAffected = -1;
             using (OleDbConnection connection = new OleDbConnection(_connectionString))
             {
-                using (OleDbCommand command = new OleDbCommand(sqlString)) 
+                using (OleDbCommand command = new OleDbCommand(sqlString))
                 {
                     command.Connection = connection;
+                    foreach (string s in parameters)
+                    {
+                        command.Parameters.Add(new OleDbParameter("@Parameter", s));
+                    }
+
                     try
                     {
                         connection.Open();
-                        command.ExecuteNonQuery();
+                        linesAffected = command.ExecuteNonQuery();
                     }
                     catch (Exception e)
                     {
@@ -66,6 +72,8 @@ namespace PRJ_MazeWinForms.Authentication
                     }
                 }
             }
+            return linesAffected;
+            
         }
 
         private void SqlQuery(string sqlString)
@@ -75,10 +83,60 @@ namespace PRJ_MazeWinForms.Authentication
                 OleDbCommand command = new OleDbCommand(sqlString, connection);
                 connection.Open();
                 OleDbDataReader reader = command.ExecuteReader();
+                while (reader.Read())
+                {
+
+                }
                 reader.Close();
             }
         }
 
+        public void AddUser(string Username, string PassHash)
+        {
+            int id = 0;
+            using (OleDbConnection connection = new OleDbConnection(_connectionString))
+            {
+                using (OleDbCommand command = new OleDbCommand("SELECT COUNT (UserId) FROM Users;", connection))
+                {
+                    connection.Open();
+                    try
+                    {
+                        id = (int)command.ExecuteScalar();
+                    }
+                    catch (Exception e)
+                    {
+                        LogHelper.ErrorLog(e.ToString());
+                    }
+                }
+            }
+            string sqlString = string.Format("INSERT INTO Users " +
+                "VALUES (?, '?', '?');");
+            ExecuteSql(sqlString, new string[3] {id.ToString(), Username, PassHash});
+        }
+
+        public bool Authenticate(string Username, string Password)
+        {
+            string passhash = "";
+            using (OleDbConnection connection = new OleDbConnection(_connectionString))
+            {
+                using (OleDbCommand command = new OleDbCommand("SELECT Password FROM Users WHERE Username = ?", connection))
+                {
+                    connection.Open();
+                    command.Parameters.AddWithValue("@Username", Username);
+                    passhash = (string) command.ExecuteScalar();
+                }
+            }
+            bool valid = passhash == Password;
+            if (valid)
+            {
+                LogHelper.Log("Success");
+            }
+            else
+            {
+                LogHelper.ErrorLog(string.Format("Password for {0} doesn't match database, expected {1}", Username, passhash));
+            }
+            return valid;
+        }
 
         public bool Open()
         {
