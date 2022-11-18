@@ -1,4 +1,5 @@
 ﻿using MazeFormsClasses;
+using PRJ_MazeWinForms.Authentication;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -30,6 +31,7 @@ namespace PRJ_MazeWinForms
             InitializeComponent();
             SetupAttributes();
             SetupEvents();
+            UserDatabase databse = new UserDatabase();
         }
 
         private void SetupAttributes()
