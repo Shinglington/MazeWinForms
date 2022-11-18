@@ -1,17 +1,15 @@
-﻿using System;
-using System.Data.OleDb;
-using System.Data.SqlClient;
-using System.IO;
-using ADOX;
+﻿using ADOX;
 using PRJ_MazeWinForms.Logging;
+using System;
+using System.Data.OleDb;
+using System.IO;
 
 namespace PRJ_MazeWinForms.Authentication
 {
     public abstract class DatabaseHelper
     {
         protected string _databaseName;
-        protected string creationString;
-        protected string connectionString;
+        protected string _connectionString;
 
         protected void CreateDatabase()
         {
@@ -19,7 +17,7 @@ namespace PRJ_MazeWinForms.Authentication
 
             if (!File.Exists(_databaseName))
             {
-                cat.Create(connectionString);
+                cat.Create(_connectionString);
                 CreateTables();
                 LogHelper.Log("Database created");
             }
@@ -37,28 +35,39 @@ namespace PRJ_MazeWinForms.Authentication
 
         protected void ExecuteSql(string sqlString)
         {
-            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            using (OleDbConnection connection = new OleDbConnection(_connectionString))
             {
-                using (OleDbCommand command = new OleDbCommand(sqlString))
+                OleDbCommand command = new OleDbCommand(sqlString);
+
+                command.Connection = connection;
+                try
                 {
-                    command.Connection = connection;
-                    try
-                    {
-                        connection.Open();
-                        command.ExecuteNonQuery();
-                    }
-                    catch (Exception e)
-                    {
-                        LogHelper.ErrorLog(e.ToString());
-                    }
+                    connection.Open();
+                    command.ExecuteNonQuery();
                 }
+                catch (Exception e)
+                {
+                    LogHelper.ErrorLog(e.ToString());
+                }
+
+            }
+        }
+
+        protected void SqlQuery(string sqlString)
+        {
+            using (OleDbConnection connection = new OleDbConnection(_connectionString))
+            {
+                OleDbCommand command = new OleDbCommand(sqlString, connection);
+                connection.Open();
+                OleDbDataReader reader = command.ExecuteReader();
+                reader.Close();
             }
         }
 
 
         public bool Open()
         {
-            using (OleDbConnection connection = new OleDbConnection(connectionString))
+            using (OleDbConnection connection = new OleDbConnection(_connectionString))
             {
 
             }
@@ -74,7 +83,7 @@ namespace PRJ_MazeWinForms.Authentication
         public UserDatabase()
         {
             _databaseName = "UserDatabase.mdf";
-            connectionString = @"Provider=Microsoft Jet 4.0 OLE DB Provider; Data Source = " + _databaseName + ";";
+            _connectionString = @"Provider=Microsoft Jet 4.0 OLE DB Provider; Data Source = " + _databaseName + ";";
             CreateDatabase();
         }
 
@@ -87,6 +96,8 @@ namespace PRJ_MazeWinForms.Authentication
                 + "}";
             ExecuteSql(_creationString);
         }
+
+        public
     }
 
 }
