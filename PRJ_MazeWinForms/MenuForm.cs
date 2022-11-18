@@ -31,7 +31,7 @@ namespace PRJ_MazeWinForms
             InitializeComponent();
             SetupAttributes();
             SetupEvents();
-            UserDatabase databse = new UserDatabase();
+            DatabaseHelper databse = new DatabaseHelper();
         }
 
         private void SetupAttributes()
