@@ -3,6 +3,7 @@ using PRJ_MazeWinForms.Logging;
 using System;
 using System.Data;
 using System.Data.OleDb;
+using System.Diagnostics;
 using System.IO;
 
 namespace PRJ_MazeWinForms.Authentication
@@ -10,20 +11,24 @@ namespace PRJ_MazeWinForms.Authentication
     public class DatabaseHelper
     {
         private const string _databaseName = "MazeDatabase.mdf";
-        private const string _connectionString = @"Provider = Microsoft Jet 4.0 OLE DB Provider;Data Source = " + _databaseName + ";";
+        private string _connectionString;
 
         public DatabaseHelper()
         {
+            string directory = Directory.GetParent(typeof(Program).Assembly.Location).FullName;
+            _connectionString = @"Provider = Microsoft Jet 4.0 OLE DB Provider;Data Source = " + directory + @"\" + _databaseName + ";";
             CreateDatabase();
         }
 
 
         private void CreateDatabase()
         {
-            CatalogClass cat = new CatalogClass();
+
             if (!File.Exists(_databaseName))
             {
+                CatalogClass cat = new CatalogClass();
                 cat.Create(_connectionString);
+                cat = null;
                 LogHelper.Log("Created Database successfully");
                 CreateTables();
             }
@@ -31,63 +36,33 @@ namespace PRJ_MazeWinForms.Authentication
             {
                 LogHelper.ErrorLog("Database already exists");
             }
-            cat = null;
-
         }
 
         private void CreateTables()
         {
             string _creationString =
-                "CREATE TABLE Users ("
-                + "UserId SHORT NOT NULL,"
-                + "Username VARCHAR(13) NOT NULL,"
-                + "Password VARCHAR(13) NOT NULL,"
-                + "PRIMARY KEY(UserId)"
+                "CREATE TABLE [UserDatabase] ("
+                + "[Id] INT NOT NULL,"
+                + "[Username] VARCHAR(13) NOT NULL,"
+                + "[Password] VARCHAR(13) NOT NULL,"
+                + "PRIMARY KEY(Id)"
                 + ");";
 
-            ExecuteSql(_creationString, new string[0] { });
-        }
-
-        private int ExecuteSql(string sqlString, string[] parameters)
-        {
-            int linesAffected = -1;
             using (OleDbConnection connection = new OleDbConnection(_connectionString))
             {
-                using (OleDbCommand command = new OleDbCommand(sqlString))
+                using (OleDbCommand command = new OleDbCommand(_creationString))
                 {
                     command.Connection = connection;
-                    foreach (string s in parameters)
-                    {
-                        command.Parameters.Add(new OleDbParameter("@Parameter", s));
-                    }
 
                     try
                     {
                         connection.Open();
-                        linesAffected = command.ExecuteNonQuery();
                     }
                     catch (Exception e)
                     {
                         LogHelper.ErrorLog(e.ToString());
                     }
                 }
-            }
-            return linesAffected;
-            
-        }
-
-        private void SqlQuery(string sqlString)
-        {
-            using (OleDbConnection connection = new OleDbConnection(_connectionString))
-            {
-                OleDbCommand command = new OleDbCommand(sqlString, connection);
-                connection.Open();
-                OleDbDataReader reader = command.ExecuteReader();
-                while (reader.Read())
-                {
-
-                }
-                reader.Close();
             }
         }
 
@@ -96,7 +71,7 @@ namespace PRJ_MazeWinForms.Authentication
             int id = 0;
             using (OleDbConnection connection = new OleDbConnection(_connectionString))
             {
-                using (OleDbCommand command = new OleDbCommand("SELECT COUNT (UserId) FROM Users;", connection))
+                using (OleDbCommand command = new OleDbCommand("SELECT COUNT (Id) FROM [UserDatabase];", connection))
                 {
                     connection.Open();
                     try
@@ -109,9 +84,30 @@ namespace PRJ_MazeWinForms.Authentication
                     }
                 }
             }
-            string sqlString = string.Format("INSERT INTO Users " +
-                "VALUES (?, '?', '?');");
-            ExecuteSql(sqlString, new string[3] {id.ToString(), Username, PassHash});
+
+
+            string sqlString = string.Format("INSERT INTO [UserDatabase] " +
+                "VALUES (?, ?, ?);");
+
+            using (OleDbConnection connection = new OleDbConnection(_connectionString))
+            {
+                using (OleDbCommand command = new OleDbCommand(sqlString))
+                {
+                    command.Connection = connection;
+                    command.Parameters.Add("?", OleDbType.Integer).Value = id;
+                    command.Parameters.Add("?", OleDbType.VarChar).Value = Username;
+                    command.Parameters.Add("?", OleDbType.VarChar).Value = PassHash;
+                    connection.Open();
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    catch (Exception e)
+                    {
+                        LogHelper.ErrorLog(e.ToString());
+                    }
+                }
+            }
         }
 
         public bool Authenticate(string Username, string Password)
@@ -119,13 +115,12 @@ namespace PRJ_MazeWinForms.Authentication
             string passhash = "";
             using (OleDbConnection connection = new OleDbConnection(_connectionString))
             {
-                using (OleDbCommand command = new OleDbCommand("SELECT Password FROM Users WHERE Username = ?;", connection))
+                using (OleDbCommand command = new OleDbCommand("SELECT [Password] FROM UserDatabase WHERE[Username] = ?;", connection))
                 {
                     connection.Open();
-                    command.Parameters.AddWithValue("@Username", Username);
+                    command.Parameters.Add("?", OleDbType.VarChar).Value = Username;
                     try
                     {
-
                         passhash = (string)command.ExecuteScalar();
                     }
                     catch (Exception e)
@@ -161,7 +156,7 @@ namespace PRJ_MazeWinForms.Authentication
         {
             using (OleDbConnection connection = new OleDbConnection(_connectionString))
             {
-                using (OleDbCommand command = new OleDbCommand("SELECT Username, Password FROM Users;", connection))
+                using (OleDbCommand command = new OleDbCommand("SELECT [Username], [Password] FROM UserDatabase;", connection))
                 {
                     connection.Open();
                     try
