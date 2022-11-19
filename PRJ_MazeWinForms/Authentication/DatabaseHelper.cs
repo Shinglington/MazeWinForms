@@ -119,11 +119,20 @@ namespace PRJ_MazeWinForms.Authentication
             string passhash = "";
             using (OleDbConnection connection = new OleDbConnection(_connectionString))
             {
-                using (OleDbCommand command = new OleDbCommand("SELECT Password FROM Users WHERE Username = ?", connection))
+                using (OleDbCommand command = new OleDbCommand("SELECT Password FROM Users WHERE Username = ?;", connection))
                 {
                     connection.Open();
                     command.Parameters.AddWithValue("@Username", Username);
-                    passhash = (string) command.ExecuteScalar();
+                    try
+                    {
+
+                        passhash = (string)command.ExecuteScalar();
+                    }
+                    catch (Exception e)
+                    {
+                        LogHelper.ErrorLog(e.ToString());
+                    }
+
                 }
             }
             bool valid = passhash == Password;
@@ -146,6 +155,31 @@ namespace PRJ_MazeWinForms.Authentication
             }
 
             return true;
+        }
+
+        public void ShowDatabase()
+        {
+            using (OleDbConnection connection = new OleDbConnection(_connectionString))
+            {
+                using (OleDbCommand command = new OleDbCommand("SELECT Username, Password FROM Users;", connection))
+                {
+                    connection.Open();
+                    try
+                    {
+                        OleDbDataReader reader = command.ExecuteReader();
+                        while (reader.Read())
+                        {
+                            Console.WriteLine(reader[0].ToString());
+                        }
+                        reader.Close();
+                    }
+                    catch (Exception e)
+                    {
+                        LogHelper.ErrorLog(e.ToString());
+                    }
+
+                }
+            }
         }
 
 

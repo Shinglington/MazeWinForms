@@ -33,7 +33,8 @@ namespace PRJ_MazeWinForms
             SetupEvents();
             DatabaseHelper database = new DatabaseHelper();
             database.AddUser("Bob", "Jeff");
-            database.AddUser("Joey", "Mama");
+            database.AddUser("Jimmy", "Joey");
+            database.ShowDatabase();
             database.Authenticate("Bob", "Jeff");
             database.Authenticate("Joey", "Jeff");
 
