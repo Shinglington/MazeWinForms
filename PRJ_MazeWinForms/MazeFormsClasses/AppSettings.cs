@@ -17,6 +17,7 @@ namespace MazeFormsClasses
 
     public class AppSettingsManager
     {
+        
         private const string FILENAME = "settings.xml";
         private AppSettings _appSettings = new AppSettings();
 

@@ -11,20 +11,18 @@ namespace PRJ_MazeWinForms.Authentication
     public class DatabaseHelper
     {
         private const string _databaseName = "MazeDatabase.mdf";
+        private string _directory;
         private string _connectionString;
-
         public DatabaseHelper()
         {
-            string directory = Directory.GetParent(typeof(Program).Assembly.Location).FullName;
-            _connectionString = @"Provider = Microsoft Jet 4.0 OLE DB Provider;Data Source = " + directory + @"\" + _databaseName + ";";
+            _directory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MyMazeProgram";
+            Directory.CreateDirectory(_directory);
+            _connectionString = @"Provider = Microsoft Jet 4.0 OLE DB Provider;Data Source = " + _directory + @"\" + _databaseName + ";";
             CreateDatabase();
         }
-
-
         private void CreateDatabase()
         {
-
-            if (!File.Exists(_databaseName))
+            if (!File.Exists(_directory + @"\" + _databaseName))
             {
                 CatalogClass cat = new CatalogClass();
                 cat.Create(_connectionString);
@@ -37,26 +35,51 @@ namespace PRJ_MazeWinForms.Authentication
                 LogHelper.ErrorLog("Database already exists");
             }
         }
-
         private void CreateTables()
         {
-            string _creationString =
+            // User table
+            string userTableCreation =
                 "CREATE TABLE [UserDatabase] ("
-                + "[Id] INT NOT NULL,"
+                + "[PlayerId] INT NOT NULL,"
                 + "[Username] VARCHAR(13) NOT NULL,"
                 + "[Password] VARCHAR(13) NOT NULL,"
                 + "PRIMARY KEY(Id)"
                 + ");";
 
+            // Score table
+            string scoreTableCreation =
+                "CREATE TABLE [ScoreDatabase] ("
+                + "[GameId] INT NOT NULL,"
+                + "[PlayerId] INT NOT NULL,"
+                + "[Score] INT NOT NULL,"
+                + "PRIMARY KEY(GameId),"
+                + "FOREIGN KEY(PlayerId) REFERENCES UserDatabase(PlayerId)"
+                + ");";
+
             using (OleDbConnection connection = new OleDbConnection(_connectionString))
             {
-                using (OleDbCommand command = new OleDbCommand(_creationString))
+                using (OleDbCommand command = new OleDbCommand(userTableCreation))
                 {
                     command.Connection = connection;
-
+                    connection.Open();
                     try
                     {
-                        connection.Open();
+                        command.ExecuteNonQuery();
+                        LogHelper.Log("User Table created");
+                    }
+                    catch (Exception e)
+                    {
+                        LogHelper.ErrorLog(e.ToString());
+                    }
+                }
+                using (OleDbCommand command = new OleDbCommand(scoreTableCreation))
+                {
+                    command.Connection = connection;
+                    connection.Open();
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                        LogHelper.Log("Score Table created");
                     }
                     catch (Exception e)
                     {
@@ -66,8 +89,14 @@ namespace PRJ_MazeWinForms.Authentication
             }
         }
 
-        public void AddUser(string Username, string PassHash)
+
+        // User table methods
+
+        public bool AddUser(string Username, string Password)
         {
+            if (UserExists(Username)) return false;
+
+            // Get new id
             int id = 0;
             using (OleDbConnection connection = new OleDbConnection(_connectionString))
             {
@@ -81,6 +110,7 @@ namespace PRJ_MazeWinForms.Authentication
                     catch (Exception e)
                     {
                         LogHelper.ErrorLog(e.ToString());
+                        return false;
                     }
                 }
             }
@@ -96,7 +126,7 @@ namespace PRJ_MazeWinForms.Authentication
                     command.Connection = connection;
                     command.Parameters.Add("?", OleDbType.Integer).Value = id;
                     command.Parameters.Add("?", OleDbType.VarChar).Value = Username;
-                    command.Parameters.Add("?", OleDbType.VarChar).Value = PassHash;
+                    command.Parameters.Add("?", OleDbType.VarChar).Value = CalculateHash(Password);
                     connection.Open();
                     try
                     {
@@ -105,13 +135,51 @@ namespace PRJ_MazeWinForms.Authentication
                     catch (Exception e)
                     {
                         LogHelper.ErrorLog(e.ToString());
+                        return false;
                     }
                 }
             }
+            return true;
+        }
+
+        private bool UserExists(string Username)
+        {
+            bool exists = false;
+            using (OleDbConnection connection = new OleDbConnection(_connectionString))
+            {
+                using (OleDbCommand command = new OleDbCommand("SELECT [Id] FROM [UserDatabase] WHERE [Username] = ?;"))
+                {
+                    command.Connection = connection;
+                    command.Parameters.Add("?", OleDbType.VarChar).Value = Username;
+                    connection.Open();
+                    try
+                    {
+                        if (command.ExecuteScalar() != null)
+                        {
+                            exists = true;
+                            LogHelper.Log(string.Format("Username : {0} exists", Username));
+                        }
+                        else
+                        {
+                            LogHelper.Log(string.Format("Username : {0} does not exist", Username));
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        LogHelper.ErrorLog(e.ToString());
+                    }
+                }
+            }
+            return exists;
         }
 
         public bool Authenticate(string Username, string Password)
         {
+            if (!UserExists(Username))
+            {
+                return false;
+            }
+
             string passhash = "";
             using (OleDbConnection connection = new OleDbConnection(_connectionString))
             {
@@ -130,10 +198,10 @@ namespace PRJ_MazeWinForms.Authentication
 
                 }
             }
-            bool valid = passhash == Password;
+            bool valid = passhash == CalculateHash(Password);
             if (valid)
             {
-                LogHelper.Log("Success");
+                LogHelper.Log(string.Format("Authentication for {0} successful", Username));
             }
             else
             {
@@ -142,15 +210,28 @@ namespace PRJ_MazeWinForms.Authentication
             return valid;
         }
 
-        public bool Open()
+        private string CalculateHash(string s)
         {
-            using (OleDbConnection connection = new OleDbConnection(_connectionString))
-            {
-
-            }
-
-            return true;
+            return s;
         }
+
+        // Score table methods
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         public void ShowDatabase()
         {
@@ -164,7 +245,7 @@ namespace PRJ_MazeWinForms.Authentication
                         OleDbDataReader reader = command.ExecuteReader();
                         while (reader.Read())
                         {
-                            Console.WriteLine(reader[0].ToString());
+                            Console.WriteLine(reader[0].ToString() + " " + reader[1].ToString());
                         }
                         reader.Close();
                     }
@@ -176,8 +257,6 @@ namespace PRJ_MazeWinForms.Authentication
                 }
             }
         }
-
-
     }
 
 }
