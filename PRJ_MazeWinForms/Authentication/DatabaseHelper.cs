@@ -6,10 +6,27 @@ using System.Data.OleDb;
 using System.Diagnostics;
 using System.IO;
 using System.Security.Cryptography;
+using System.Security.Policy;
 using System.Windows.Forms;
 
 namespace PRJ_MazeWinForms.Authentication
 {
+    
+    class User 
+    { 
+        public int PlayerId { get; }
+        public string Username { get; }
+        public string PasswordHash { get; }
+
+        public User(int id, string username, string passwordHash)
+        {
+            PlayerId = id;
+            Username = username;
+            PasswordHash = passwordHash;
+        }
+    }
+
+
     public class DatabaseHelper
     {
         private const string _databaseName = "MazeDatabase.mdf";
@@ -131,7 +148,7 @@ namespace PRJ_MazeWinForms.Authentication
             return null;
         }
 
-        private object SqlReaderQuery(string commandText, params object[] parameters)
+        private DataTable SqlReaderQuery(string commandText, params object[] parameters)
         {
             using (OleDbConnection connection = new OleDbConnection(_connectionString))
             {
@@ -145,7 +162,8 @@ namespace PRJ_MazeWinForms.Authentication
                     try
                     {
                         connection.Open();
-                        return command.ExecuteReader();
+                        OleDbDataReader reader = command.ExecuteReader();
+                        return reader.GetSchemaTable();
                     }
                     catch (Exception e)
                     {
@@ -156,24 +174,65 @@ namespace PRJ_MazeWinForms.Authentication
             return null;
         }
 
-        // User table methods
-        private object GetUser(string Username)
+        private User GetUser(string username)
         {
-            object user = SqlReaderQuery("SELECT * FROM [UserDatabase] WHERE [Username] = ?;", Username);
+            User user = null;
+            using (OleDbConnection connection = new OleDbConnection(_connectionString))
+            {
+                using (OleDbCommand command = new OleDbCommand("SELECT * FROM [UserDatabase] WHERE [Username] = ?)"))
+                {
+                    command.Connection = connection;
+                    command.Parameters.Add(new OleDbParameter("?", OleDbType.BSTR)).Value = username;
+
+                    try
+                    {
+                        connection.Open();
+                        OleDbDataReader reader = command.ExecuteReader();
+                        if (reader.Read())
+                        {
+                            int id = reader.GetInt32(reader.GetOrdinal("PlayerId"));
+                            string name = reader.GetString(reader.GetOrdinal("Username"));
+                            string passwordHash = reader.GetString(reader.GetOrdinal("PasswordHash"));
+                            user = new User(id, name, passwordHash);
+                        }
+                        else
+                        {
+                            LogHelper.ErrorLog("No logs found");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        LogHelper.ErrorLog(e.ToString());
+                    }
+                }
+            }
             return user;
         }
+
+        // User table methods
+        private int GetUserId(string Username)
+        {
+            User user = GetUser(Username);
+            if (user == null)
+            {
+                return -1;
+            }
+            return GetUser(Username).PlayerId;
+        }
+
+        
         private bool UserExists(string Username)
         {
-            bool exists = false;
-            object user = SqlScalarQuery("SELECT [PlayerId] FROM [UserDatabase] WHERE [Username] = ?;", Username);
-            if (user != null)
+            bool exists = true;
+            object count = SqlScalarQuery("SELECT COUNT (*) FROM [UserDatabase] WHERE [Username] = ?;", Username);
+            if ((int) count == 0)
             {
-                exists = true;
-                LogHelper.Log(string.Format("Username : {0} exists", Username));
+                LogHelper.Log(string.Format("Username : {0} does not exist", Username));
             }
             else
             {
-                LogHelper.Log(string.Format("Username : {0} does not exist", Username));
+                exists = false;
+                LogHelper.Log(string.Format("Username : {0} exists", Username));
             }
             return exists;
         }
@@ -183,14 +242,9 @@ namespace PRJ_MazeWinForms.Authentication
             if (UserExists(Username)) return false;
 
             // Get new id
-            int id = 0;
-            object queryResponse = SqlScalarQuery("SELECT COUNT (PlayerId) FROM [UserDatabase];");
-            if (queryResponse != null)
-            {
-                id = (int)queryResponse;
-            }
-
-            bool success =  SqlNonQuery("INSERT INTO [UserDatabase VALUES (?, ?, ?);", id, Username, CalculateHash(Password));
+            int id = (int) SqlScalarQuery("SELECT COUNT (PlayerId) FROM [UserDatabase];");
+            Console.WriteLine(id);
+            bool success = SqlNonQuery("INSERT INTO [UserDatabase] VALUES (?, ?, ?);", id, Username, CalculateHash(Password));
             if (success)
                 LogHelper.Log(String.Format("Successfully added new user {0}", Username));
             return success;
@@ -200,9 +254,8 @@ namespace PRJ_MazeWinForms.Authentication
         public bool Authenticate(string Username, string Password)
         {
             if (!UserExists(Username)) return false;
-
-            string storedHash = (string)SqlScalarQuery("SELECT[PasswordHash] FROM UserDatabase WHERE [Username] = ?; ", Username);
-            bool valid = storedHash == CalculateHash(Password);
+            User user = GetUser(Username);
+            bool valid = user.PasswordHash == CalculateHash(Password);
 
             if (valid)
             {
@@ -210,7 +263,7 @@ namespace PRJ_MazeWinForms.Authentication
             }
             else
             {
-                LogHelper.ErrorLog(string.Format("Password hash for {0} doesn't match database, expected {1}", Username, storedHash));
+                LogHelper.ErrorLog(string.Format("Password hash for {0} doesn't match database, expected {1}", Username, user.PasswordHash));
             }
             return valid;
         }
@@ -240,28 +293,31 @@ namespace PRJ_MazeWinForms.Authentication
 
         public void ShowDatabase()
         {
-            using (OleDbConnection connection = new OleDbConnection(_connectionString))
+            DataTable table = SqlReaderQuery("SELECT * FROM [UserDatabase]");
             {
-                using (OleDbCommand command = new OleDbCommand("SELECT [Username], [Password] FROM UserDatabase;", connection))
+                foreach (DataColumn col in table.Columns)
                 {
-                    connection.Open();
-                    try
-                    {
-                        OleDbDataReader reader = command.ExecuteReader();
-                        while (reader.Read())
-                        {
-                            Console.WriteLine(reader[0].ToString() + " " + reader[1].ToString());
-                        }
-                        reader.Close();
-                    }
-                    catch (Exception e)
-                    {
-                        LogHelper.ErrorLog(e.ToString());
-                    }
-
+                    Console.Write("{0,-14}", col.ColumnName);
                 }
+                Console.WriteLine();
+
+                foreach (DataRow row in table.Rows)
+                {
+                    foreach (DataColumn col in table.Columns)
+                    {
+                        if (col.DataType.Equals(typeof(DateTime)))
+                            Console.Write("{0,-14:d}", row[col]);
+                        else if (col.DataType.Equals(typeof(Decimal)))
+                            Console.Write("{0,-14:C}", row[col]);
+                        else
+                            Console.Write("{0,-14}", row[col]);
+                    }
+                    Console.WriteLine();
+                }
+                Console.WriteLine();
             }
         }
+
     }
 
 }

@@ -31,6 +31,7 @@
             this.menuLayout = new System.Windows.Forms.TableLayoutPanel();
             this.btn_start = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.btn_login = new System.Windows.Forms.Button();
             this.menuLayout.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -40,6 +41,7 @@
             this.menuLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.menuLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
             this.menuLayout.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.menuLayout.Controls.Add(this.btn_login, 1, 2);
             this.menuLayout.Controls.Add(this.btn_start, 1, 1);
             this.menuLayout.Controls.Add(this.label1, 1, 0);
             this.menuLayout.Dock = System.Windows.Forms.DockStyle.Fill;
@@ -77,6 +79,20 @@
             this.label1.Text = "Maze";
             this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
+            // btn_login
+            // 
+            this.btn_login.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btn_login.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_login.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
+            this.btn_login.Location = new System.Drawing.Point(286, 320);
+            this.btn_login.Margin = new System.Windows.Forms.Padding(20);
+            this.btn_login.Name = "btn_login";
+            this.btn_login.Size = new System.Drawing.Size(226, 110);
+            this.btn_login.TabIndex = 2;
+            this.btn_login.Text = "Login";
+            this.btn_login.UseVisualStyleBackColor = true;
+            this.btn_login.Click += new System.EventHandler(this.Login_Click);
+            // 
             // MenuForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -96,6 +112,7 @@
         private System.Windows.Forms.TableLayoutPanel menuLayout;
         private System.Windows.Forms.Button btn_start;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button btn_login;
     }
 }
 

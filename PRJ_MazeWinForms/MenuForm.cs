@@ -49,6 +49,7 @@ namespace PRJ_MazeWinForms
         private void SetupEvents()
         {
             btn_start.Click += new EventHandler(GoToSettings);
+            btn_login.Click += new EventHandler(GoToLogin);
             this.FormClosed += new FormClosedEventHandler(AppClosed);
         }
 
@@ -58,10 +59,21 @@ namespace PRJ_MazeWinForms
             SettingsForm.Show();
         }
 
+        private void GoToLogin(object sender, EventArgs e)
+        {
+            this.Hide();
+            LoginForm loginForm = new LoginForm(this);
+            loginForm.Show();
+        }
+
         private void AppClosed(object sender, EventArgs e)
         {
             _settingsManager.SaveConfig();
         }
 
+        private void Login_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
