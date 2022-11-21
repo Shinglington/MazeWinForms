@@ -5,6 +5,8 @@ using System.Data;
 using System.Data.OleDb;
 using System.Diagnostics;
 using System.IO;
+using System.Security.Cryptography;
+using System.Windows.Forms;
 
 namespace PRJ_MazeWinForms.Authentication
 {
@@ -27,23 +29,24 @@ namespace PRJ_MazeWinForms.Authentication
                 CatalogClass cat = new CatalogClass();
                 cat.Create(_connectionString);
                 cat = null;
-                LogHelper.Log("Created Database successfully");
                 CreateTables();
+                LogHelper.Log("Created Database successfully");
             }
             else
             {
                 LogHelper.ErrorLog("Database already exists");
             }
         }
-        private void CreateTables()
+        private bool CreateTables()
         {
+            bool success = true;
             // User table
             string userTableCreation =
                 "CREATE TABLE [UserDatabase] ("
                 + "[PlayerId] INT NOT NULL,"
                 + "[Username] VARCHAR(13) NOT NULL,"
-                + "[Password] VARCHAR(13) NOT NULL,"
-                + "PRIMARY KEY(Id)"
+                + "[PasswordHash] VARCHAR(13) NOT NULL,"
+                + "PRIMARY KEY(PlayerId)"
                 + ");";
 
             // Score table
@@ -56,30 +59,68 @@ namespace PRJ_MazeWinForms.Authentication
                 + "FOREIGN KEY(PlayerId) REFERENCES UserDatabase(PlayerId)"
                 + ");";
 
+            if (SqlNonQuery(userTableCreation))
+            {
+                LogHelper.Log("User Table Created");
+            }
+            else
+            {
+                success = false;
+            }
+
+            if (SqlNonQuery(scoreTableCreation))
+            {
+                LogHelper.Log("Score Table Created");
+            }
+            else
+            {
+                success = false;
+            }
+            return success;
+        }
+
+        private bool SqlNonQuery(string commandText, params object[] parameters)
+        {
+            bool success = true;
             using (OleDbConnection connection = new OleDbConnection(_connectionString))
             {
-                using (OleDbCommand command = new OleDbCommand(userTableCreation))
+                using (OleDbCommand command = new OleDbCommand(commandText))
                 {
                     command.Connection = connection;
-                    connection.Open();
+                    foreach (object param in parameters)
+                    {
+                        command.Parameters.Add(new OleDbParameter("?", OleDbType.BSTR)).Value = param;
+                    }
                     try
                     {
+                        connection.Open();
                         command.ExecuteNonQuery();
-                        LogHelper.Log("User Table created");
                     }
                     catch (Exception e)
                     {
                         LogHelper.ErrorLog(e.ToString());
+                        success = false;
                     }
                 }
-                using (OleDbCommand command = new OleDbCommand(scoreTableCreation))
+            }
+            return success;
+        }
+
+        private object SqlScalarQuery(string commandText, params object[] parameters)
+        {
+            using (OleDbConnection connection = new OleDbConnection(_connectionString))
+            {
+                using (OleDbCommand command = new OleDbCommand(commandText))
                 {
                     command.Connection = connection;
-                    connection.Open();
+                    foreach (object param in parameters)
+                    {
+                        command.Parameters.Add(new OleDbParameter("?", OleDbType.BSTR)).Value = param;
+                    }
                     try
                     {
-                        command.ExecuteNonQuery();
-                        LogHelper.Log("Score Table created");
+                        connection.Open();
+                        return command.ExecuteNonQuery();
                     }
                     catch (Exception e)
                     {
@@ -87,10 +128,55 @@ namespace PRJ_MazeWinForms.Authentication
                     }
                 }
             }
+            return null;
         }
 
+        private object SqlReaderQuery(string commandText, params object[] parameters)
+        {
+            using (OleDbConnection connection = new OleDbConnection(_connectionString))
+            {
+                using (OleDbCommand command = new OleDbCommand(commandText))
+                {
+                    command.Connection = connection;
+                    foreach (object param in parameters)
+                    {
+                        command.Parameters.Add(new OleDbParameter("?", OleDbType.BSTR)).Value = param;
+                    }
+                    try
+                    {
+                        connection.Open();
+                        return command.ExecuteReader();
+                    }
+                    catch (Exception e)
+                    {
+                        LogHelper.ErrorLog(e.ToString());
+                    }
+                }
+            }
+            return null;
+        }
 
         // User table methods
+        private object GetUser(string Username)
+        {
+            object user = SqlReaderQuery("SELECT * FROM [UserDatabase] WHERE [Username] = ?;", Username);
+            return user;
+        }
+        private bool UserExists(string Username)
+        {
+            bool exists = false;
+            object user = SqlScalarQuery("SELECT [PlayerId] FROM [UserDatabase] WHERE [Username] = ?;", Username);
+            if (user != null)
+            {
+                exists = true;
+                LogHelper.Log(string.Format("Username : {0} exists", Username));
+            }
+            else
+            {
+                LogHelper.Log(string.Format("Username : {0} does not exist", Username));
+            }
+            return exists;
+        }
 
         public bool AddUser(string Username, string Password)
         {
@@ -98,114 +184,33 @@ namespace PRJ_MazeWinForms.Authentication
 
             // Get new id
             int id = 0;
-            using (OleDbConnection connection = new OleDbConnection(_connectionString))
+            object queryResponse = SqlScalarQuery("SELECT COUNT (PlayerId) FROM [UserDatabase];");
+            if (queryResponse != null)
             {
-                using (OleDbCommand command = new OleDbCommand("SELECT COUNT (Id) FROM [UserDatabase];", connection))
-                {
-                    connection.Open();
-                    try
-                    {
-                        id = (int)command.ExecuteScalar();
-                    }
-                    catch (Exception e)
-                    {
-                        LogHelper.ErrorLog(e.ToString());
-                        return false;
-                    }
-                }
+                id = (int)queryResponse;
             }
 
-
-            string sqlString = string.Format("INSERT INTO [UserDatabase] " +
-                "VALUES (?, ?, ?);");
-
-            using (OleDbConnection connection = new OleDbConnection(_connectionString))
-            {
-                using (OleDbCommand command = new OleDbCommand(sqlString))
-                {
-                    command.Connection = connection;
-                    command.Parameters.Add("?", OleDbType.Integer).Value = id;
-                    command.Parameters.Add("?", OleDbType.VarChar).Value = Username;
-                    command.Parameters.Add("?", OleDbType.VarChar).Value = CalculateHash(Password);
-                    connection.Open();
-                    try
-                    {
-                        command.ExecuteNonQuery();
-                    }
-                    catch (Exception e)
-                    {
-                        LogHelper.ErrorLog(e.ToString());
-                        return false;
-                    }
-                }
-            }
-            return true;
+            bool success =  SqlNonQuery("INSERT INTO [UserDatabase VALUES (?, ?, ?);", id, Username, CalculateHash(Password));
+            if (success)
+                LogHelper.Log(String.Format("Successfully added new user {0}", Username));
+            return success;
         }
 
-        private bool UserExists(string Username)
-        {
-            bool exists = false;
-            using (OleDbConnection connection = new OleDbConnection(_connectionString))
-            {
-                using (OleDbCommand command = new OleDbCommand("SELECT [Id] FROM [UserDatabase] WHERE [Username] = ?;"))
-                {
-                    command.Connection = connection;
-                    command.Parameters.Add("?", OleDbType.VarChar).Value = Username;
-                    connection.Open();
-                    try
-                    {
-                        if (command.ExecuteScalar() != null)
-                        {
-                            exists = true;
-                            LogHelper.Log(string.Format("Username : {0} exists", Username));
-                        }
-                        else
-                        {
-                            LogHelper.Log(string.Format("Username : {0} does not exist", Username));
-                        }
-                    }
-                    catch (Exception e)
-                    {
-                        LogHelper.ErrorLog(e.ToString());
-                    }
-                }
-            }
-            return exists;
-        }
 
         public bool Authenticate(string Username, string Password)
         {
-            if (!UserExists(Username))
-            {
-                return false;
-            }
+            if (!UserExists(Username)) return false;
 
-            string passhash = "";
-            using (OleDbConnection connection = new OleDbConnection(_connectionString))
-            {
-                using (OleDbCommand command = new OleDbCommand("SELECT [Password] FROM UserDatabase WHERE[Username] = ?;", connection))
-                {
-                    connection.Open();
-                    command.Parameters.Add("?", OleDbType.VarChar).Value = Username;
-                    try
-                    {
-                        passhash = (string)command.ExecuteScalar();
-                    }
-                    catch (Exception e)
-                    {
-                        LogHelper.ErrorLog(e.ToString());
-                    }
+            string storedHash = (string)SqlScalarQuery("SELECT[PasswordHash] FROM UserDatabase WHERE [Username] = ?; ", Username);
+            bool valid = storedHash == CalculateHash(Password);
 
-                }
-            }
-            bool valid = passhash == CalculateHash(Password);
             if (valid)
             {
                 LogHelper.Log(string.Format("Authentication for {0} successful", Username));
             }
             else
             {
-                LogHelper.ErrorLog(string.Format("Password for {0} doesn't match database, expected {1}", Username, passhash));
+                LogHelper.ErrorLog(string.Format("Password hash for {0} doesn't match database, expected {1}", Username, storedHash));
             }
             return valid;
         }
