@@ -179,7 +179,7 @@ namespace PRJ_MazeWinForms.Authentication
             User user = null;
             using (OleDbConnection connection = new OleDbConnection(_connectionString))
             {
-                using (OleDbCommand command = new OleDbCommand("SELECT * FROM [UserDatabase] WHERE [Username] = ?)"))
+                using (OleDbCommand command = new OleDbCommand("SELECT * FROM [UserDatabase] WHERE [Username] = ?"))
                 {
                     command.Connection = connection;
                     command.Parameters.Add(new OleDbParameter("?", OleDbType.BSTR)).Value = username;
@@ -210,14 +210,14 @@ namespace PRJ_MazeWinForms.Authentication
         }
 
         // User table methods
-        private int GetUserId(string Username)
+        private int GetUserId(string username)
         {
-            User user = GetUser(Username);
+            User user = GetUser(username);
             if (user == null)
             {
                 return -1;
             }
-            return GetUser(Username).PlayerId;
+            return GetUser(username).PlayerId;
         }
 
         
@@ -227,11 +227,11 @@ namespace PRJ_MazeWinForms.Authentication
             object count = SqlScalarQuery("SELECT COUNT (*) FROM [UserDatabase] WHERE [Username] = ?;", Username);
             if ((int) count == 0)
             {
+                exists = false;
                 LogHelper.Log(string.Format("Username : {0} does not exist", Username));
             }
             else
             {
-                exists = false;
                 LogHelper.Log(string.Format("Username : {0} exists", Username));
             }
             return exists;
