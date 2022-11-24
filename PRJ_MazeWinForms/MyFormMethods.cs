@@ -9,6 +9,7 @@ namespace PRJ_MazeWinForms
     {
         public static void ResizeLabelText(object sender, EventArgs e)
         {
+            double SCALING = 0.9;
             // Resizes labels in table layout panel cells to maximise font size
             Label label = sender as Label;
             Size stringSize = TextRenderer.MeasureText(label.Text, label.Font);
@@ -16,29 +17,23 @@ namespace PRJ_MazeWinForms
             // Find width and height of cell that label is located in
             TableLayoutPanel Container = label.Parent as TableLayoutPanel;
             TableLayoutPanelCellPosition Pos = Container.GetCellPosition(label);
-            double cellHeight = Container.GetRowHeights()[Pos.Row];
-            double cellWidth = Container.GetColumnWidths()[Pos.Column];
-
-
-            double areaAvailable = cellHeight * cellWidth * 0.5F;
-            double areaRequired = stringSize.Height * stringSize.Width;
+            double cellHeight = Container.GetRowHeights()[Pos.Row] - Container.Padding.Top - Container.Padding.Bottom;
+            double cellWidth = Container.GetColumnWidths()[Pos.Column] - Container.Padding.Right - Container.Padding.Left;
 
             // while available area bigger than required area, make text bigger
-            while (areaAvailable > areaRequired)
+            while (stringSize.Height < cellHeight * SCALING && stringSize.Width < cellWidth * SCALING)
             {
                 // resize font until text fits
                 label.Font = new Font(label.Font.FontFamily, label.Font.Size * 1.05F);
                 stringSize = TextRenderer.MeasureText(label.Text, label.Font);
-                areaRequired = stringSize.Height * stringSize.Width;
             }
 
             // while available area smaller than required area, make text smaller
-            while (areaAvailable < areaRequired)
+            while (stringSize.Height > cellHeight * SCALING || stringSize.Width > cellWidth * SCALING)
             {
                 // resize font until text fits
                 label.Font = new Font(label.Font.FontFamily, label.Font.Size * 0.95F);
                 stringSize = TextRenderer.MeasureText(label.Text, label.Font);
-                areaRequired = stringSize.Height * stringSize.Width;
             }
         }
 

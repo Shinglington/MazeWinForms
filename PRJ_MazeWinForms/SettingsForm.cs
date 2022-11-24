@@ -81,6 +81,8 @@ namespace PRJ_MazeWinForms
             // set button text
             _title.Text = _mode.ToString() + " Settings";
 
+            MyFormMethods.ResizeLabelText(_title, new EventArgs());
+
             switch (_mode)
             {
                 case SettingsView.Basic:
