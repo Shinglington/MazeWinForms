@@ -19,84 +19,58 @@ namespace PRJ_MazeWinForms
         private TextBox _usernameField;
         private TextBox _passwordField;
         private Button _loginButton;
-        public LoginForm(object Caller)
+
+        private User _currentUser;
+
+        public User CurrentUser
         {
-            InitializeComponent();
-            SetupControls();
-            SetupEvents();
-            _databaseHelper = new DatabaseHelper();
-            _caller = (Form) Caller;
+            get
+            {
+                return _currentUser;
+            }
+            private set
+            {
+                _currentUser = value;
+
+                if (_currentUser == null)
+                {
+                    lbl_signedinas.Text = "Signed in as : " + "\n" + "Guest";
+                }
+                else
+                {
+                    lbl_signedinas.Text = "Signed in as : " + "\n" + _currentUser.Username;
+                }
+
+            }
         }
 
-        private void SetupControls()
+        public LoginForm(Form Caller)
         {
-            //
-            // panel setup
-            //
-            TableLayoutPanel panel = new TableLayoutPanel()
-            {
-                Dock = DockStyle.Fill,
-                Parent = this
-            };
-            panel.RowStyles.Clear();
-            panel.ColumnStyles.Clear();
-
-            panel.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            for (int i = 0; i < 5; i++)
-            {
-                panel.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
-            }
-            //
-            // Label title setup
-            //
-            Label title = new Label()
-            {
-                Dock = DockStyle.Bottom,
-                Text = "Login",
-                Parent = panel
-            };
-            panel.SetCellPosition(title, new TableLayoutPanelCellPosition(0, 1));
-
-
-            //
-            // Textbox setups
-            //
-            _usernameField = new TextBox()
-            {
-                Dock = DockStyle.Bottom,
-                Parent = panel
-                
-            };
-            panel.SetCellPosition(_usernameField, new TableLayoutPanelCellPosition(0, 2));
-
-            _passwordField = new TextBox()
-            {
-                Dock = DockStyle.Top,
-                Parent = panel
-            };
-            panel.SetCellPosition(_passwordField, new TableLayoutPanelCellPosition(0, 3));
-
-            //
-            // Other buttons
-            //
-            _loginButton = new Button()
-            {
-                Dock = DockStyle.Fill,
-                Text = "Login",
-                Parent = panel
-            };
-            panel.SetCellPosition(_loginButton, new TableLayoutPanelCellPosition(0, 4));
+            InitializeComponent();
+            SetupAttributes();
+            SetupEvents();
+            _databaseHelper = new DatabaseHelper();
+            _caller = Caller;
+        }
+        private void SetupAttributes()
+        {
+            CurrentUser = null;
+            _usernameField = username_field;
+            _passwordField = password_field;
+            _loginButton = btn_login;
         }
 
         private void SetupEvents()
         {
             _loginButton.Click += new EventHandler(LoginButtonPress);
+            btn_back.Click += new EventHandler(BackButtonPress);
         }
 
         private void LoginButtonPress(object sender, EventArgs e)
         {
             Button button = (Button)sender;
-            if (_databaseHelper.Authenticate(_usernameField.Text, _passwordField.Text))
+            CurrentUser = _databaseHelper.Authenticate(_usernameField.Text, _passwordField.Text);
+            if (CurrentUser != null)
             {
                 MessageBox.Show("Success");
                 LogHelper.Log("Login form success login");
@@ -107,6 +81,14 @@ namespace PRJ_MazeWinForms
                 LogHelper.Log("Login form unsuccessful login");
             }
         }
+
+        private void BackButtonPress(object sender, EventArgs e)
+        {
+            this.Hide();
+            _caller.Show();
+        }
+
+
 
 
 

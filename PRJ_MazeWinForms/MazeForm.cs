@@ -12,7 +12,7 @@ namespace PRJ_MazeWinForms
     {
 
         // Controls
-        private Form _settingsForm;
+        private Form _menuForm;
         private TableLayoutPanel _tbl_formPanel;
         private TableLayoutPanel _tbl_mazePanel;
         private MenuStrip _menuStrip;
@@ -21,21 +21,22 @@ namespace PRJ_MazeWinForms
         private WinFormsMaze _maze;
         private AppSettings _appSettings;
 
-        public MazeForm(Form settingsForm, MazeSettings MazeSettings, AppSettings AppSettings)
+        public MazeForm(Form  menuForm, MazeSettings MazeSettings, AppSettings AppSettings)
         {
             InitializeComponent();
             CreateControls();
-            _settingsForm = settingsForm;
+            _menuForm = menuForm;
             _appSettings = AppSettings;
             _maze = new WinFormsMaze(MazeSettings, _tbl_mazePanel, _appSettings.DisplaySettings, _appSettings.ControlSettings);
             SetupMenuStrip(_menuStrip);
             SetupEvents();
             _maze.ShowMaze();
         }
+
         private void SetupEvents()
         {
             this.FormClosing += new FormClosingEventHandler(MazeFormClosing);
-            this.FormClosed += new FormClosedEventHandler(ReturnToSettings);
+            this.FormClosed += new FormClosedEventHandler(ReturnToMenu);
             _maze.OnMazeFinished += new MazeFinishedEventHandler(MazeFinished);
 
             this.KeyPress += new KeyPressEventHandler(PlayerKeyPress);
@@ -79,6 +80,7 @@ namespace PRJ_MazeWinForms
                 Dock = DockStyle.Fill,
             };
             _tbl_formPanel.SetCellPosition(_menuStrip, new TableLayoutPanelCellPosition(0, 0));
+
         }
 
         private void SetupMenuStrip(MenuStrip menuStrip)
@@ -134,14 +136,14 @@ namespace PRJ_MazeWinForms
             mazeStatsForm.Controls.Add(statsTable);
 
             mazeStatsForm.ShowDialog();
-            ReturnToSettings(this, new EventArgs());
+            ReturnToMenu(this, new EventArgs());
 
         }
 
-        private void ReturnToSettings(object sender, EventArgs e)
+        private void ReturnToMenu(object sender, EventArgs e)
         {
             this.Hide();
-            _settingsForm.Show();
+            _menuForm.Show();
             this.Dispose();
         }
 

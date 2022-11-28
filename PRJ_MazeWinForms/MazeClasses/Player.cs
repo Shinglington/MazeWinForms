@@ -1,9 +1,13 @@
-﻿namespace MazeClasses
+﻿using System;
+
+namespace MazeClasses
 {
     public class Player
     {
         private Maze _maze;
         public NodeLocation Location { get; private set; }
+
+        private MyTimer _timer;
 
         private int _movesUsed;
         private int _hintsUsed;
@@ -15,13 +19,14 @@
             _hintsUsed = 0;
             _solutionUsed = false;
             Location = M.StartLocation;
-
+            _timer = new MyTimer();
         }
 
         public bool SolutionUsed { get { return _solutionUsed; } }
         public int MoveCount { get { return _movesUsed; } }
         public int HintsUsed { get { return _hintsUsed; } }
 
+        public double TimeTaken { get { return _timer.TimeTaken; } }
 
         public bool Move(NodeLocation Coords)
         {
@@ -31,6 +36,14 @@
                 validMove = true;
                 Location = Coords;
                 _movesUsed++;
+                if (!_timer.Started)
+                {
+                    _timer.Start();
+                }
+                else if (Location == _maze.EndLocation)
+                {
+                    _timer.End();
+                }
             }
             return validMove;
         }
@@ -45,4 +58,41 @@
             _solutionUsed = true;
         }
     }
+
+    class MyTimer 
+    {
+        private DateTime _start;
+        private DateTime _end;
+
+
+        public bool Started;
+        public MyTimer()
+        {
+            Started = false;
+        }
+
+        public void Start()
+        {
+            _start = DateTime.UtcNow;
+            Started = true;
+        }
+
+        public void End()
+        {
+            _end = DateTime.UtcNow;
+        }
+
+        private double CalculateTimeElapsed(DateTime start, DateTime end)
+        {
+            return end.Subtract(start).TotalSeconds;
+        }
+
+        public double TimeTaken 
+        {
+            get { return CalculateTimeElapsed(_start, _end); }
+        }
+    }
+
+
+
 }

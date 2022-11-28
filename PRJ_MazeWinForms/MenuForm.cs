@@ -15,6 +15,7 @@ namespace PRJ_MazeWinForms
     public partial class MenuForm : Form
     {
         private SettingsForm _settingsForm;
+        private LoginForm _loginForm;
         private AppSettingsManager _settingsManager;
         private AppSettings _appSettings;
         public SettingsForm SettingsForm
@@ -24,6 +25,15 @@ namespace PRJ_MazeWinForms
                 if (_settingsForm == null || _settingsForm.IsDisposed)
                     _settingsForm = new SettingsForm(this, _appSettings);
                 return _settingsForm;
+            }
+        }
+        public LoginForm LoginForm
+        {
+            get
+            {
+                if (_loginForm == null || _loginForm.IsDisposed)
+                    _loginForm = new LoginForm(this);
+                return _loginForm;
             }
         }
         public MenuForm()

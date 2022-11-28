@@ -12,7 +12,7 @@ using System.Windows.Forms;
 namespace PRJ_MazeWinForms.Authentication
 {
     
-    class User 
+    public class User 
     { 
         public int PlayerId { get; }
         public string Username { get; }
@@ -137,7 +137,7 @@ namespace PRJ_MazeWinForms.Authentication
                     try
                     {
                         connection.Open();
-                        return command.ExecuteNonQuery();
+                        return command.ExecuteScalar();
                     }
                     catch (Exception e)
                     {
@@ -251,21 +251,22 @@ namespace PRJ_MazeWinForms.Authentication
         }
 
 
-        public bool Authenticate(string Username, string Password)
+        public User Authenticate(string Username, string Password)
         {
-            if (!UserExists(Username)) return false;
+            if (!UserExists(Username)) return null;
             User user = GetUser(Username);
             bool valid = user.PasswordHash == CalculateHash(Password);
 
             if (valid)
             {
                 LogHelper.Log(string.Format("Authentication for {0} successful", Username));
+                return user;
             }
             else
             {
                 LogHelper.ErrorLog(string.Format("Password hash for {0} doesn't match database, expected {1}", Username, user.PasswordHash));
             }
-            return valid;
+            return null;
         }
 
         private string CalculateHash(string s)

@@ -257,6 +257,8 @@ namespace MazeClasses
         public int HintCount { get { return _player.HintsUsed; } }
         public bool SolutionUsed { get { return _player.SolutionUsed; } }
 
+        public double TimeTaken { get { return _player.TimeTaken; } }
+
 
         public MyList<(string, string)> GetStats()
         {
@@ -264,6 +266,7 @@ namespace MazeClasses
             Stats.Add(("Moves Used", MoveCount.ToString()));
             Stats.Add(("Hints Used", HintCount.ToString()));
             Stats.Add(("Solution Used", SolutionUsed.ToString()));
+            Stats.Add(("Time Taken", TimeTaken.ToString() + " seconds"));
 
             return Stats;
 

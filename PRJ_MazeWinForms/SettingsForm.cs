@@ -255,7 +255,7 @@ namespace PRJ_MazeWinForms
             MazeSettings MazeSettings = GetMazeSettings();
             if (MazeSettings != null)
             {
-                MazeForm MazeForm = new MazeForm(this, MazeSettings, _appSettings);
+                MazeForm MazeForm = new MazeForm(_menu, MazeSettings, _appSettings);
                 MazeForm.Show();
                 this.Hide();
             }
