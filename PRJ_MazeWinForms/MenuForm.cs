@@ -71,8 +71,7 @@ namespace PRJ_MazeWinForms
         private void GoToLogin(object sender, EventArgs e)
         {
             this.Hide();
-            LoginForm loginForm = new LoginForm(this);
-            loginForm.Show();
+            LoginForm.Show();
         }
 
         private void AppClosed(object sender, EventArgs e)

@@ -249,7 +249,7 @@ namespace PRJ_MazeWinForms.Authentication
         public void AddScore(User user, int score)
         {
             if (user == null) return;
-            string newSqlInsert = "INSERTINTO ScoreDatabase (GameId, PlayerId, Score)" +
+            string newSqlInsert = "INSERT INTO ScoreDatabase (GameId, PlayerId, Score)" +
                 "VALUES (?, ?, ?)";
             int nextGameId = (int)SqlScalarQuery("SELECT COUNT (GameId) FROM [ScoreDatabase];");
             SqlNonQuery(newSqlInsert, new object[] { nextGameId, user.PlayerId, score });

@@ -110,10 +110,22 @@ namespace PRJ_MazeWinForms
             if (result == DialogResult.Yes)
             {
                 LogHelper.Log("User requested to save");
+                if (_menuForm.LoginForm.CurrentUser == null)
+                {
+                    MessageBox.Show("You need to login");
+                    _menuForm.LoginForm.ShowDialog();
+                }
                 if (_menuForm.LoginForm.CurrentUser != null)
                 {
                     DatabaseHelper dbHelper = new DatabaseHelper();
                     dbHelper.AddScore(_menuForm.LoginForm.CurrentUser, CalculateScore(maze, e));
+                    MessageBox.Show("Saved score");
+                    LogHelper.Log("Saved score");
+                }
+                else
+                {
+                    MessageBox.Show("You didn't log in");
+                    LogHelper.Log("Login window was closed, login cancelled");
                 }
             }
             mazeStatsForm.Dispose();
