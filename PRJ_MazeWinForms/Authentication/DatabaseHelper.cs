@@ -1,4 +1,5 @@
 ﻿using ADOX;
+using MazeClasses;
 using PRJ_MazeWinForms.Logging;
 using System;
 using System.Data;
@@ -276,6 +277,14 @@ namespace PRJ_MazeWinForms.Authentication
 
         // Score table methods
 
+        private void Save(User user, int score)
+        {
+            if (user == null) return;
+            string newSqlInsert = "INSERTINTO ScoreDatabase (GameId, PlayerId, Score)" +
+                "VALUES (?, ?, ?)";
+            int nextGameId = (int)SqlScalarQuery("SELECT COUNT (GameId) FROM [ScoreDatabase];");
+            SqlNonQuery(newSqlInsert, new object[] { nextGameId, user.PlayerId, score });
+        }
 
 
 

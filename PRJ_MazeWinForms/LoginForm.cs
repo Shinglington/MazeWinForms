@@ -1,4 +1,5 @@
-﻿using PRJ_MazeWinForms.Authentication;
+﻿using MazeClasses;
+using PRJ_MazeWinForms.Authentication;
 using PRJ_MazeWinForms.Logging;
 using System;
 using System.Collections.Generic;
@@ -87,8 +88,6 @@ namespace PRJ_MazeWinForms
             this.Hide();
             _caller.Show();
         }
-
-
 
 
 

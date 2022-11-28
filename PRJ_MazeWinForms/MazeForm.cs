@@ -2,6 +2,8 @@
 using MazeClasses;
 using MazeFormsClasses;
 using MyDataStructures;
+using PRJ_MazeWinForms.Authentication;
+using PRJ_MazeWinForms.Logging;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -12,7 +14,7 @@ namespace PRJ_MazeWinForms
     {
 
         // Controls
-        private Form _menuForm;
+        private MenuForm _menuForm;
         private TableLayoutPanel _tbl_formPanel;
         private TableLayoutPanel _tbl_mazePanel;
         private MenuStrip _menuStrip;
@@ -103,9 +105,27 @@ namespace PRJ_MazeWinForms
 
         private void MazeFinished(Maze maze, MazeFinishedEventArgs e)
         {
+            Form mazeStatsForm = MakeStatsTable(e);
+            DialogResult result = mazeStatsForm.ShowDialog();
+            if (result == DialogResult.Yes)
+            {
+                LogHelper.Log("User requested to save");
+                if (_menuForm.LoginForm.CurrentUser != null)
+                {
+                    DatabaseHelper dbHelper = new DatabaseHelper();
+                    dbHelper.AddScore(_menuForm.LoginForm.CurrentUser, maze, e);
+                }
+            }
+            mazeStatsForm.Dispose();
+            ReturnToMenu(this, new EventArgs());
+
+        }
+
+        private Form MakeStatsTable(MazeFinishedEventArgs e)
+        {
             int MESSAGEBOX_RATIO = 3;
 
-            // Show player stats in messag eform
+            // Show player stats in message form
             Form mazeStatsForm = new Form
             {
                 StartPosition = FormStartPosition.CenterParent,
@@ -113,9 +133,23 @@ namespace PRJ_MazeWinForms
                 Size = new Size(this.Size.Width / MESSAGEBOX_RATIO, this.Size.Height / MESSAGEBOX_RATIO),
                 Text = "Stats",
             };
+            // Form table
+            TableLayoutPanel layoutTable = new TableLayoutPanel
+            {
+                Dock = DockStyle.Fill
+            };
+            layoutTable.ColumnStyles.Clear();
+            layoutTable.RowStyles.Clear();
+            layoutTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            layoutTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
+            layoutTable.RowStyles.Add(new RowStyle(SizeType.Percent, 80F));
+            layoutTable.RowStyles.Add(new RowStyle(SizeType.Percent, 20F));
+            mazeStatsForm.Controls.Add(layoutTable);
+
+            // Stats table
             TableLayoutPanel statsTable = new TableLayoutPanel
             {
-                Dock = DockStyle.Fill,
+                Dock = DockStyle.Fill
             };
             statsTable.ColumnStyles.Clear();
             statsTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
@@ -133,11 +167,31 @@ namespace PRJ_MazeWinForms
                 statsTable.Controls.Add(StatValue, 1, i);
 
             }
-            mazeStatsForm.Controls.Add(statsTable);
+            layoutTable.Controls.Add(statsTable);
+            layoutTable.SetCellPosition(statsTable, new TableLayoutPanelCellPosition(0,0));
+            layoutTable.SetColumnSpan(statsTable, 2);
 
-            mazeStatsForm.ShowDialog();
-            ReturnToMenu(this, new EventArgs());
 
+            // Save and Ok buttons
+            Button saveButton = new Button()
+            {
+                Dock = DockStyle.Fill,
+                Text = "Save"
+            };
+            layoutTable.Controls.Add(saveButton);
+            layoutTable.SetCellPosition(saveButton, new TableLayoutPanelCellPosition(0, 1));
+
+            Button continueButton = new Button()
+            {
+                Dock = DockStyle.Fill,
+                Text = "Continue"
+            };
+            layoutTable.Controls.Add(continueButton);
+            layoutTable.SetCellPosition(continueButton, new TableLayoutPanelCellPosition(1, 1));
+
+            continueButton.Click += new EventHandler((object sender, EventArgs _) => mazeStatsForm.DialogResult = DialogResult.No);
+            saveButton.Click += new EventHandler((object sender, EventArgs _) => mazeStatsForm.DialogResult = DialogResult.Yes);
+            return mazeStatsForm;
         }
 
         private void ReturnToMenu(object sender, EventArgs e)
