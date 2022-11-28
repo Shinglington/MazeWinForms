@@ -44,7 +44,6 @@ namespace PRJ_MazeWinForms
             DatabaseHelper database = new DatabaseHelper();
             database.AddUser("Bob", "Jeff");
             database.AddUser("Jimmy", "Joey");
-            database.ShowDatabase();
             database.Authenticate("Bob", "Jeff");
             database.Authenticate("Joey", "Jeff");
 

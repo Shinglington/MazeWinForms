@@ -1,20 +1,15 @@
 ﻿using ADOX;
-using MazeClasses;
 using PRJ_MazeWinForms.Logging;
 using System;
 using System.Data;
 using System.Data.OleDb;
-using System.Diagnostics;
 using System.IO;
-using System.Security.Cryptography;
-using System.Security.Policy;
-using System.Windows.Forms;
 
 namespace PRJ_MazeWinForms.Authentication
 {
-    
-    public class User 
-    { 
+
+    public class User
+    {
         public int PlayerId { get; }
         public string Username { get; }
         public string PasswordHash { get; }
@@ -149,32 +144,6 @@ namespace PRJ_MazeWinForms.Authentication
             return null;
         }
 
-        private DataTable SqlReaderQuery(string commandText, params object[] parameters)
-        {
-            using (OleDbConnection connection = new OleDbConnection(_connectionString))
-            {
-                using (OleDbCommand command = new OleDbCommand(commandText))
-                {
-                    command.Connection = connection;
-                    foreach (object param in parameters)
-                    {
-                        command.Parameters.Add(new OleDbParameter("?", OleDbType.BSTR)).Value = param;
-                    }
-                    try
-                    {
-                        connection.Open();
-                        OleDbDataReader reader = command.ExecuteReader();
-                        return reader.GetSchemaTable();
-                    }
-                    catch (Exception e)
-                    {
-                        LogHelper.ErrorLog(e.ToString());
-                    }
-                }
-            }
-            return null;
-        }
-
         private User GetUser(string username)
         {
             User user = null;
@@ -221,12 +190,12 @@ namespace PRJ_MazeWinForms.Authentication
             return GetUser(username).PlayerId;
         }
 
-        
-        private bool UserExists(string Username)
+
+        public bool UserExists(string Username)
         {
             bool exists = true;
             object count = SqlScalarQuery("SELECT COUNT (*) FROM [UserDatabase] WHERE [Username] = ?;", Username);
-            if ((int) count == 0)
+            if ((int)count == 0)
             {
                 exists = false;
                 LogHelper.Log(string.Format("Username : {0} does not exist", Username));
@@ -243,7 +212,7 @@ namespace PRJ_MazeWinForms.Authentication
             if (UserExists(Username)) return false;
 
             // Get new id
-            int id = (int) SqlScalarQuery("SELECT COUNT (PlayerId) FROM [UserDatabase];");
+            int id = (int)SqlScalarQuery("SELECT COUNT (PlayerId) FROM [UserDatabase];");
             Console.WriteLine(id);
             bool success = SqlNonQuery("INSERT INTO [UserDatabase] VALUES (?, ?, ?);", id, Username, CalculateHash(Password));
             if (success)
@@ -277,55 +246,13 @@ namespace PRJ_MazeWinForms.Authentication
 
         // Score table methods
 
-        private void Save(User user, int score)
+        public void AddScore(User user, int score)
         {
             if (user == null) return;
             string newSqlInsert = "INSERTINTO ScoreDatabase (GameId, PlayerId, Score)" +
                 "VALUES (?, ?, ?)";
             int nextGameId = (int)SqlScalarQuery("SELECT COUNT (GameId) FROM [ScoreDatabase];");
             SqlNonQuery(newSqlInsert, new object[] { nextGameId, user.PlayerId, score });
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        public void ShowDatabase()
-        {
-            DataTable table = SqlReaderQuery("SELECT * FROM [UserDatabase]");
-            {
-                foreach (DataColumn col in table.Columns)
-                {
-                    Console.Write("{0,-14}", col.ColumnName);
-                }
-                Console.WriteLine();
-
-                foreach (DataRow row in table.Rows)
-                {
-                    foreach (DataColumn col in table.Columns)
-                    {
-                        if (col.DataType.Equals(typeof(DateTime)))
-                            Console.Write("{0,-14:d}", row[col]);
-                        else if (col.DataType.Equals(typeof(Decimal)))
-                            Console.Write("{0,-14:C}", row[col]);
-                        else
-                            Console.Write("{0,-14}", row[col]);
-                    }
-                    Console.WriteLine();
-                }
-                Console.WriteLine();
-            }
         }
 
     }

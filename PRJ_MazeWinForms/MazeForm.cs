@@ -23,7 +23,7 @@ namespace PRJ_MazeWinForms
         private WinFormsMaze _maze;
         private AppSettings _appSettings;
 
-        public MazeForm(Form  menuForm, MazeSettings MazeSettings, AppSettings AppSettings)
+        public MazeForm(MenuForm menuForm, MazeSettings MazeSettings, AppSettings AppSettings)
         {
             InitializeComponent();
             CreateControls();
@@ -113,12 +113,17 @@ namespace PRJ_MazeWinForms
                 if (_menuForm.LoginForm.CurrentUser != null)
                 {
                     DatabaseHelper dbHelper = new DatabaseHelper();
-                    dbHelper.AddScore(_menuForm.LoginForm.CurrentUser, maze, e);
+                    dbHelper.AddScore(_menuForm.LoginForm.CurrentUser, CalculateScore(maze, e));
                 }
             }
             mazeStatsForm.Dispose();
             ReturnToMenu(this, new EventArgs());
 
+        }
+
+        private int CalculateScore(Maze maze, MazeFinishedEventArgs e)
+        {
+            return 69;
         }
 
         private Form MakeStatsTable(MazeFinishedEventArgs e)
