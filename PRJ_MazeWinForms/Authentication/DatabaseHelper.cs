@@ -4,6 +4,9 @@ using System;
 using System.Data;
 using System.Data.OleDb;
 using System.IO;
+using System.Security.Cryptography;
+using System.Security.Policy;
+using System.Text;
 
 namespace PRJ_MazeWinForms.Authentication
 {
@@ -270,7 +273,10 @@ namespace PRJ_MazeWinForms.Authentication
 
         private string CalculateHash(string s)
         {
-            return s;
+            byte[] buffer = Encoding.UTF8.GetBytes(s);
+            var hashAlg = SHA256.Create();
+            string hashedString = Convert.ToString(hashAlg.ComputeHash(buffer));
+            return hashedString;
         }
 
         // Score table methods

@@ -1,14 +1,6 @@
-﻿using MazeClasses;
-using PRJ_MazeWinForms.Authentication;
+﻿using PRJ_MazeWinForms.Authentication;
 using PRJ_MazeWinForms.Logging;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PRJ_MazeWinForms
@@ -25,7 +17,6 @@ namespace PRJ_MazeWinForms
         private TextBox _usernameField;
         private TextBox _passwordField;
         private Button _confirmButton;
-
         private User _currentUser;
 
         private FormMode mode;
@@ -109,6 +100,12 @@ namespace PRJ_MazeWinForms
                 return;
             }
 
+            if (!CheckPasswordValid(password_field.Text))
+            {
+                // Error message handled by CheckPasswordValid function
+                return;
+            }
+
             if (_databaseHelper.AddUser(username_field.Text, password_field.Text))
             {
                 MessageBox.Show("Successfully registered");
@@ -189,6 +186,25 @@ namespace PRJ_MazeWinForms
 
         }
 
+
+        private bool CheckPasswordValid(string password)
+        {
+            int MIN_PASS_LENGTH = 8;
+            int MAX_PASS_LENGTH = 30;
+
+            bool valid = true;
+            if (password.Length < MIN_PASS_LENGTH)
+            {
+                MessageBox.Show(string.Format("Password must be at least {0} characters long", MIN_PASS_LENGTH));
+                valid = false;
+            }
+            else if (password.Length > MAX_PASS_LENGTH) 
+            {
+                MessageBox.Show(string.Format("Password cannot be more than {0} characters long", MAX_PASS_LENGTH));
+                valid = false;
+            }
+            return valid;
+        }
 
 
     }
