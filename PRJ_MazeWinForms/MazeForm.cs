@@ -135,7 +135,14 @@ namespace PRJ_MazeWinForms
 
         private int CalculateScore(Maze maze, MazeFinishedEventArgs e)
         {
-            return 69;
+            int base_score = maze.Height * maze.Width * 1000;
+            int extra_moves = Math.Max(maze.Solution.Count - e.MoveCount, 0);
+            int seconds = (int)(e.TimeTaken);
+
+            int time_penalty = (base_score / 1000) * seconds;
+            int moves_penalty = (base_score / 1000) * extra_moves;
+            return Math.Max((base_score) - time_penalty - extra_moves, 0);
+
         }
 
         private Form MakeStatsTable(MazeFinishedEventArgs e)
@@ -173,6 +180,7 @@ namespace PRJ_MazeWinForms
             statsTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 50F));
             statsTable.RowStyles.Clear();
             MyList<(string, string)> Stats = e.GetStats();
+            Stats.Add(("Total Score", CalculateScore(_maze, e).ToString()));
             for (int i = 0; i < Stats.Count; i++)
             {
                 (string, string) StatPair = Stats[i];

@@ -16,6 +16,7 @@ namespace PRJ_MazeWinForms
     {
         private SettingsForm _settingsForm;
         private LoginForm _loginForm;
+        private HighscoresForm _highscoreForm;
         private AppSettingsManager _settingsManager;
         private AppSettings _appSettings;
         public SettingsForm SettingsForm
@@ -36,7 +37,18 @@ namespace PRJ_MazeWinForms
                 return _loginForm;
             }
         }
-        public MenuForm()
+
+        public HighscoresForm HighscoresForm
+        {
+            get
+            {
+                if (_highscoreForm == null || _highscoreForm.IsDisposed)
+                    _highscoreForm = new HighscoresForm(this);
+                return _highscoreForm;
+            }
+        }
+
+    public MenuForm()
         {
             InitializeComponent();
             SetupAttributes();
@@ -59,6 +71,7 @@ namespace PRJ_MazeWinForms
         {
             btn_start.Click += new EventHandler(GoToSettings);
             btn_login.Click += new EventHandler(GoToLogin);
+            btn_highscores.Click += new EventHandler(GoToHighscore);
             this.FormClosed += new FormClosedEventHandler(AppClosed);
         }
 
@@ -74,12 +87,32 @@ namespace PRJ_MazeWinForms
             LoginForm.Show();
         }
 
+        private void GoToHighscore(object sender, EventArgs e)
+        {
+            if (LoginForm.CurrentUser != null)
+            {
+                this.Hide();
+                HighscoresForm.Show();
+            }
+            else
+            {
+                MessageBox.Show("You must be logged in to view this");
+            }
+        }
+
         private void AppClosed(object sender, EventArgs e)
         {
             _settingsManager.SaveConfig();
         }
 
+
+
         private void Login_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void menuLayout_Paint(object sender, PaintEventArgs e)
         {
 
         }

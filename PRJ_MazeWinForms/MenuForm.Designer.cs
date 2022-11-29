@@ -29,9 +29,10 @@
         private void InitializeComponent()
         {
             this.menuLayout = new System.Windows.Forms.TableLayoutPanel();
+            this.btn_login = new System.Windows.Forms.Button();
             this.btn_start = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.btn_login = new System.Windows.Forms.Button();
+            this.btn_highscores = new System.Windows.Forms.Button();
             this.menuLayout.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -44,6 +45,7 @@
             this.menuLayout.Controls.Add(this.btn_login, 1, 2);
             this.menuLayout.Controls.Add(this.btn_start, 1, 1);
             this.menuLayout.Controls.Add(this.label1, 1, 0);
+            this.menuLayout.Controls.Add(this.btn_highscores, 0, 0);
             this.menuLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             this.menuLayout.Location = new System.Drawing.Point(0, 0);
             this.menuLayout.Name = "menuLayout";
@@ -53,6 +55,21 @@
             this.menuLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.menuLayout.Size = new System.Drawing.Size(800, 450);
             this.menuLayout.TabIndex = 0;
+            this.menuLayout.Paint += new System.Windows.Forms.PaintEventHandler(this.menuLayout_Paint);
+            // 
+            // btn_login
+            // 
+            this.btn_login.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btn_login.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_login.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
+            this.btn_login.Location = new System.Drawing.Point(286, 320);
+            this.btn_login.Margin = new System.Windows.Forms.Padding(20);
+            this.btn_login.Name = "btn_login";
+            this.btn_login.Size = new System.Drawing.Size(226, 110);
+            this.btn_login.TabIndex = 2;
+            this.btn_login.Text = "Login";
+            this.btn_login.UseVisualStyleBackColor = true;
+            this.btn_login.Click += new System.EventHandler(this.Login_Click);
             // 
             // btn_start
             // 
@@ -79,19 +96,17 @@
             this.label1.Text = "Maze";
             this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
-            // btn_login
+            // btn_highscores
             // 
-            this.btn_login.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btn_login.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_login.Font = new System.Drawing.Font("Microsoft Sans Serif", 20F);
-            this.btn_login.Location = new System.Drawing.Point(286, 320);
-            this.btn_login.Margin = new System.Windows.Forms.Padding(20);
-            this.btn_login.Name = "btn_login";
-            this.btn_login.Size = new System.Drawing.Size(226, 110);
-            this.btn_login.TabIndex = 2;
-            this.btn_login.Text = "Login";
-            this.btn_login.UseVisualStyleBackColor = true;
-            this.btn_login.Click += new System.EventHandler(this.Login_Click);
+            this.btn_highscores.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btn_highscores.Font = new System.Drawing.Font("Microsoft Sans Serif", 20.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btn_highscores.Location = new System.Drawing.Point(20, 20);
+            this.btn_highscores.Margin = new System.Windows.Forms.Padding(20);
+            this.btn_highscores.Name = "btn_highscores";
+            this.btn_highscores.Size = new System.Drawing.Size(226, 110);
+            this.btn_highscores.TabIndex = 3;
+            this.btn_highscores.Text = "Highscores";
+            this.btn_highscores.UseVisualStyleBackColor = true;
             // 
             // MenuForm
             // 
@@ -113,6 +128,7 @@
         private System.Windows.Forms.Button btn_start;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btn_login;
+        private System.Windows.Forms.Button btn_highscores;
     }
 }
 

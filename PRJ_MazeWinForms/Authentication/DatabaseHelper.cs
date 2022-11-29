@@ -144,6 +144,35 @@ namespace PRJ_MazeWinForms.Authentication
             return null;
         }
 
+        private DataSet SqlReaderQuery(string commandText, params object[] parameters)
+        {
+            using (OleDbConnection connection = new OleDbConnection(_connectionString))
+            {
+                using (OleDbCommand command = new OleDbCommand(commandText))
+                {
+                    command.Connection = connection;
+                    foreach (object param in parameters)
+                    {
+                        command.Parameters.Add(new OleDbParameter("?", OleDbType.BSTR)).Value = param;
+                    }
+                    try
+                    {
+                        OleDbDataAdapter adapter = new OleDbDataAdapter(command);
+                        connection.Open();
+                        var ds = new DataSet();
+                        adapter.Fill(ds);
+                        return ds;
+
+                    }
+                    catch (Exception e)
+                    {
+                        LogHelper.ErrorLog(e.ToString());
+                    }
+                }
+            }
+            return null;
+        }
+
         private User GetUser(string username)
         {
             User user = null;
@@ -253,6 +282,24 @@ namespace PRJ_MazeWinForms.Authentication
                 "VALUES (?, ?, ?)";
             int nextGameId = (int)SqlScalarQuery("SELECT COUNT (GameId) FROM [ScoreDatabase];");
             SqlNonQuery(newSqlInsert, new object[] { nextGameId, user.PlayerId, score });
+        }
+
+
+
+        // viewing scores
+
+        public DataSet GetAllScores()
+        {
+            string query = "SELECT UserDatabase.Username, ScoreDatabase.Score FROM UserDatabase, ScoreDatabase WHERE UserDatabase.PlayerId = ScoreDatabase.PlayerId";
+            DataSet ds = SqlReaderQuery(query);
+            return ds;
+        }
+
+        public DataSet GetUserScores(User user)
+        {
+            string query = "SELECT UserDatabase.Username, ScoreDatabase.Score FROM UserDatabase, ScoreDatabase WHERE UserDatabase.PlayerId = ScoreDatabase.PlayerId AND UserDatabase.PlayerId = ?";
+            DataSet ds = SqlReaderQuery(query, new object[] {user.PlayerId});
+            return ds;
         }
 
     }
