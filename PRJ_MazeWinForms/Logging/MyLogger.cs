@@ -1,8 +1,10 @@
-﻿using System;
+﻿using MyDataStructures;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.Remoting.Channels;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -43,11 +45,26 @@ namespace PRJ_MazeWinForms.Logging
     public class FileLogger : MyLogger 
     {
         public string FILE_NAME = "LogData.txt";
+        public int MAXLINES = 100;
+        private MyQueue<string> sessionLog;
+
+        public FileLogger()
+        {
+            sessionLog = new MyQueue<string>();
+        }
         public override void Log(string message, ErrorLevel error)
         {
+            while (sessionLog.Count > 100)
+            {
+                sessionLog.Dequeue();
+            }
+            sessionLog.Enqueue(error.ToString() + "   " + message);
             using (StreamWriter sWriter = new StreamWriter(FILE_NAME))
             {
-                sWriter.WriteLine(error.ToString() + "   " + message);
+                foreach (string s in sessionLog.ToList())
+                {
+                    sWriter.WriteLine(error.ToString() + "   " + message);
+                }
                 sWriter.Close();
             }
         }

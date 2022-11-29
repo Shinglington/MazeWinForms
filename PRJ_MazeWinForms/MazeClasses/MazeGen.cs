@@ -12,12 +12,8 @@ namespace MazeClasses
         Wilsons,
         BinaryTree,
         Sidewinder,
-        Ellers,
         HuntAndKill,
         RecursiveBacktracker,
-        RecursiveDivision,
-        Kruskals,
-        Prims,
         GrowingTree
     }
     class MazeGen
@@ -217,13 +213,6 @@ namespace MazeClasses
             return success;
         }
 
-        public static bool Ellers(Maze M, Graph G, bool ShowGeneration)
-        {
-            bool success = false;
-            // tbc
-            return success;
-        }
-
         public static bool HuntAndKill(Maze M, Graph G, bool ShowGeneration)
         {
             bool success = true;
@@ -306,28 +295,6 @@ namespace MazeClasses
             return success;
         }
 
-        public static bool RecursiveDivision(Maze M, Graph G, bool ShowGeneration)
-        {
-            bool success = false;
-            // tbc
-            return success;
-        }
-
-        public static bool Kruskals(Maze M, Graph G, bool ShowGeneration)
-        {
-            bool success = false;
-            // tbc
-            return success;
-        }
-
-        public static bool Prims(Maze M, Graph G, bool ShowGeneration)
-        {
-            bool success = false;
-            // tbc
-            return success;
-        }
-
-
         public static bool GrowingTree(Maze M, Graph G, bool ShowGeneration)
         {
             bool success = true;
@@ -360,16 +327,6 @@ namespace MazeClasses
 
             return success;
         }
-
-
-
-
-
-
-
-
-
-
 
         // Other commonly used functions in maze gen
 

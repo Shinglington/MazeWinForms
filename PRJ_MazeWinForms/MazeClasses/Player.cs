@@ -26,7 +26,7 @@ namespace MazeClasses
         public int MoveCount { get { return _movesUsed; } }
         public int HintsUsed { get { return _hintsUsed; } }
 
-        public double TimeTaken { get { return _timer.TimeTaken; } }
+        public double TimeTaken { get { return Math.Round(_timer.TimeTaken, 3); } }
 
         public bool Move(NodeLocation Coords)
         {
