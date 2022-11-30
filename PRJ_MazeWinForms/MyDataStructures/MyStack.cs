@@ -14,6 +14,13 @@ namespace MyDataStructures
             _top = -1;
             _size = 0;
         }
+        public int Count
+        {
+            get
+            {
+                return _size;
+            }
+        }
 
         // Add item to top of stack, increment back marker by 1
         public void Push(T item)
@@ -45,14 +52,6 @@ namespace MyDataStructures
                 throw new IndexOutOfRangeException("Stack is empty");
             }
             return _items[_top];
-        }
-
-        public int Count
-        {
-            get
-            {
-                return _size;
-            }
         }
 
         // Convert to list

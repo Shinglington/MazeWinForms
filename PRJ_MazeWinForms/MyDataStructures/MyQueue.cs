@@ -16,6 +16,13 @@ namespace MyDataStructures
             _back = 0;
             _size = 0;
         }
+        public int Count
+        {
+            get
+            {
+                return _size;
+            }
+        }
 
         // Add item to back of queue, increment back marker by 1
         public void Enqueue(T item)

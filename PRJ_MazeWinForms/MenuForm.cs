@@ -1,13 +1,6 @@
 ﻿using MazeFormsClasses;
 using PRJ_MazeWinForms.Authentication;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PRJ_MazeWinForms
@@ -48,16 +41,25 @@ namespace PRJ_MazeWinForms
             }
         }
 
-    public MenuForm()
+        public MenuForm()
         {
             InitializeComponent();
             SetupAttributes();
             SetupEvents();
-            DatabaseHelper database = new DatabaseHelper();
-            database.AddUser("Bob", "Jeff");
-            database.AddUser("Jimmy", "Joey");
-            database.Authenticate("Bob", "Jeff");
-            database.Authenticate("Joey", "Jeff");
+
+            Matrix A = new Matrix(new int[,] { { 1, 2, 3 }, { 4, 5, 6 } });
+            Matrix B = new Matrix(new int[,] { { 10, 11 }, { 20, 21 }, { 30, 31 } });
+
+            Matrix C = A * B;
+            Console.WriteLine(C.ToString());
+
+            A = new Matrix(new int[,] { { 8, 15 }, { 7, -3 } });
+            B = new Matrix(new int[,] { { 2, -3, 1}, { 2, 0, -1 }, { 1, 4, 5 } });
+            Console.WriteLine(A.GetDeterminant());
+            Console.WriteLine(B.GetDeterminant());
+
+            A = new Matrix(new int[,] { { 6, 24, 1 }, { 13, 16, 10 }, { 20, 17, 15 } });
+            Console.WriteLine(A.GetInverse(26).ToString());
 
         }
 
