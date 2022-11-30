@@ -59,7 +59,7 @@ namespace PRJ_MazeWinForms.Authentication
             {
                 Matrix Cofactors = GetCofactors();
                 Console.WriteLine(Cofactors.ToString());
-                for(int i = 0; i < Rows; i++)
+                for (int i = 0; i < Rows; i++)
                 {
                     det += GetRow(0)[i] * Cofactors.GetRow(0)[i];
                 }
@@ -68,27 +68,17 @@ namespace PRJ_MazeWinForms.Authentication
             return det;
         }
 
-        public Matrix GetInverse(int Modulo = 0)
+        public Matrix GetModuloInverse(int Modulo)
         {
             int determinant = GetDeterminant();
-            if (determinant == 0)
-            {
-                throw new Exception(this.ToString() + " has no inverse");
-            }
+            Console.WriteLine(determinant.ToString());
             int inv_det = 0;
-            if (Modulo != 0)
+            // If using modulo multiplication, the (inverse * determinant)mod M = 1
+            for (int x = 1; x < Modulo; x++)
             {
-                inv_det = 1 / determinant;
-            }
-            else
-            {
-                // If using modulo multiplication, the (inverse * determinant)mod M = 1
-                for (int x = 1; x < Modulo; x++)
+                if ((determinant * x) % Modulo == 1)
                 {
-                    if ((determinant * x) % Modulo == 1)
-                    {
-                        inv_det = x;
-                    }
+                    inv_det = x;
                 }
             }
 
@@ -97,13 +87,12 @@ namespace PRJ_MazeWinForms.Authentication
                 throw new Exception(this.ToString() + " has no inverse");
             }
 
-            Matrix adjugate = new Matrix(new int[,] { {GetItem(1,1), -GetItem(0,1)}, {-GetItem(1,0), GetItem(0,0) } });
+            Matrix adjugate = new Matrix(new int[,] { { GetItem(1, 1), -GetItem(0, 1) }, { -GetItem(1, 0), GetItem(0, 0) } });
             if (Rows > 2)
             {
                 adjugate = GetCofactors().GetTransposedMatrix();
             }
-
-            return inv_det * adjugate;
+            return (inv_det * adjugate) % Modulo;
         }
 
         private Matrix GetCofactors()
@@ -186,7 +175,7 @@ namespace PRJ_MazeWinForms.Authentication
         }
 
 
-        public static Matrix operator*(int x, Matrix A)
+        public static Matrix operator *(int x, Matrix A)
         {
 
             int[,] arrayProduct = new int[A.Rows, A.Columns];
@@ -200,6 +189,18 @@ namespace PRJ_MazeWinForms.Authentication
             return new Matrix(arrayProduct);
         }
 
+        public static Matrix operator %(Matrix A, int x)
+        {
+            int[,] arrayProduct = new int[A.Rows, A.Columns];
+            for (int r = 0; r < arrayProduct.GetLength(1); r++)
+            {
+                for (int c = 0; c < arrayProduct.GetLength(0); c++)
+                {
+                    arrayProduct[r, c] = mod(A.GetItem(r, c), x);
+                }
+            }
+            return new Matrix(arrayProduct);
+        }
 
         public override string ToString()
         {
@@ -217,5 +218,15 @@ namespace PRJ_MazeWinForms.Authentication
         }
 
 
+        private static int mod(int x, int modulo)
+        {
+            // Need my own mod implementation since c# does mod of negatives strangely
+            int remainder = x % modulo;
+            if (remainder > 0)
+                return remainder;
+            else
+                return remainder + modulo;
+
+        }
     }
 }

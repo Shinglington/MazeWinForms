@@ -125,7 +125,7 @@ namespace PRJ_MazeWinForms.Authentication
         private Matrix GetDecryptionMatrix()
         {
 
-            return _encryptMatrix.GetInverse(_alphabet.Length);
+            return _encryptMatrix.GetModuloInverse(_alphabet.Length);
         }
 
         private int GetIntFromChar(char c)

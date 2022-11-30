@@ -59,7 +59,7 @@ namespace PRJ_MazeWinForms
             Console.WriteLine(B.GetDeterminant());
 
             A = new Matrix(new int[,] { { 6, 24, 1 }, { 13, 16, 10 }, { 20, 17, 15 } });
-            Console.WriteLine(A.GetInverse(26).ToString());
+            Console.WriteLine(A.GetModuloInverse(26).ToString());
 
         }
 
