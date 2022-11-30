@@ -157,9 +157,9 @@ namespace PRJ_MazeWinForms.Authentication
 
 
             int[,] arrayProduct = new int[A.Rows, B.Columns];
-            for (int r = 0; r < arrayProduct.GetLength(1); r++)
+            for (int r = 0; r < arrayProduct.GetLength(0); r++)
             {
-                for (int c = 0; c < arrayProduct.GetLength(0); c++)
+                for (int c = 0; c < arrayProduct.GetLength(1); c++)
                 {
                     int newItem = 0;
                     int[] A_Row = A.GetRow(r);
@@ -222,10 +222,12 @@ namespace PRJ_MazeWinForms.Authentication
         {
             // Need my own mod implementation since c# does mod of negatives strangely
             int remainder = x % modulo;
-            if (remainder > 0)
-                return remainder;
-            else
-                return remainder + modulo;
+
+            while (remainder < 0)
+            {
+                remainder += modulo;
+            }
+            return remainder;
 
         }
     }

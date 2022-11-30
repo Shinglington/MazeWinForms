@@ -61,10 +61,10 @@ namespace PRJ_MazeWinForms.Authentication
                 {
                     substring += ciphertext[i + j];
                 }
-                ciphertext += DecryptSubstring(substring);
+                plaintext += DecryptSubstring(substring);
 
             }
-            return ciphertext;
+            return plaintext;
         }
 
         private string EncryptSubstring(string s)
@@ -135,7 +135,12 @@ namespace PRJ_MazeWinForms.Authentication
 
         private char GetCharFromInt(int i)
         {
-            return _alphabet[i % _alphabet.Length];
+            int index = i;
+            while (index < 0)
+            {
+                index += _alphabet.Length;
+            }
+            return _alphabet[index%_alphabet.Length];
         } 
     }
 }

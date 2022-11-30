@@ -41,7 +41,7 @@ namespace MyDataStructures
             }
             T item = _items[_front];
             _front += 1;
-            _size += 1;
+            _size -= 1;
             _items.Remove(item);
             return item;
         }

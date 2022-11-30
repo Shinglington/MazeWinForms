@@ -1,4 +1,5 @@
 ﻿using ADOX;
+using MazeClasses;
 using PRJ_MazeWinForms.Logging;
 using System;
 using System.Data;
@@ -7,6 +8,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Security.Policy;
 using System.Text;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace PRJ_MazeWinForms.Authentication
 {
@@ -22,6 +24,22 @@ namespace PRJ_MazeWinForms.Authentication
             PlayerId = id;
             Username = username;
             PasswordHash = passwordHash;
+        }
+    }
+
+    public class Game
+    {
+        public int GameId { get; }
+        public int PlayerId { get; }
+        public int Score { get; }
+        public string StoredSignature { get; }
+
+        public Game(int gameId, int playerId, int score, string storedSig)
+        {
+            GameId = gameId;
+            PlayerId = playerId;
+            Score = score;
+            StoredSignature = storedSig;
         }
     }
 
@@ -61,7 +79,7 @@ namespace PRJ_MazeWinForms.Authentication
                 "CREATE TABLE [UserDatabase] ("
                 + "[PlayerId] INT NOT NULL,"
                 + "[Username] VARCHAR(13) NOT NULL,"
-                + "[PasswordHash] VARCHAR(13) NOT NULL,"
+                + "[PasswordHash] VARCHAR(64) NOT NULL,"
                 + "PRIMARY KEY(PlayerId)"
                 + ");";
 
@@ -71,6 +89,7 @@ namespace PRJ_MazeWinForms.Authentication
                 + "[GameId] INT NOT NULL,"
                 + "[PlayerId] INT NOT NULL,"
                 + "[Score] INT NOT NULL,"
+                +" [Signature] VARCHAR(64),"
                 + "PRIMARY KEY(GameId),"
                 + "FOREIGN KEY(PlayerId) REFERENCES UserDatabase(PlayerId)"
                 + ");";
@@ -199,7 +218,7 @@ namespace PRJ_MazeWinForms.Authentication
                         }
                         else
                         {
-                            LogHelper.ErrorLog("No logs found");
+                            LogHelper.ErrorLog("No user found");
                         }
                     }
                     catch (Exception e)
@@ -275,36 +294,128 @@ namespace PRJ_MazeWinForms.Authentication
         {
             byte[] buffer = Encoding.UTF8.GetBytes(s);
             var hashAlg = SHA256.Create();
-            string hashedString = Convert.ToString(hashAlg.ComputeHash(buffer));
+            byte[] hash = hashAlg.ComputeHash(buffer);
+            string hashedString = Convert.ToBase64String(hash);
             return hashedString;
         }
 
         // Score table methods
 
+        private Game GetScore(int GameId)
+        {
+            Game game = null;
+            using (OleDbConnection connection = new OleDbConnection(_connectionString))
+            {
+                using (OleDbCommand command = new OleDbCommand("SELECT * FROM [ScoreDatabase] WHERE [GameId] = ?"))
+                {
+                    command.Connection = connection;
+                    command.Parameters.Add(new OleDbParameter("?", OleDbType.BSTR)).Value = GameId;
+
+                    try
+                    {
+                        connection.Open();
+                        OleDbDataReader reader = command.ExecuteReader();
+                        if (reader.Read())
+                        {
+                            int playerId = reader.GetInt32(reader.GetOrdinal("PlayerId"));
+                            int score = reader.GetInt32(reader.GetOrdinal("Score"));
+                            string signature = reader.GetString(reader.GetOrdinal("Signature"));
+                            game = new Game(GameId, playerId, score, signature);
+                        }
+                        else
+                        {
+                            LogHelper.ErrorLog("No game found");
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        LogHelper.ErrorLog(e.ToString());
+                    }
+                }
+            }
+            return game;
+        }
+
+
         public void AddScore(User user, int score)
         {
             if (user == null) return;
-            string newSqlInsert = "INSERT INTO ScoreDatabase (GameId, PlayerId, Score)" +
-                "VALUES (?, ?, ?)";
+            string newSqlInsert = "INSERT INTO ScoreDatabase (GameId, PlayerId, Score, Signature)" +
+                "VALUES (?, ?, ?, ?)";
             int nextGameId = (int)SqlScalarQuery("SELECT COUNT (GameId) FROM [ScoreDatabase];");
-            SqlNonQuery(newSqlInsert, new object[] { nextGameId, user.PlayerId, score });
+            SqlNonQuery(newSqlInsert, new object[] { nextGameId, user.PlayerId, score, CalculateSignature(nextGameId, user.PlayerId, score)});
         }
 
+        private string CalculateSignature(int gameId, int playerId, int score)
+        {
+            string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+            string KEY = "zADPbCHNH";
+            string data = gameId.ToString() + playerId.ToString() + score.ToString();
+            string hash = CalculateHash(data).Replace("=", "");
+
+            HillCipher cipher = new HillCipher(KEY, alphabet);
+            string signature = cipher.Encrypt(hash);
+            LogHelper.Log("hash is " + hash);
+            LogHelper.Log("Signature is " + signature);
+            LogHelper.Log("Decrypted signature is " + cipher.Decrypt(signature));
+            return cipher.Encrypt(hash);
+        }
+
+
+        public bool VerifyGameScore(Game game) 
+        {
+            string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+            string KEY = "zADPbCHNH";
+            string data = game.GameId.ToString() + game.PlayerId.ToString() + game.Score.ToString();
+            string hash = CalculateHash(data).Replace("=", "");
+            while (hash.Length % 3 != 0)
+            {
+                hash += alphabet[alphabet.Length - 1];
+            }
+            
+
+
+            HillCipher cipher = new HillCipher(KEY, alphabet);
+            string decryptedSignature = cipher.Decrypt(game.StoredSignature);
+
+            if (decryptedSignature != hash)
+            {
+                LogHelper.Log(String.Format("Game id {0}, decrypted signature was {1}, calculated signature was {2}", game.GameId.ToString(), decryptedSignature, hash));
+                return false;
+            }
+            else
+            {
+                LogHelper.Log(String.Format("Match for game id {0} decrypted signature was {1}, calculated signature was {2}", game.GameId.ToString(), decryptedSignature, hash));
+                return true;
+            }
+
+        }
 
 
         // viewing scores
 
         public DataSet GetAllScores()
         {
-            string query = "SELECT UserDatabase.Username, ScoreDatabase.Score FROM UserDatabase, ScoreDatabase WHERE UserDatabase.PlayerId = ScoreDatabase.PlayerId";
+            string query = "SELECT ScoreDatabase.GameId, UserDatabase.Username, ScoreDatabase.Score FROM UserDatabase, ScoreDatabase WHERE UserDatabase.PlayerId = ScoreDatabase.PlayerId";
             DataSet ds = SqlReaderQuery(query);
+
+            ds.Tables[0].Columns.Add("Verified", typeof(bool));
+            foreach (DataRow row in ds.Tables[0].Rows)
+            {
+                row[3] = VerifyGameScore(GetScore((int)row[0]));
+            }
             return ds;
         }
 
         public DataSet GetUserScores(User user)
         {
-            string query = "SELECT UserDatabase.Username, ScoreDatabase.Score FROM UserDatabase, ScoreDatabase WHERE UserDatabase.PlayerId = ScoreDatabase.PlayerId AND UserDatabase.PlayerId = ?";
+            string query = "SELECT ScoreDatabase.GameId, UserDatabase.Username, ScoreDatabase.Score FROM UserDatabase, ScoreDatabase WHERE UserDatabase.PlayerId = ScoreDatabase.PlayerId AND UserDatabase.PlayerId = ?";
             DataSet ds = SqlReaderQuery(query, new object[] {user.PlayerId});
+            ds.Tables[0].Columns.Add("Verified", typeof(bool));
+            foreach (DataRow row in ds.Tables[0].Rows)
+            {
+                row[3] = VerifyGameScore(GetScore((int)row[0]));
+            }
             return ds;
         }
 
