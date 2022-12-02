@@ -198,6 +198,10 @@ namespace PRJ_MazeWinForms
                     break;
                 }
             }
+            if (MazeSettings == null)
+            {
+                MessageBox.Show("Please select a difficulty");
+            }
             return MazeSettings;
         }
 

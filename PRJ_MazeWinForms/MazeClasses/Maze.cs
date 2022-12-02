@@ -56,6 +56,7 @@ namespace MazeClasses
             _graph = new Graph(Width, Height);
             _player = new Player(this);
 
+            LogHelper.Log(String.Format("Generating Maze using algorithm {0}", Settings.Algorithm.ToString()));
             MazeGen.GenerateMaze(this, _graph, Settings.Algorithm, Settings.ShowGeneration);
             _solution = null;
         }
