@@ -171,10 +171,10 @@ namespace MazeClasses
                     LogHelper.Log("Player reached the end");
                     _maze.EndMaze();
                 }
+            }
             else
-                {
-                    LogHelper.Log(String.Format("Player tried to move into wall from {0} to {1}", CurrentLocation, NextLocation));
-                }
+            {
+                LogHelper.Log(String.Format("Player tried to move into wall from {0} to {1}", CurrentLocation, NextLocation));
             }
             return success;
         }

@@ -1,14 +1,11 @@
 ﻿using ADOX;
-using MazeClasses;
 using PRJ_MazeWinForms.Logging;
 using System;
 using System.Data;
 using System.Data.OleDb;
 using System.IO;
 using System.Security.Cryptography;
-using System.Security.Policy;
 using System.Text;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace PRJ_MazeWinForms.Authentication
 {
@@ -51,7 +48,7 @@ namespace PRJ_MazeWinForms.Authentication
         private string _connectionString;
         public DatabaseHelper()
         {
-            _directory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MyMazeProgram";
+            _directory = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\MyMazeProgram";
             Directory.CreateDirectory(_directory);
             _connectionString = @"Provider = Microsoft Jet 4.0 OLE DB Provider;Data Source = " + _directory + @"\" + _databaseName + ";";
             CreateDatabase();
@@ -89,7 +86,7 @@ namespace PRJ_MazeWinForms.Authentication
                 + "[GameId] INT NOT NULL,"
                 + "[PlayerId] INT NOT NULL,"
                 + "[Score] INT NOT NULL,"
-                +" [Signature] VARCHAR(64),"
+                + " [Signature] VARCHAR(64),"
                 + "PRIMARY KEY(GameId),"
                 + "FOREIGN KEY(PlayerId) REFERENCES UserDatabase(PlayerId)"
                 + ");";
@@ -343,7 +340,7 @@ namespace PRJ_MazeWinForms.Authentication
             string newSqlInsert = "INSERT INTO ScoreDatabase (GameId, PlayerId, Score, Signature)" +
                 "VALUES (?, ?, ?, ?)";
             int nextGameId = (int)SqlScalarQuery("SELECT COUNT (GameId) FROM [ScoreDatabase];");
-            SqlNonQuery(newSqlInsert, new object[] { nextGameId, user.PlayerId, score, CalculateSignature(nextGameId, user.PlayerId, score)});
+            SqlNonQuery(newSqlInsert, new object[] { nextGameId, user.PlayerId, score, CalculateSignature(nextGameId, user.PlayerId, score) });
         }
 
         private string CalculateSignature(int gameId, int playerId, int score)
@@ -362,7 +359,7 @@ namespace PRJ_MazeWinForms.Authentication
         }
 
 
-        public bool VerifyGameScore(Game game) 
+        public bool VerifyGameScore(Game game)
         {
             string alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
             string KEY = "zADPbCHNH";
@@ -372,7 +369,7 @@ namespace PRJ_MazeWinForms.Authentication
             {
                 hash += alphabet[alphabet.Length - 1];
             }
-            
+
 
 
             HillCipher cipher = new HillCipher(KEY, alphabet);
@@ -410,7 +407,7 @@ namespace PRJ_MazeWinForms.Authentication
         public DataSet GetUserScores(User user)
         {
             string query = "SELECT ScoreDatabase.GameId, UserDatabase.Username, ScoreDatabase.Score FROM UserDatabase, ScoreDatabase WHERE UserDatabase.PlayerId = ScoreDatabase.PlayerId AND UserDatabase.PlayerId = ?";
-            DataSet ds = SqlReaderQuery(query, new object[] {user.PlayerId});
+            DataSet ds = SqlReaderQuery(query, new object[] { user.PlayerId });
             ds.Tables[0].Columns.Add("Verified", typeof(bool));
             foreach (DataRow row in ds.Tables[0].Rows)
             {

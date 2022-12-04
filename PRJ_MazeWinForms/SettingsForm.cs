@@ -223,6 +223,10 @@ namespace PRJ_MazeWinForms
                 {
                     MessageBox.Show("Minimum Maze size is 4*4");
                 }
+                else if (width * height > 2500)
+                {
+                    MessageBox.Show("Area must be no larger than 50*50");
+                }
                 else
                 {
                     MazeSettings = new MazeSettings(width, height, algorithm, _showGeneration);

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PRJ_MazeWinForms.Logging;
+using System;
 
 namespace MazeClasses
 {
@@ -75,11 +76,13 @@ namespace MazeClasses
         {
             _start = DateTime.UtcNow;
             Started = true;
+            LogHelper.Log("Timer started");
         }
 
         public void End()
         {
             _end = DateTime.UtcNow;
+            LogHelper.Log("Timer ended");
         }
 
         private double CalculateTimeElapsed(DateTime start, DateTime end)
