@@ -2,23 +2,15 @@
 {
     public class Node
     {
-        // private attributes
+        // Adjacent nodes, in order North, East, South, West (as ordered in the Directions enum)   
         private Node[] _adjNodes;
-        private bool _locked;
+
         // public attributes
         public NodeLocation Location { get; private set; }
         public Node(int x, int y)
         {
             Location = new NodeLocation(x, y);
             _adjNodes = new Node[] { null, null, null, null };
-            _locked = false;
-        }
-
-        // Attributes with custom getters / setters
-        public bool Locked
-        {
-            get { return _locked; }
-            set { if (!_locked) _locked = value; }
         }
 
         // Adjacent Nodes
@@ -45,24 +37,22 @@
 
         private void UpdateEdge(Node node, Direction direction)
         {
-            if (!_locked)
+            if (node == null)
+                _adjNodes[(int)direction] = null;
+
+            else
             {
-                if (node == null)
+                // If direction of edge is north or south, check that x coord is same
+                if (node.Location.X == Location.X &&
+                    (direction == Direction.North || direction == Direction.South))
                 {
-                    _adjNodes[(int)direction] = null;
+                    _adjNodes[(int)direction] = node;
                 }
-                else
+                // If direction of edge is east or west, check that y coord is same
+                else if (node.Location.Y == Location.Y &&
+                    (direction == Direction.East || direction == Direction.West))
                 {
-                    if (node.Location.X == node.Location.X &&
-                        (direction == Direction.North || direction == Direction.South))
-                    {
-                        _adjNodes[(int)direction] = node;
-                    }
-                    else if (node.Location.Y == node.Location.Y &&
-                        (direction == Direction.East || direction == Direction.West))
-                    {
-                        _adjNodes[(int)direction] = node;
-                    }
+                    _adjNodes[(int)direction] = node;
                 }
             }
         }
@@ -91,19 +81,19 @@
             {
                 NodeLocation n = (NodeLocation)obj;
                 return (n.X == X && n.Y == Y);
-            }   
+            }
             else
                 return false;
         }
 
-        public static bool operator == (NodeLocation a, NodeLocation b)
+        public static bool operator ==(NodeLocation a, NodeLocation b)
         {
-            if ((object)a == null) 
+            if ((object)a == null)
                 return (object)b == null;
             return a.Equals(b);
         }
 
-        public static bool operator != (NodeLocation a, NodeLocation b)
+        public static bool operator !=(NodeLocation a, NodeLocation b)
         {
             return !(a == b);
         }

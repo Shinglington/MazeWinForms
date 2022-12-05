@@ -1,42 +1,20 @@
-﻿using System;
-using MyDataStructures;
+﻿using MyDataStructures;
 using PRJ_MazeWinForms.Logging;
+using System;
 
 namespace MazeClasses
 {
     public class Graph
     {
+        // readonly since nodes should only be changed via UpdateEdge method
         private readonly Node[,] _nodes;
-        private bool _locked;
         public int Width { get; }
         public int Height { get; }
         public Node StartNode { get; }
         public Node EndNode { get; }
-        public bool Locked
-        {
-            get { return _locked; }
-            set
-            {
-                if (!_locked)
-                {
-                    _locked = value;
-                    if (_locked)
-                    {
-                        for (int x = 0; x < Width; x++)
-                        {
-                            for (int y = 0; y < Width; y++)
-                            {
-                                _nodes[x, y].Locked = true;
-                            }
-                        }
-                    }
-                }
-            }
-        }
 
         public Graph(int width, int height)
         {
-            _locked = false;
             _nodes = new Node[width, height];
             this.Width = width;
             this.Height = height;
@@ -49,7 +27,7 @@ namespace MazeClasses
                     _nodes[x, y] = new Node(x, y);
                 }
             }
-            // temporary start and end nodes
+            // Start node in top left, end node at bottom right
             StartNode = _nodes[0, 0];
             EndNode = _nodes[width - 1, height - 1];
         }
@@ -111,56 +89,17 @@ namespace MazeClasses
             return success;
         }
 
-        public bool RemoveEdge(Node NodeA, Node NodeB)
-        {
-            bool success = false;
-            // Check if they are adjacent
-            if (!AreAdjacent(NodeA, NodeB)) return false;
-
-            // If x coords are next to each other
-            if (Math.Abs(NodeA.Location.X - NodeB.Location.X) == 1)
-            {
-                // If A has greater x coord than B, A is to the east of B
-                if (NodeA.Location.Y > NodeB.Location.Y)
-                {
-                    NodeB.EastNode = null;
-                    NodeA.WestNode = null;
-                }
-                // Otherwise, B is to the east of A
-                else
-                {
-                    NodeA.EastNode = null;
-                    NodeB.WestNode = null;
-                }
-            }
-            // If y coords are next to each other
-            else if (Math.Abs(NodeA.Location.Y - NodeB.Location.Y) == 1)
-            {
-                // If A has greater y coord than B, then A is south of B
-                if (NodeA.Location.Y > NodeB.Location.Y)
-                {
-                    NodeB.SouthNode = null;
-                    NodeA.NorthNode = null;
-                }
-                // Otherwise, B south of A
-                else
-                {
-                    NodeA.NorthNode = null;
-                    NodeB.SouthNode = null;
-                }
-            }
-            return success;
-        }
-
         public Node[,] GetNodes()
         {
+            // Return clone of nodes array, so it can't be edited directly
             Node[,] clone = (Node[,])_nodes.Clone();
-            return clone; 
- 
+            return clone;
+
         }
 
         public Node[] GetAdjacentNodes(Node N)
         {
+            // Returns adjacent nodes (regardless of whether there is a wall between them or not)
             MyList<Node> AdjacentNodes = new MyList<Node>();
             // Get east and west nodes
             for (int xOffset = -1; xOffset <= 1; xOffset += 2)
@@ -185,7 +124,8 @@ namespace MazeClasses
 
         public Node[] GetConnectedNodes(Node N)
         {
-            return new Node[] {N.NorthNode, N.EastNode, N.SouthNode, N.WestNode};
+            // Returns "connected nodes", nodes that are adjacent without a wall between
+            return new Node[] { N.NorthNode, N.EastNode, N.SouthNode, N.WestNode };
         }
 
         public bool AreAdjacent(Node NodeA, Node NodeB)

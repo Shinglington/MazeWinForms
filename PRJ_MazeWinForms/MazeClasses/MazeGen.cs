@@ -30,6 +30,7 @@ namespace MazeClasses
         }
         public static bool GenerateMaze(Maze M, Graph G, GenAlgorithm Algorithm, bool ShowGeneration = false)
         {
+            // Returns the success state of the maze
             return GenerateMaze(M, G, Algorithm.ToString(), ShowGeneration);
         }
         public static bool AldousBroder(Maze M, Graph G, bool ShowGeneration)
@@ -305,8 +306,9 @@ namespace MazeClasses
             visited.SetVisited(SelectedNode);
             while (ActiveSet.Count > 0)
             {
+                // randomly picks node in active set.
                 SelectedNode = ActiveSet[rand.Next(ActiveSet.Count)];
-                // Can customize "way" that neighbour is selected
+                // picks random unvisited adjacent node to selected node.
                 Node Neighbour = GetRandomAdjacentNode(G, SelectedNode, true, visited);
                 if (Neighbour != null)
                 {
@@ -321,6 +323,8 @@ namespace MazeClasses
                 }
                 else
                 {
+                    // If an unvisited neighbour not found, then the selected node
+                    // can be removed from the active set since all their neighbours are visited.
                     ActiveSet.Remove(SelectedNode);
                 }
             }
@@ -355,6 +359,8 @@ namespace MazeClasses
 
         private class VisitedNodesTracker
         {
+            // After replacing my "visited" attribute in the nodes,
+            // Needed a new class so that while generating, the algorithm knows which nodes it has visited
             private Graph _graph;
             private bool[,] _visitedStatuses;
             public VisitedNodesTracker(Graph G)
@@ -365,6 +371,7 @@ namespace MazeClasses
                 {
                     for (int y = 0; y < _graph.Height; y++)
                     {
+                        // Set all coordinates as unvisited at start
                         _visitedStatuses[x, y] = false;
                     }
                 }
@@ -426,6 +433,7 @@ namespace MazeClasses
 
 
 
+        // Used this to test all the algorithms while testing in console
         public static bool TestAllAlgorithms(int x, int y, bool ShowGeneration = false)
         {
             bool success = true;

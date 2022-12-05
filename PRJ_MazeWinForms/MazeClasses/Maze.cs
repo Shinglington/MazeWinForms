@@ -95,6 +95,7 @@ namespace MazeClasses
 
         public bool[] GetWalls(NodeLocation coords)
         {
+            // Returns whether each direction (N,S,E,W) of the node with the given coords has a wall between it an and adjacent node
             bool[] Walls = new bool[4] { false, false, false, false };
             Node[] ConnectedNodes = _graph.GetConnectedNodes(_graph.GetNodes()[coords.X, coords.Y]);
             for (int i = 0; i < 4; i++)
@@ -110,6 +111,7 @@ namespace MazeClasses
         public void EndMaze()
         {
             LogHelper.Log("End Maze called");
+            // Invokes OnMazeFinished event with data about the game so it can be displayed elsewhere by listener
             OnMazeFinished.Invoke(this, new MazeFinishedEventArgs(_player));
         }
     }
@@ -263,6 +265,7 @@ namespace MazeClasses
 
         public MyList<(string, string)> GetStats()
         {
+            // returns the data as a list of tuples, with the first string in tuple being the name of the data, and second being the data
             MyList<(string, string)> Stats = new MyList<(string, string)>();
             Stats.Add(("Moves Used", MoveCount.ToString()));
             Stats.Add(("Hints Used", HintCount.ToString()));

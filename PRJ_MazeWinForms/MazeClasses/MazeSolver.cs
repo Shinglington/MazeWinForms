@@ -41,6 +41,7 @@ namespace MazeClasses
                 StartLocation = G.StartNode.Location;
             if (EndLocation == null)
                 EndLocation = G.EndNode.Location;
+            // Do a depth first search starting from the start location, ending at the end location
             DepthFirstSearch(G, G.GetNodeFromLocation(StartLocation), Path, G.GetNodeFromLocation(EndLocation));
             return Path.ToList();
         }
@@ -48,6 +49,7 @@ namespace MazeClasses
         private static void DepthFirstSearch(Graph G, Node CurrNode, MyStack<Node> Path, Node Target)
         {
             // Identify the previous node, to remove from child nodes later
+            // this is so algorithm doesn't go back on itself
             Node PrevNode = null;
             if (Path.Count > 0)
                 PrevNode = Path.Peek();
@@ -72,6 +74,7 @@ namespace MazeClasses
         // Commonly used functions
         private static Node GetRandomAccessibleNode(Graph G, Node N)
         {
+            // Get a random connected node to specified node
             if (N is null)
                 return null;
 
