@@ -48,7 +48,7 @@ namespace PRJ_MazeWinForms.Authentication
         private string _connectionString;
         public DatabaseHelper()
         {
-            _directory = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + @"\MyMazeProgram";
+            _directory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + @"\MyMazeProgram";
             Directory.CreateDirectory(_directory);
             _connectionString = @"Provider = Microsoft Jet 4.0 OLE DB Provider;Data Source = " + _directory + @"\" + _databaseName + ";";
             CreateDatabase();

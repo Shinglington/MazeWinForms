@@ -93,12 +93,12 @@ namespace PRJ_MazeWinForms
                 return;
             }
 
-            if (_databaseHelper.UserExists(username_field.Text))
+            if (!CheckUsernameValid(username_field.Text)) 
             {
-                MessageBox.Show("Username already taken");
-                LogHelper.Log(String.Format("Username {0} already exists", username_field.Text));
+                // Error message handled by CheckUsernameValid function
                 return;
             }
+
 
             if (!CheckPasswordValid(password_field.Text))
             {
@@ -203,6 +203,32 @@ namespace PRJ_MazeWinForms
                 MessageBox.Show(string.Format("Password cannot be more than {0} characters long", MAX_PASS_LENGTH));
                 valid = false;
             }
+            return valid;
+        }
+
+        private bool CheckUsernameValid(string username)
+        {
+            int MIN_USER_LENGTH = 3;
+            int MAX_USER_LENGTH = 15;
+            bool valid = true;
+            if (_databaseHelper.UserExists(username))
+            {
+                MessageBox.Show("Username already taken");
+                LogHelper.Log(String.Format("Username {0} already exists", username_field.Text));
+                valid = false;
+                
+            }
+            else if (username.Length < MIN_USER_LENGTH)
+            {
+                MessageBox.Show(string.Format("Username must be at least {0} characters long", MIN_USER_LENGTH));
+                valid = false;
+            }
+            else if (username.Length > MAX_USER_LENGTH)
+            {
+                MessageBox.Show(string.Format("Username cannot be more than {0} characters long", MAX_USER_LENGTH));
+                valid = false;
+            }
+
             return valid;
         }
 
