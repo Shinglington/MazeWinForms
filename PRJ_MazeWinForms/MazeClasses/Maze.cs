@@ -291,7 +291,8 @@ namespace MazeClasses
             MyList<(string, string)> Stats = new MyList<(string, string)>();
             Stats.Add(("Moves Used", MoveCount.ToString()));
             Stats.Add(("Hints Used", HintCount.ToString()));
-            Stats.Add(("Solution Used", SolutionUsed.ToString()));
+            // Ternary operator, if SolutionUsed is true, then string will be "Yes" else, "No"
+            Stats.Add(("Solution Used", SolutionUsed ? "Yes" : "No"));
             Stats.Add(("Time Taken", TimeTaken.ToString() + " seconds"));
 
             return Stats;

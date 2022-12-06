@@ -12,6 +12,11 @@ namespace PRJ_MazeWinForms
         private HighscoresForm _highscoreForm;
         private AppSettingsManager _settingsManager;
         private AppSettings _appSettings;
+
+        // Gets whether _loginForm has a current user
+        private bool _loggedIn { get { return (_loginForm != null && _loginForm.CurrentUser != null); } }
+
+
         public SettingsForm SettingsForm
         {
             get
@@ -63,6 +68,7 @@ namespace PRJ_MazeWinForms
 
         }
 
+
         private void SetupAttributes()
         {
             _settingsManager = new AppSettingsManager();
@@ -72,9 +78,10 @@ namespace PRJ_MazeWinForms
         private void SetupEvents()
         {
             btn_start.Click += new EventHandler(GoToSettings);
-            btn_login.Click += new EventHandler(GoToLogin);
+            btn_login.Click += new EventHandler(LoginButtonPressed);
             btn_highscores.Click += new EventHandler(GoToHighscore);
             this.FormClosed += new FormClosedEventHandler(AppClosed);
+            this.VisibleChanged += new EventHandler((sender, e) => UpdateUserLogin());
         }
 
         private void GoToSettings(object sender, EventArgs e)
@@ -83,10 +90,20 @@ namespace PRJ_MazeWinForms
             SettingsForm.Show();
         }
 
-        private void GoToLogin(object sender, EventArgs e)
+        private void LoginButtonPressed(object sender, EventArgs e)
         {
-            this.Hide();
-            LoginForm.Show();
+            // if not logged in, the login button should go to login form
+            if (!_loggedIn)
+            {
+                this.Hide();
+                LoginForm.Show();
+            }
+            // if logged in, login button should logout
+            else
+            {
+                LoginForm.Logout();
+                UpdateUserLogin();
+            }
         }
 
         private void GoToHighscore(object sender, EventArgs e)
@@ -108,14 +125,18 @@ namespace PRJ_MazeWinForms
         }
 
 
-
-        private void Login_Click(object sender, EventArgs e)
+        private void UpdateUserLogin()
         {
-
-        }
-
-        private void menuLayout_Paint(object sender, PaintEventArgs e)
-        {
+            if (_loginForm != null && _loginForm.CurrentUser != null)
+            {
+                lbl_signedinas.Text = "Signed in as: " + "\n" + _loginForm.CurrentUser.Username;
+                btn_login.Text = "Logout";
+            }
+            else
+            {
+                lbl_signedinas.Text = "Signed in as: " + "\n" + "Guest";
+                btn_login.Text = "Login";
+            }
 
         }
     }

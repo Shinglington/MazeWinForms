@@ -33,6 +33,7 @@
             this.btn_start = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.btn_highscores = new System.Windows.Forms.Button();
+            this.lbl_signedinas = new System.Windows.Forms.Label();
             this.menuLayout.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -46,6 +47,7 @@
             this.menuLayout.Controls.Add(this.btn_start, 1, 1);
             this.menuLayout.Controls.Add(this.label1, 1, 0);
             this.menuLayout.Controls.Add(this.btn_highscores, 0, 0);
+            this.menuLayout.Controls.Add(this.lbl_signedinas, 2, 0);
             this.menuLayout.Dock = System.Windows.Forms.DockStyle.Fill;
             this.menuLayout.Location = new System.Drawing.Point(0, 0);
             this.menuLayout.Name = "menuLayout";
@@ -55,7 +57,6 @@
             this.menuLayout.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.menuLayout.Size = new System.Drawing.Size(800, 450);
             this.menuLayout.TabIndex = 0;
-            this.menuLayout.Paint += new System.Windows.Forms.PaintEventHandler(this.menuLayout_Paint);
             // 
             // btn_login
             // 
@@ -69,7 +70,6 @@
             this.btn_login.TabIndex = 2;
             this.btn_login.Text = "Login";
             this.btn_login.UseVisualStyleBackColor = true;
-            this.btn_login.Click += new System.EventHandler(this.Login_Click);
             // 
             // btn_start
             // 
@@ -108,6 +108,15 @@
             this.btn_highscores.Text = "Highscores";
             this.btn_highscores.UseVisualStyleBackColor = true;
             // 
+            // lbl_signedinas
+            // 
+            this.lbl_signedinas.AutoSize = true;
+            this.lbl_signedinas.Location = new System.Drawing.Point(535, 0);
+            this.lbl_signedinas.Name = "lbl_signedinas";
+            this.lbl_signedinas.Size = new System.Drawing.Size(68, 13);
+            this.lbl_signedinas.TabIndex = 5;
+            this.lbl_signedinas.Text = "Signed in as:";
+            // 
             // MenuForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -129,6 +138,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button btn_login;
         private System.Windows.Forms.Button btn_highscores;
+        private System.Windows.Forms.Label lbl_signedinas;
     }
 }
 

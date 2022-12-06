@@ -51,6 +51,11 @@ namespace PRJ_MazeWinForms
             _caller = Caller;
             mode = FormMode.Login;
         }
+
+        public void Logout()
+        {
+            _currentUser = null;
+        }
         private void SetupAttributes()
         {
             CurrentUser = null;
@@ -62,7 +67,7 @@ namespace PRJ_MazeWinForms
         private void SetupEvents()
         {
             _confirmButton.Click += new EventHandler(LoginPress);
-            btn_back.Click += new EventHandler(BackButtonPress);
+            btn_back.Click += new EventHandler((sender, e) => BackToMenu());
             btn_switchMode.Click += new EventHandler(SwapFormMode);
         }
 
@@ -74,6 +79,9 @@ namespace PRJ_MazeWinForms
             {
                 MessageBox.Show("Success");
                 LogHelper.Log("Login form success login");
+                // Go back to menu when logged in
+                BackToMenu();
+
             }
             else
             {
@@ -120,7 +128,7 @@ namespace PRJ_MazeWinForms
 
 
         }
-        private void BackButtonPress(object sender, EventArgs e)
+        private void BackToMenu()
         {
             this.Hide();
             _caller.Show();
