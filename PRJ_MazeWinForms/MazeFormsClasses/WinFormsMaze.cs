@@ -40,6 +40,7 @@ namespace MazeFormsClasses
         private NodeLocation _displayedPlayerLocation;
         private PaintEventHandler _playerPaintMethod;
 
+        private MyList<(NodeLocation, PaintEventHandler)> _hintPaintEvents;
 
         public FormsMazeDisplayer(WinFormsMaze Maze, MazeDisplaySettings DisplaySettings, TableLayoutPanel Container)
         {
@@ -51,6 +52,8 @@ namespace MazeFormsClasses
 
             _playerPaintMethod = null;
             _displayedPlayerLocation = null;
+
+            _hintPaintEvents = new MyList<(NodeLocation, PaintEventHandler)>();
 
             SetupContainer();
         }
@@ -82,6 +85,25 @@ namespace MazeFormsClasses
             }
             UpdateMazeDisplay(Highlights);
         } 
+
+        public void RemoveHint(NodeLocation hintLocation)
+        {
+            foreach ((NodeLocation, PaintEventHandler) pair in _hintPaintEvents)
+            {
+                // loop through hintPaintEvents to find associated event
+                // with the hintLocation given to remove the event from the panel.
+                NodeLocation location = pair.Item1;
+                PaintEventHandler paintEvent = pair.Item2;
+                if ((pair.Item1) == hintLocation)
+                {
+                    
+                    Panel HintCell = (Panel)_container.GetControlFromPosition(location.X, location.Y);
+                    HintCell.Paint -= paintEvent;
+                    HintCell.Invalidate();
+                    break;
+                }
+            }
+        }
 
         private void InitialMazeDisplay()
         {
@@ -119,10 +141,22 @@ namespace MazeFormsClasses
             // Show hint highlights
             if (HintHighlights != null)
             {
+                // Remove pre-existing hints
+                foreach((NodeLocation, PaintEventHandler) pair in _hintPaintEvents)
+                {
+                    RemoveHint(pair.Item1);
+                }
+
+
+                // Add new hints
                 foreach (NodeLocation location in HintHighlights)
                 {
                     Panel HintCell = (Panel)_container.GetControlFromPosition(location.X, location.Y);
-                    HintCell.Paint += new PaintEventHandler(PaintHint);
+
+                    PaintEventHandler newPaintEvent = new PaintEventHandler(PaintHint);
+                    HintCell.Paint += newPaintEvent;
+                    // Add the location, event pair to a list so we can get rid of it later.
+                    _hintPaintEvents.Add((location, newPaintEvent));
                     HintCell.Invalidate();
                 }
             }

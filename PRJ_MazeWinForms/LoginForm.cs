@@ -151,10 +151,9 @@ namespace PRJ_MazeWinForms
             _confirmButton.Text = "Login";
 
             btn_switchMode.Text = "Register";
-            lbl_SwitchMode.Text = "Not signed up?";
+            lbl_switchMode.Text = "Not signed up?";
 
-            _confirmButton.Click -= RegisterPress;
-            _confirmButton.Click += LoginPress;
+
 
             lbl_confirmPass.Visible = false;
             confirmpass_field.Visible = false;
@@ -163,6 +162,10 @@ namespace PRJ_MazeWinForms
 
             password_field.Text = "";
             username_field.Text = "";
+
+
+            _confirmButton.Click -= RegisterPress;
+            _confirmButton.Click += LoginPress;
 
         }
         private void SwapToRegister()
@@ -173,10 +176,8 @@ namespace PRJ_MazeWinForms
             _confirmButton.Text = "Register";
 
             btn_switchMode.Text = "Login";
-            lbl_SwitchMode.Text = "Existing user?";
+            lbl_switchMode.Text = "Existing user?";
 
-            _confirmButton.Click -= LoginPress;
-            _confirmButton.Click += RegisterPress;
 
             lbl_confirmPass.Visible = true;
             confirmpass_field.Visible = true;
@@ -186,6 +187,9 @@ namespace PRJ_MazeWinForms
             password_field.Text = "";
             username_field.Text = "";
 
+
+            _confirmButton.Click -= LoginPress;
+            _confirmButton.Click += RegisterPress;
         }
 
 

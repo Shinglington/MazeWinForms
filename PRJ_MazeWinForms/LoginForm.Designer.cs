@@ -40,7 +40,7 @@
             this.lbl_username = new System.Windows.Forms.Label();
             this.lbl_pass = new System.Windows.Forms.Label();
             this.lbl_confirmPass = new System.Windows.Forms.Label();
-            this.lbl_SwitchMode = new System.Windows.Forms.Label();
+            this.lbl_switchMode = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -61,7 +61,7 @@
             this.tableLayoutPanel1.Controls.Add(this.lbl_username, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.lbl_pass, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.lbl_confirmPass, 0, 3);
-            this.tableLayoutPanel1.Controls.Add(this.lbl_SwitchMode, 0, 4);
+            this.tableLayoutPanel1.Controls.Add(this.lbl_switchMode, 0, 4);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -94,7 +94,7 @@
             this.btn_confirm.Margin = new System.Windows.Forms.Padding(5, 20, 5, 20);
             this.btn_confirm.Name = "btn_confirm";
             this.btn_confirm.Size = new System.Drawing.Size(100, 95);
-            this.btn_confirm.TabIndex = 3;
+            this.btn_confirm.TabIndex = 4;
             this.btn_confirm.Text = "Login";
             this.btn_confirm.UseVisualStyleBackColor = true;
             // 
@@ -146,7 +146,7 @@
             this.confirmpass_field.Location = new System.Drawing.Point(110, 228);
             this.confirmpass_field.Name = "confirmpass_field";
             this.confirmpass_field.Size = new System.Drawing.Size(104, 20);
-            this.confirmpass_field.TabIndex = 6;
+            this.confirmpass_field.TabIndex = 3;
             this.confirmpass_field.Visible = false;
             this.confirmpass_field.WordWrap = false;
             // 
@@ -155,7 +155,7 @@
             this.btn_switchMode.Location = new System.Drawing.Point(110, 273);
             this.btn_switchMode.Name = "btn_switchMode";
             this.btn_switchMode.Size = new System.Drawing.Size(75, 23);
-            this.btn_switchMode.TabIndex = 7;
+            this.btn_switchMode.TabIndex = 6;
             this.btn_switchMode.Text = "Register";
             this.btn_switchMode.UseVisualStyleBackColor = true;
             // 
@@ -187,16 +187,16 @@
             this.lbl_confirmPass.Text = "Confirm Password";
             this.lbl_confirmPass.Visible = false;
             // 
-            // lbl_SwitchMode
+            // lbl_switchMode
             // 
-            this.lbl_SwitchMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lbl_SwitchMode.AutoSize = true;
-            this.lbl_SwitchMode.Location = new System.Drawing.Point(25, 270);
-            this.lbl_SwitchMode.Name = "lbl_SwitchMode";
-            this.lbl_SwitchMode.Size = new System.Drawing.Size(79, 13);
-            this.lbl_SwitchMode.TabIndex = 11;
-            this.lbl_SwitchMode.Text = "Not signed up?";
-            this.lbl_SwitchMode.Visible = false;
+            this.lbl_switchMode.AutoSize = true;
+            this.lbl_switchMode.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.lbl_switchMode.Location = new System.Drawing.Point(3, 270);
+            this.lbl_switchMode.Name = "lbl_switchMode";
+            this.lbl_switchMode.Size = new System.Drawing.Size(101, 45);
+            this.lbl_switchMode.TabIndex = 11;
+            this.lbl_switchMode.Text = "Not signed up?";
+            this.lbl_switchMode.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // LoginForm
             // 
@@ -226,6 +226,6 @@
         private System.Windows.Forms.Label lbl_username;
         private System.Windows.Forms.Label lbl_pass;
         private System.Windows.Forms.Label lbl_confirmPass;
-        private System.Windows.Forms.Label lbl_SwitchMode;
+        private System.Windows.Forms.Label lbl_switchMode;
     }
 }

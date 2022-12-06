@@ -3,6 +3,7 @@ using MyDataStructures;
 using PRJ_MazeWinForms;
 using PRJ_MazeWinForms.Logging;
 using System;
+using System.Runtime.CompilerServices;
 
 namespace MazeClasses
 {
@@ -14,12 +15,18 @@ namespace MazeClasses
         protected IMazeDisplayer _mazeDisplayer;
         protected MazeInterface _mazeInterface;
         protected MyList<Node> _solution;
+
+        protected MyList<NodeLocation> _visibleHints;
+
+
         public int Width { private set; get; }
         public int Height { private set; get; }
         public NodeLocation StartLocation { get { return _graph.StartNode.Location; } }
         public NodeLocation EndLocation { get { return _graph.EndNode.Location; } }
         public NodeLocation PlayerLocation { get { return _player.Location; } }
         public bool Finished { get { return PlayerLocation == EndLocation; } }
+
+        public MyList<NodeLocation> VisibleHints { get { return _visibleHints; } }
 
         public MazeFinishedEventHandler OnMazeFinished;
         public Maze(MazeSettings Settings)
@@ -31,13 +38,29 @@ namespace MazeClasses
         public bool MakeMove(Direction direction)
         {
             bool success = _mazeInterface.TryMove(direction);
+            if (success)
+            {
+                // Check if the new player location is ontop of a hint, if so remove the hint
+                foreach (NodeLocation hintLocation in _visibleHints)
+                {
+                    if (hintLocation == _player.Location)
+                    {
+                        _mazeDisplayer.RemoveHint(hintLocation);
+                        break;
+                    }
+                }
+                // Make a new display if successful
+                ShowMaze();
+            }
             return success;
         }
 
         public bool ShowHint()
         {
             bool success = true;
-            _mazeDisplayer.Display(GetHint());
+            MyList<NodeLocation> hint = GetHint();
+            _mazeDisplayer.Display(hint);
+            _visibleHints = hint;
             return success;
         } 
         public bool ShowSolution()
@@ -59,6 +82,7 @@ namespace MazeClasses
             LogHelper.Log(String.Format("Generating Maze using algorithm {0}", Settings.Algorithm.ToString()));
             MazeGen.GenerateMaze(this, _graph, Settings.Algorithm, Settings.ShowGeneration);
             _solution = null;
+            _visibleHints = new MyList<NodeLocation>();
         }
         public MyList<NodeLocation> Solution
         {
@@ -82,7 +106,8 @@ namespace MazeClasses
         {
             MyList<Node> PathToEnd = MazeSolver.WallFollower(_graph, PlayerLocation, EndLocation);
             MyList<NodeLocation> hint = new MyList<NodeLocation>();
-            for (int i = 0; i < Math.Min(count, PathToEnd.Count); i++)
+            // Find first "count" hints (excluding original player location)
+            for (int i = 1; i < Math.Min(count, PathToEnd.Count) + 1; i++)
             {
                 hint.Add(PathToEnd[i].Location);
             }
@@ -114,6 +139,8 @@ namespace MazeClasses
             // Invokes OnMazeFinished event with data about the game so it can be displayed elsewhere by listener
             OnMazeFinished.Invoke(this, new MazeFinishedEventArgs(_player));
         }
+
+
     }
 
 
@@ -165,7 +192,6 @@ namespace MazeClasses
             {
                 LogHelper.Log(String.Format("Nodes {0} and {1} accessible, so move success", CurrentLocation, NextLocation));
                 _player.Move(NextLocation);
-                _maze.ShowMaze();
                 success = true;
 
                 if (_maze.Finished)
@@ -180,18 +206,14 @@ namespace MazeClasses
             }
             return success;
         }
-
-
-        public void ShowHint()
-        {
-            _maze.ShowHint();
-        }
     }
 
 
     public interface IMazeDisplayer
     {
         void Display(MyList<NodeLocation> hints = null);
+
+        void RemoveHint(NodeLocation hintLocation);
     }
 
     public interface IMazeInterface

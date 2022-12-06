@@ -43,12 +43,19 @@ namespace MazeConsole
         }
         public void Display(MyList<NodeLocation> Highlights = null)
         {
-            Console.WriteLine(GetStringDisplay(Highlights));
+            Console.WriteLine(GetStringDisplay());
         }
 
-        private string GetStringDisplay(MyList<NodeLocation> highlightNodes = null)
+        public void RemoveHint(NodeLocation hintLocation)
+        {
+            // placeholder, does nothing in console maze
+        }
+
+
+        private string GetStringDisplay()
         {
             {
+                MyList<NodeLocation> highlightNodes = _maze.VisibleHints;
                 string mazeString = "";
                 mazeString += WALL_CHAR;
                 // Generate top wall
@@ -126,7 +133,7 @@ namespace MazeConsole
                 char key = Console.ReadKey(true).KeyChar;
                 if (key == _controlSettings.Hint)
                 {
-                    ShowHint();
+                    _maze.ShowHint();
                 }
                 else
                 {
