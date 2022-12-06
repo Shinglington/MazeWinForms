@@ -40,6 +40,7 @@
             this.lbl_username = new System.Windows.Forms.Label();
             this.lbl_pass = new System.Windows.Forms.Label();
             this.lbl_confirmPass = new System.Windows.Forms.Label();
+            this.lbl_SwitchMode = new System.Windows.Forms.Label();
             this.tableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -60,6 +61,7 @@
             this.tableLayoutPanel1.Controls.Add(this.lbl_username, 0, 1);
             this.tableLayoutPanel1.Controls.Add(this.lbl_pass, 0, 2);
             this.tableLayoutPanel1.Controls.Add(this.lbl_confirmPass, 0, 3);
+            this.tableLayoutPanel1.Controls.Add(this.lbl_SwitchMode, 0, 4);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
@@ -150,8 +152,7 @@
             // 
             // btn_switchMode
             // 
-            this.btn_switchMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.btn_switchMode.Location = new System.Drawing.Point(139, 273);
+            this.btn_switchMode.Location = new System.Drawing.Point(110, 273);
             this.btn_switchMode.Name = "btn_switchMode";
             this.btn_switchMode.Size = new System.Drawing.Size(75, 23);
             this.btn_switchMode.TabIndex = 7;
@@ -186,6 +187,17 @@
             this.lbl_confirmPass.Text = "Confirm Password";
             this.lbl_confirmPass.Visible = false;
             // 
+            // lbl_SwitchMode
+            // 
+            this.lbl_SwitchMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lbl_SwitchMode.AutoSize = true;
+            this.lbl_SwitchMode.Location = new System.Drawing.Point(25, 270);
+            this.lbl_SwitchMode.Name = "lbl_SwitchMode";
+            this.lbl_SwitchMode.Size = new System.Drawing.Size(79, 13);
+            this.lbl_SwitchMode.TabIndex = 11;
+            this.lbl_SwitchMode.Text = "Not signed up?";
+            this.lbl_SwitchMode.Visible = false;
+            // 
             // LoginForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -214,5 +226,6 @@
         private System.Windows.Forms.Label lbl_username;
         private System.Windows.Forms.Label lbl_pass;
         private System.Windows.Forms.Label lbl_confirmPass;
+        private System.Windows.Forms.Label lbl_SwitchMode;
     }
 }

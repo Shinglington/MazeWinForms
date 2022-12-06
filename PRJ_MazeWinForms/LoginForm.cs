@@ -151,6 +151,7 @@ namespace PRJ_MazeWinForms
             _confirmButton.Text = "Login";
 
             btn_switchMode.Text = "Register";
+            lbl_SwitchMode.Text = "Not signed up?";
 
             _confirmButton.Click -= RegisterPress;
             _confirmButton.Click += LoginPress;
@@ -172,6 +173,7 @@ namespace PRJ_MazeWinForms
             _confirmButton.Text = "Register";
 
             btn_switchMode.Text = "Login";
+            lbl_SwitchMode.Text = "Existing user?";
 
             _confirmButton.Click -= LoginPress;
             _confirmButton.Click += RegisterPress;

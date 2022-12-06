@@ -26,6 +26,7 @@ namespace PRJ_MazeWinForms
         public MazeForm(MenuForm menuForm, MazeSettings MazeSettings, AppSettings AppSettings)
         {
             InitializeComponent();
+            this.WindowState = FormWindowState.Maximized;
             CreateControls();
             _menuForm = menuForm;
             _appSettings = AppSettings;
@@ -46,7 +47,7 @@ namespace PRJ_MazeWinForms
         }
         private void PlayerKeyPress(object sender, KeyPressEventArgs e)
         {
-            char keyChar = e.KeyChar;
+            char keyChar = Convert.ToChar(Convert.ToString(e.KeyChar).ToLower());
             for (int i = 0; i < 4; i++)
                 if (keyChar == _appSettings.ControlSettings.Movement[i])
                     _maze.MakeMove((Direction)i);
