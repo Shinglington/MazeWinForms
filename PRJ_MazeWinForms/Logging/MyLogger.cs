@@ -42,40 +42,35 @@ namespace PRJ_MazeWinForms.Logging
         }
     }
 
-    public class FileLogger : MyLogger 
-    {
-        public string FILE_NAME = "LogData.txt";
-        public int MAXLINES = 100;
-        private MyQueue<string> sessionLog;
+    //public class FileLogger : MyLogger 
+    //{
+    //    public string FILE_NAME = "LogData.txt";
+    //    private MyQueue<string> sessionLog;
 
-        public FileLogger()
-        {
-            sessionLog = new MyQueue<string>();
-        }
-        public override void Log(string message, ErrorLevel error)
-        {
-            while (sessionLog.Count > 100)
-            {
-                sessionLog.Dequeue();
-            }
-            sessionLog.Enqueue(error.ToString() + "   " + message);
-            using (StreamWriter sWriter = new StreamWriter(FILE_NAME))
-            {
-                foreach (string s in sessionLog.ToList())
-                {
-                    sWriter.WriteLine(error.ToString() + "   " + message);
-                }
-                sWriter.Close();
-            }
-        }
-    }
+    //    public FileLogger()
+    //    {
+    //        sessionLog = new MyQueue<string>();
+    //    }
+    //    public override void Log(string message, ErrorLevel error)
+    //    {
+    //        sessionLog.Enqueue(error.ToString() + "   " + message);
+    //        using (StreamWriter sWriter = new StreamWriter(FILE_NAME))
+    //        {
+    //            foreach (string s in sessionLog.ToList())
+    //            {
+    //                sWriter.WriteLine(error.ToString() + "   " + message);
+    //            }
+    //            sWriter.Close();
+    //        }
+    //    }
+    //}
 
 
     public static class LogHelper 
     {
         private const bool CONSOLE_OUTPUT = true;
         private static ConsoleLogger consoleLogger = new ConsoleLogger();
-        private static FileLogger fileLogger = new FileLogger();
+       //  private static FileLogger fileLogger = new FileLogger();
         public static void Log(string logMessage)
         {
             WriteLog(logMessage, ErrorLevel.Information);
@@ -95,7 +90,7 @@ namespace PRJ_MazeWinForms.Logging
             {
                 consoleLogger.Log(messageToLog, level);
             }
-            fileLogger.Log(messageToLog, level);
+            // fileLogger.Log(messageToLog, level);
         }
 
     }
