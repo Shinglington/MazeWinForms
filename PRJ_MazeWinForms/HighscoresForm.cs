@@ -24,14 +24,19 @@ namespace PRJ_MazeWinForms
         private MenuForm _menu;
         private DatabaseHelper _dbHelper;
         private viewMode databaseVisibility;
+
+        private DataSet _data;
+
         public HighscoresForm(MenuForm menu)
         {
             InitializeComponent();
             _menu = menu;
             _dbHelper = new DatabaseHelper();
+            _data = _dbHelper.GetAllScores();
             SetupEvents();
             ShowAllScores();
             databaseVisibility = viewMode.global;
+            
         }
 
         private void SetupEvents()
@@ -49,11 +54,16 @@ namespace PRJ_MazeWinForms
 
         private void ShowAllScores()
         {
-            ShowScores(_dbHelper.GetAllScores());
+            ShowScores(_data);
         }
         private void ShowPersonalScores()
         {
             ShowScores(_dbHelper.GetUserScores(_menu.LoginForm.CurrentUser));
+        }
+
+        private void UpdateDataCache()
+        {
+            _data = _dbHelper.GetAllScores();
         }
 
         private void ShowScores(DataSet ds)

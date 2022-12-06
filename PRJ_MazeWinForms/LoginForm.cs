@@ -69,6 +69,7 @@ namespace PRJ_MazeWinForms
             _confirmButton.Click += new EventHandler(LoginPress);
             btn_back.Click += new EventHandler((sender, e) => BackToMenu());
             btn_switchMode.Click += new EventHandler(SwapFormMode);
+            this.FormClosed += new FormClosedEventHandler((sender, e) => BackToMenu());
         }
 
         private void LoginPress(object sender, EventArgs e)
