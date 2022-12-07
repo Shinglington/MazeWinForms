@@ -1,14 +1,7 @@
-﻿using MyDataStructures;
-using PRJ_MazeWinForms.Authentication;
+﻿using PRJ_MazeWinForms.Authentication;
 using PRJ_MazeWinForms.Logging;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace PRJ_MazeWinForms
@@ -45,7 +38,7 @@ namespace PRJ_MazeWinForms
             ShowAllScores();
             databaseVisibility = viewMode.global;
             _showingSorted = false;
-            
+
         }
 
         private void SetupEvents()
@@ -111,7 +104,7 @@ namespace PRJ_MazeWinForms
             indexScorePairs = MergeSortData(indexScorePairs);
 
             // Putting sorted data in table
-            for(int i = 0; i < indexScorePairs.Length; i++)
+            for (int i = 0; i < indexScorePairs.Length; i++)
             {
                 (int, int) pair = indexScorePairs[i];
                 int originalIndex = pair.Item1;
@@ -131,7 +124,7 @@ namespace PRJ_MazeWinForms
             (int, int)[] left = new (int, int)[Convert.ToInt32(array.Length / 2)];
             (int, int)[] right = new (int, int)[array.Length - Convert.ToInt32(array.Length / 2)];
 
-            for(int i = 0; i < array.Length; i++)
+            for (int i = 0; i < array.Length; i++)
             {
                 if (i < left.Length)
                 {
@@ -157,7 +150,7 @@ namespace PRJ_MazeWinForms
             int leftIndex = 0;
             int rightIndex = 0;
 
-            while(leftIndex + rightIndex < mergedArrays.Length)
+            while (leftIndex + rightIndex < mergedArrays.Length)
             {
                 // check if one of the index markers is the end of the array
                 if (leftIndex >= leftArray.Length)
@@ -185,7 +178,7 @@ namespace PRJ_MazeWinForms
                 }
             }
             return mergedArrays;
-            
+
         }
 
 
@@ -225,7 +218,7 @@ namespace PRJ_MazeWinForms
 
         private void SwitchVisibilityMode()
         {
-            switch (databaseVisibility) 
+            switch (databaseVisibility)
             {
                 case viewMode.global:
                     SwitchToPersonalView();
@@ -272,7 +265,7 @@ namespace PRJ_MazeWinForms
             btn_toggleGlobal.Text = "Switch to global view";
             UpdateScoreView();
         }
-        
+
         private void SwitchSortedView()
         {
             if (_showingSorted)
