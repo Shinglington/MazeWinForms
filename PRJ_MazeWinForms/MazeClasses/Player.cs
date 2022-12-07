@@ -60,7 +60,7 @@ namespace MazeClasses
         }
     }
 
-    class MyTimer 
+    class MyTimer
     {
         private DateTime _start;
         private DateTime _end;
@@ -90,7 +90,7 @@ namespace MazeClasses
             return end.Subtract(start).TotalSeconds;
         }
 
-        public double TimeTaken 
+        public double TimeTaken
         {
             get { return CalculateTimeElapsed(_start, _end); }
         }

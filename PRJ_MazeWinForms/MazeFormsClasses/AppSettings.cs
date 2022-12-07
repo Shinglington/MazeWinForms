@@ -1,5 +1,4 @@
-﻿using MazeFormsClasses;
-using PRJ_MazeWinForms.Logging;
+﻿using PRJ_MazeWinForms.Logging;
 using System;
 using System.Drawing;
 using System.IO;
@@ -17,7 +16,7 @@ namespace MazeFormsClasses
 
     public class AppSettingsManager
     {
-        
+
         private const string FILENAME = "settings.xml";
         private AppSettings _appSettings = new AppSettings();
 
@@ -115,7 +114,7 @@ namespace MazeFormsClasses
         };
     }
 
-    public struct MazeControlSettings 
+    public struct MazeControlSettings
     {
         public char[] Movement { get; set; }
         public char Hint { get; set; }

@@ -89,7 +89,7 @@
         public static bool operator ==(NodeLocation a, NodeLocation b)
         {
             if ((object)a == null)
-                return (object)b == null;
+                return b is null;
             return a.Equals(b);
         }
 

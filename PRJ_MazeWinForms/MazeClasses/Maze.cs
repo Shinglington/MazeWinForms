@@ -1,9 +1,7 @@
 ﻿using MazeFormsClasses;
 using MyDataStructures;
-using PRJ_MazeWinForms;
 using PRJ_MazeWinForms.Logging;
 using System;
-using System.Runtime.CompilerServices;
 
 namespace MazeClasses
 {
@@ -52,6 +50,12 @@ namespace MazeClasses
                 // Make a new display if successful
                 ShowMaze();
             }
+
+            if (Finished)
+            {
+                LogHelper.Log("Player reached the end");
+                EndMaze();
+            }
             return success;
         }
 
@@ -62,7 +66,7 @@ namespace MazeClasses
             _mazeDisplayer.Display(hint);
             _visibleHints = hint;
             return success;
-        } 
+        }
         public bool ShowSolution()
         {
             bool success = true;
@@ -193,12 +197,6 @@ namespace MazeClasses
                 LogHelper.Log(String.Format("Nodes {0} and {1} accessible, so move success", CurrentLocation, NextLocation));
                 _player.Move(NextLocation);
                 success = true;
-
-                if (_maze.Finished)
-                {
-                    LogHelper.Log("Player reached the end");
-                    _maze.EndMaze();
-                }
             }
             else
             {

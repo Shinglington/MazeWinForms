@@ -1,12 +1,4 @@
-﻿using MyDataStructures;
-using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Runtime.Remoting.Channels;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace PRJ_MazeWinForms.Logging
 {
@@ -21,7 +13,7 @@ namespace PRJ_MazeWinForms.Logging
         public abstract void Log(string message, ErrorLevel error);
     }
 
-    public class ConsoleLogger : MyLogger 
+    public class ConsoleLogger : MyLogger
     {
         public override void Log(string message, ErrorLevel error)
         {
@@ -66,11 +58,11 @@ namespace PRJ_MazeWinForms.Logging
     //}
 
 
-    public static class LogHelper 
+    public static class LogHelper
     {
         private const bool CONSOLE_OUTPUT = true;
         private static ConsoleLogger consoleLogger = new ConsoleLogger();
-       //  private static FileLogger fileLogger = new FileLogger();
+        //  private static FileLogger fileLogger = new FileLogger();
         public static void Log(string logMessage)
         {
             WriteLog(logMessage, ErrorLevel.Information);
@@ -85,7 +77,7 @@ namespace PRJ_MazeWinForms.Logging
         {
             string date = DateTime.Now.ToString();
             string messageToLog = string.Format("[{0}] : {1}", date, logMessage);
-            
+
             if (CONSOLE_OUTPUT)
             {
                 consoleLogger.Log(messageToLog, level);

@@ -1,6 +1,6 @@
 ﻿using MazeClasses;
-using PRJ_MazeWinForms;
 using MyDataStructures;
+using PRJ_MazeWinForms;
 using System;
 using System.Drawing;
 using System.Windows.Forms;
@@ -25,7 +25,7 @@ namespace MazeFormsClasses
             _container = Container;
             _mazeDisplayer = new FormsMazeDisplayer(this, DisplaySettings, Container);
             _mazeInterface = new FormsMazeInterface(this, _player, ControlSettings);
-            
+
         }
     }
 
@@ -84,7 +84,7 @@ namespace MazeFormsClasses
                 InitialMazeDisplay();
             }
             UpdateMazeDisplay(Highlights);
-        } 
+        }
 
         public void RemoveHint(NodeLocation hintLocation)
         {
@@ -96,7 +96,7 @@ namespace MazeFormsClasses
                 PaintEventHandler paintEvent = pair.Item2;
                 if ((pair.Item1) == hintLocation)
                 {
-                    
+
                     Panel HintCell = (Panel)_container.GetControlFromPosition(location.X, location.Y);
                     HintCell.Paint -= paintEvent;
                     HintCell.Invalidate();
@@ -107,16 +107,16 @@ namespace MazeFormsClasses
 
         private void InitialMazeDisplay()
         {
-            for(int row = 0; row < _maze.Height; row++)
+            for (int row = 0; row < _maze.Height; row++)
             {
-                for(int col = 0; col < _maze.Width; col++)
+                for (int col = 0; col < _maze.Width; col++)
                 {
                     NodeLocation CurrentLocation = new NodeLocation(col, row);
                     Panel Cell = new Panel() { Parent = _container, Dock = DockStyle.Fill, Margin = new Padding(0) };
                     _container.SetCellPosition(Cell, new TableLayoutPanelCellPosition(col, row));
                     bool isStartNode = CurrentLocation == _maze.StartLocation;
                     bool isEndNode = CurrentLocation == _maze.EndLocation;
-                    Cell.Paint += new PaintEventHandler((sender, e) => 
+                    Cell.Paint += new PaintEventHandler((sender, e) =>
                         PaintNode(sender, e, CurrentLocation, isStartNode, isEndNode));
                 }
             }
@@ -142,7 +142,7 @@ namespace MazeFormsClasses
             if (HintHighlights != null)
             {
                 // Remove pre-existing hints
-                foreach((NodeLocation, PaintEventHandler) pair in _hintPaintEvents)
+                foreach ((NodeLocation, PaintEventHandler) pair in _hintPaintEvents)
                 {
                     RemoveHint(pair.Item1);
                 }
@@ -178,7 +178,7 @@ namespace MazeFormsClasses
             else if (IsEndNode)
                 brush = new SolidBrush(_displaySettings.EndColour);
 
-            g.FillRectangle(brush, 0,0, cell.Width, cell.Height);
+            g.FillRectangle(brush, 0, 0, cell.Width, cell.Height);
 
             bool[] Walls = _maze.GetWalls(location);
             Rectangle[] WallAreas = new Rectangle[]
@@ -240,7 +240,7 @@ namespace MazeFormsClasses
         public override void Play()
         {
             WinFormsMaze Maze = (WinFormsMaze)_maze;
-            Form ParentForm = (Form) Maze.Parent.Parent.Parent;
+            Form ParentForm = (Form)Maze.Parent.Parent.Parent;
             ParentForm.KeyPress += new KeyPressEventHandler(KeyPressed);
 
         }
@@ -249,7 +249,7 @@ namespace MazeFormsClasses
         {
             char keyChar = e.KeyChar;
             for (int i = 0; i < 4; i++)
-                if (keyChar == _movementKeys[i]) 
+                if (keyChar == _movementKeys[i])
                     TryMove((Direction)i);
         }
     }

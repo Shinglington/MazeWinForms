@@ -140,7 +140,7 @@ namespace PRJ_MazeWinForms.Authentication
             {
                 index += _alphabet.Length;
             }
-            return _alphabet[index%_alphabet.Length];
-        } 
+            return _alphabet[index % _alphabet.Length];
+        }
     }
 }
