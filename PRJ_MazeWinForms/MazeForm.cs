@@ -136,13 +136,24 @@ namespace PRJ_MazeWinForms
 
         private int CalculateScore(Maze maze, MazeFinishedEventArgs e)
         {
+            if (e.SolutionUsed)
+                return 0;
+           
+            // base score is maximum score for given maze height, width
             int base_score = maze.Height * maze.Width * 1000;
             int extra_moves = Math.Max(maze.Solution.Count - e.MoveCount, 0);
             int seconds = (int)(e.TimeTaken);
 
             int time_penalty = (base_score / 1000) * seconds;
             int moves_penalty = (base_score / 1000) * extra_moves;
-            return Math.Max((base_score) - time_penalty - extra_moves, 0);
+
+            // Divide the base - penalties by the hintcount + 1
+            int final_score = ((base_score) - time_penalty - extra_moves) / (e.HintCount + 1);
+            if (final_score < 0)
+            {
+                final_score = 0;
+            }
+            return final_score;
 
         }
 
@@ -194,7 +205,7 @@ namespace PRJ_MazeWinForms
 
             }
             layoutTable.Controls.Add(statsTable);
-            layoutTable.SetCellPosition(statsTable, new TableLayoutPanelCellPosition(0,0));
+            layoutTable.SetCellPosition(statsTable, new TableLayoutPanelCellPosition(0, 0));
             layoutTable.SetColumnSpan(statsTable, 2);
 
 

@@ -136,6 +136,7 @@
             this.password_field.Name = "password_field";
             this.password_field.Size = new System.Drawing.Size(104, 20);
             this.password_field.TabIndex = 2;
+            this.password_field.UseSystemPasswordChar = true;
             this.password_field.WordWrap = false;
             // 
             // confirmpass_field
@@ -147,6 +148,7 @@
             this.confirmpass_field.Name = "confirmpass_field";
             this.confirmpass_field.Size = new System.Drawing.Size(104, 20);
             this.confirmpass_field.TabIndex = 3;
+            this.confirmpass_field.UseSystemPasswordChar = true;
             this.confirmpass_field.Visible = false;
             this.confirmpass_field.WordWrap = false;
             // 
