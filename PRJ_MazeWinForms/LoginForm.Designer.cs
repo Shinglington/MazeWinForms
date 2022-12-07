@@ -64,6 +64,7 @@
             this.tableLayoutPanel1.Controls.Add(this.lbl_switchMode, 0, 4);
             this.tableLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tableLayoutPanel1.Location = new System.Drawing.Point(0, 0);
+            this.tableLayoutPanel1.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.tableLayoutPanel1.Name = "tableLayoutPanel1";
             this.tableLayoutPanel1.RowCount = 6;
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
@@ -72,7 +73,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 10F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 30F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(326, 450);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(489, 692);
             this.tableLayoutPanel1.TabIndex = 0;
             // 
             // lbl_title
@@ -80,9 +81,10 @@
             this.lbl_title.AutoSize = true;
             this.lbl_title.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lbl_title.Font = new System.Drawing.Font("Microsoft Sans Serif", 26.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lbl_title.Location = new System.Drawing.Point(110, 0);
+            this.lbl_title.Location = new System.Drawing.Point(165, 0);
+            this.lbl_title.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbl_title.Name = "lbl_title";
-            this.lbl_title.Size = new System.Drawing.Size(104, 135);
+            this.lbl_title.Size = new System.Drawing.Size(158, 207);
             this.lbl_title.TabIndex = 0;
             this.lbl_title.Text = "Login";
             this.lbl_title.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -90,10 +92,10 @@
             // btn_confirm
             // 
             this.btn_confirm.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_confirm.Location = new System.Drawing.Point(112, 335);
-            this.btn_confirm.Margin = new System.Windows.Forms.Padding(5, 20, 5, 20);
+            this.btn_confirm.Location = new System.Drawing.Point(169, 514);
+            this.btn_confirm.Margin = new System.Windows.Forms.Padding(8, 31, 8, 31);
             this.btn_confirm.Name = "btn_confirm";
-            this.btn_confirm.Size = new System.Drawing.Size(100, 95);
+            this.btn_confirm.Size = new System.Drawing.Size(150, 147);
             this.btn_confirm.TabIndex = 4;
             this.btn_confirm.Text = "Login";
             this.btn_confirm.UseVisualStyleBackColor = true;
@@ -101,19 +103,20 @@
             // lbl_signedinas
             // 
             this.lbl_signedinas.AutoSize = true;
-            this.lbl_signedinas.Location = new System.Drawing.Point(220, 0);
+            this.lbl_signedinas.Location = new System.Drawing.Point(331, 0);
+            this.lbl_signedinas.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbl_signedinas.Name = "lbl_signedinas";
-            this.lbl_signedinas.Size = new System.Drawing.Size(68, 13);
+            this.lbl_signedinas.Size = new System.Drawing.Size(100, 20);
             this.lbl_signedinas.TabIndex = 4;
             this.lbl_signedinas.Text = "Signed in as:";
             // 
             // btn_back
             // 
             this.btn_back.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btn_back.Location = new System.Drawing.Point(222, 365);
-            this.btn_back.Margin = new System.Windows.Forms.Padding(5, 50, 5, 50);
+            this.btn_back.Location = new System.Drawing.Point(335, 560);
+            this.btn_back.Margin = new System.Windows.Forms.Padding(8, 77, 8, 77);
             this.btn_back.Name = "btn_back";
-            this.btn_back.Size = new System.Drawing.Size(99, 35);
+            this.btn_back.Size = new System.Drawing.Size(146, 55);
             this.btn_back.TabIndex = 5;
             this.btn_back.Text = "Back To Menu";
             this.btn_back.UseVisualStyleBackColor = true;
@@ -122,9 +125,10 @@
             // 
             this.username_field.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.username_field.Location = new System.Drawing.Point(110, 138);
+            this.username_field.Location = new System.Drawing.Point(165, 212);
+            this.username_field.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.username_field.Name = "username_field";
-            this.username_field.Size = new System.Drawing.Size(104, 20);
+            this.username_field.Size = new System.Drawing.Size(158, 26);
             this.username_field.TabIndex = 1;
             this.username_field.WordWrap = false;
             // 
@@ -132,9 +136,10 @@
             // 
             this.password_field.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.password_field.Location = new System.Drawing.Point(110, 183);
+            this.password_field.Location = new System.Drawing.Point(165, 281);
+            this.password_field.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.password_field.Name = "password_field";
-            this.password_field.Size = new System.Drawing.Size(104, 20);
+            this.password_field.Size = new System.Drawing.Size(158, 26);
             this.password_field.TabIndex = 2;
             this.password_field.UseSystemPasswordChar = true;
             this.password_field.WordWrap = false;
@@ -144,9 +149,10 @@
             this.confirmpass_field.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.confirmpass_field.Enabled = false;
-            this.confirmpass_field.Location = new System.Drawing.Point(110, 228);
+            this.confirmpass_field.Location = new System.Drawing.Point(165, 350);
+            this.confirmpass_field.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.confirmpass_field.Name = "confirmpass_field";
-            this.confirmpass_field.Size = new System.Drawing.Size(104, 20);
+            this.confirmpass_field.Size = new System.Drawing.Size(158, 26);
             this.confirmpass_field.TabIndex = 3;
             this.confirmpass_field.UseSystemPasswordChar = true;
             this.confirmpass_field.Visible = false;
@@ -154,9 +160,10 @@
             // 
             // btn_switchMode
             // 
-            this.btn_switchMode.Location = new System.Drawing.Point(110, 273);
+            this.btn_switchMode.Location = new System.Drawing.Point(165, 419);
+            this.btn_switchMode.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.btn_switchMode.Name = "btn_switchMode";
-            this.btn_switchMode.Size = new System.Drawing.Size(75, 23);
+            this.btn_switchMode.Size = new System.Drawing.Size(112, 35);
             this.btn_switchMode.TabIndex = 6;
             this.btn_switchMode.Text = "Register";
             this.btn_switchMode.UseVisualStyleBackColor = true;
@@ -164,27 +171,30 @@
             // lbl_username
             // 
             this.lbl_username.AutoSize = true;
-            this.lbl_username.Location = new System.Drawing.Point(3, 135);
+            this.lbl_username.Location = new System.Drawing.Point(4, 207);
+            this.lbl_username.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbl_username.Name = "lbl_username";
-            this.lbl_username.Size = new System.Drawing.Size(55, 13);
+            this.lbl_username.Size = new System.Drawing.Size(83, 20);
             this.lbl_username.TabIndex = 8;
             this.lbl_username.Text = "Username";
             // 
             // lbl_pass
             // 
             this.lbl_pass.AutoSize = true;
-            this.lbl_pass.Location = new System.Drawing.Point(3, 180);
+            this.lbl_pass.Location = new System.Drawing.Point(4, 276);
+            this.lbl_pass.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbl_pass.Name = "lbl_pass";
-            this.lbl_pass.Size = new System.Drawing.Size(53, 13);
+            this.lbl_pass.Size = new System.Drawing.Size(78, 20);
             this.lbl_pass.TabIndex = 9;
             this.lbl_pass.Text = "Password";
             // 
             // lbl_confirmPass
             // 
             this.lbl_confirmPass.AutoSize = true;
-            this.lbl_confirmPass.Location = new System.Drawing.Point(3, 225);
+            this.lbl_confirmPass.Location = new System.Drawing.Point(4, 345);
+            this.lbl_confirmPass.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbl_confirmPass.Name = "lbl_confirmPass";
-            this.lbl_confirmPass.Size = new System.Drawing.Size(91, 13);
+            this.lbl_confirmPass.Size = new System.Drawing.Size(137, 20);
             this.lbl_confirmPass.TabIndex = 10;
             this.lbl_confirmPass.Text = "Confirm Password";
             this.lbl_confirmPass.Visible = false;
@@ -193,21 +203,23 @@
             // 
             this.lbl_switchMode.AutoSize = true;
             this.lbl_switchMode.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lbl_switchMode.Location = new System.Drawing.Point(3, 270);
+            this.lbl_switchMode.Location = new System.Drawing.Point(4, 414);
+            this.lbl_switchMode.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lbl_switchMode.Name = "lbl_switchMode";
-            this.lbl_switchMode.Size = new System.Drawing.Size(101, 45);
+            this.lbl_switchMode.Size = new System.Drawing.Size(153, 69);
             this.lbl_switchMode.TabIndex = 11;
             this.lbl_switchMode.Text = "Not signed up?";
             this.lbl_switchMode.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // LoginForm
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(326, 450);
+            this.ClientSize = new System.Drawing.Size(489, 692);
             this.Controls.Add(this.tableLayoutPanel1);
+            this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "LoginForm";
-            this.Text = "LoginForm";
+            this.Text = "Maze Game - Login";
             this.tableLayoutPanel1.ResumeLayout(false);
             this.tableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);

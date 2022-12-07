@@ -100,7 +100,7 @@ namespace PRJ_MazeWinForms
             menuStrip.Items.Add(HintMenu);
 
             ToolStripMenuItem HelpMenu = new ToolStripMenuItem("Help");
-            HelpMenu.DropDownItems.Add("Temp");
+            HelpMenu.DropDownItems.Add("W A S D to move");
             menuStrip.Items.Add(HelpMenu);
         }
 
