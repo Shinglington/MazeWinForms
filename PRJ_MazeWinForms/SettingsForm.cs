@@ -42,6 +42,9 @@ namespace PRJ_MazeWinForms
             _showGeneration = false;
             _mode = SettingsView.Basic;
             _appSettings = appSettings;
+
+            _title.Text = _mode.ToString() + " Settings";
+            MyFormMethods.ResizeLabelText(_title, new EventArgs());
         }
 
         private void SetupEvents()
