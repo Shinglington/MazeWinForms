@@ -7,6 +7,8 @@ namespace PRJ_MazeWinForms
 {
     public partial class MenuForm : Form
     {
+        // Menu form which is first shown when user opens program
+
         private SettingsForm _settingsForm;
         private LoginForm _loginForm;
         private HighscoresForm _highscoreForm;
