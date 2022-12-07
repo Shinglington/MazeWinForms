@@ -7,6 +7,9 @@ namespace PRJ_MazeWinForms
 {
     public static class MyFormMethods
     {
+
+        // Methods that help with windows forms controls
+
         public static void ResizeLabelText(object sender, EventArgs e)
         {
             double SCALING = 0.9;

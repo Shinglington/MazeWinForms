@@ -2,6 +2,9 @@
 {
     public class Node
     {
+        // Stores information about individual "Node" in a graph
+
+
         // Adjacent nodes, in order North, East, South, West (as ordered in the Directions enum)   
         private Node[] _adjNodes;
 

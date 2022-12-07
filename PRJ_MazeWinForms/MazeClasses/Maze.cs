@@ -7,6 +7,9 @@ namespace MazeClasses
 {
     public abstract class Maze
     {
+        // Generic attributes and methods for both types of maze (console and winforms)
+        // Stores information about the Maze, and current game state
+
 
         protected Graph _graph;
         protected Player _player;
@@ -65,12 +68,14 @@ namespace MazeClasses
             MyList<NodeLocation> hint = GetHint();
             _mazeDisplayer.Display(hint);
             _visibleHints = hint;
+            _player.UseHint();
             return success;
         }
         public bool ShowSolution()
         {
             bool success = true;
             _mazeDisplayer.Display(Solution);
+            _player.UseSolution();
             return success;
         }
 
@@ -115,6 +120,7 @@ namespace MazeClasses
             {
                 hint.Add(PathToEnd[i].Location);
             }
+
             return hint;
         }
         public bool CheckAccessibility(NodeLocation A, NodeLocation B)

@@ -12,6 +12,7 @@ namespace PRJ_MazeWinForms.Authentication
 
     public class User
     {
+        // Class to hold information about a player from the user database
         public int PlayerId { get; }
         public string Username { get; }
         public string PasswordHash { get; }
@@ -26,6 +27,8 @@ namespace PRJ_MazeWinForms.Authentication
 
     public class Game
     {
+
+        // Class to hold information about a "Game" from the ScoreDatabase
         public int GameId { get; }
         public int PlayerId { get; }
         public int Score { get; }
@@ -43,6 +46,10 @@ namespace PRJ_MazeWinForms.Authentication
 
     public class DatabaseHelper
     {
+        // Handles database
+        // Allows other classes to read and write to database safely
+
+
         private const string _databaseName = "MazeDatabase.mdf";
         private string _directory;
         private string _connectionString;

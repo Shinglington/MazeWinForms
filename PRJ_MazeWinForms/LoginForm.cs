@@ -7,6 +7,8 @@ namespace PRJ_MazeWinForms
 {
     public partial class LoginForm : Form
     {
+        // Form for login and registering
+
         enum FormMode
         {
             Login,

@@ -15,6 +15,7 @@ namespace PRJ_MazeWinForms
 {
     public partial class HighscoresForm : Form
     {
+        // Form to show highscores, either global or personal
         enum viewMode
         {
             global,

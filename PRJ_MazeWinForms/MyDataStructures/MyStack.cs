@@ -4,6 +4,9 @@ namespace MyDataStructures
 {
     public class MyStack<T>
     {
+        // Implementation of stack, using previous list to store items
+        // When "Pulling" from stack, returns the most recently added item
+
         private MyList<T> _items;
         private int _top;
         private int _size;

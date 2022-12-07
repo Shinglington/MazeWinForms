@@ -5,6 +5,8 @@ namespace MazeClasses
 {
     public class Player
     {
+        // Stores methods and attributes relating to the character in the maze
+
         private Maze _maze;
         public NodeLocation Location { get; private set; }
 

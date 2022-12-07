@@ -5,6 +5,9 @@ namespace MazeClasses
 {
     class MazeSolver
     {
+        // Stores solving algorithms
+
+
         public static Random rand = new Random();
 
         // "Random Mouse Solver" returns list of Nodes which are part of solution

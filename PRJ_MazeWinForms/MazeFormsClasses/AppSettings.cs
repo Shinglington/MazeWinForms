@@ -9,6 +9,7 @@ namespace MazeFormsClasses
     [Serializable()]
     public struct AppSettings
     {
+        // Structure of different application settings
         public MazeDisplaySettings DisplaySettings { get; set; }
         public MazeControlSettings ControlSettings { get; set; }
 
@@ -16,6 +17,7 @@ namespace MazeFormsClasses
 
     public class AppSettingsManager
     {
+        // Class to manage loading and saving of settings
 
         private const string FILENAME = "settings.xml";
         private AppSettings _appSettings = new AppSettings();
@@ -26,6 +28,7 @@ namespace MazeFormsClasses
             set { _appSettings = value; }
         }
 
+        // Decided I didn't have time to implement customisable settings so config is always default
         public void LoadConfig()
         {
             /*

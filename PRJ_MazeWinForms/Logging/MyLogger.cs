@@ -2,6 +2,10 @@
 
 namespace PRJ_MazeWinForms.Logging
 {
+    // Classes relating to information logs
+    // LogHelper is used to output logs to console output window
+
+    
     public enum ErrorLevel
     {
         Information,

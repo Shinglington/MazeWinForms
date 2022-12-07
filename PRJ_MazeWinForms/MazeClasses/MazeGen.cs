@@ -18,6 +18,10 @@ namespace MazeClasses
     }
     class MazeGen
     {
+
+        // Handles generation of maze using different algorithms
+
+
         public static Random rand = new Random();
         public static bool GenerateMaze(Maze M, Graph G, String Algorithm, bool ShowGeneration = false)
         {
@@ -30,7 +34,7 @@ namespace MazeClasses
         }
         public static bool GenerateMaze(Maze M, Graph G, GenAlgorithm Algorithm, bool ShowGeneration = false)
         {
-            // Returns the success state of the maze
+            // Returns the success state of the maze 
             return GenerateMaze(M, G, Algorithm.ToString(), ShowGeneration);
         }
         public static bool AldousBroder(Maze M, Graph G, bool ShowGeneration)

@@ -8,6 +8,8 @@ namespace PRJ_MazeWinForms
 {
     public partial class SettingsForm : Form
     {
+        // Form that handles user input of settings
+
         private MenuForm _menu;
         private Label _title;
         private TableLayoutPanel _formPanel;

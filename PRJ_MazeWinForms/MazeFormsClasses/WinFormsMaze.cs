@@ -10,6 +10,8 @@ namespace MazeFormsClasses
 {
     class WinFormsMaze : Maze
     {
+        // Windows Forms implementation of Maze, inherited from base Maze
+        // Overrides and changes some methods and attributes to adapt them to be suitable for a WindowsForms appliation
 
         // Forms attributes
         private TableLayoutPanel _container;

@@ -4,6 +4,9 @@ namespace PRJ_MazeWinForms.Authentication
 {
     public class Matrix
     {
+        // Class to handle storing of matrices and support for Matrix Multiplication
+
+
         private int[,] _matrixArray;
         public Matrix(int[,] matrixArray)
         {

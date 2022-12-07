@@ -13,6 +13,8 @@ namespace PRJ_MazeWinForms
     public partial class MazeForm : Form
     {
 
+        // Form to display the WinFormsMaze and allow user interaction
+
         // Controls
         private MenuForm _menuForm;
         private TableLayoutPanel _tbl_formPanel;

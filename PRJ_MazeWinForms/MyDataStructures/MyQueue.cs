@@ -4,6 +4,10 @@ namespace MyDataStructures
 {
     public class MyQueue<T>
     {
+        // Implementation of queue, which uses previous implementation of list to store items
+        // When "Dequeuing", returns the item that was added earliest
+
+
         private MyList<T> _items;
         private int _front;
         private int _back;

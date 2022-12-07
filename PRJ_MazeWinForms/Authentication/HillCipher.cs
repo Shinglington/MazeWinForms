@@ -5,6 +5,11 @@ namespace PRJ_MazeWinForms.Authentication
 {
     class HillCipher
     {
+
+        // Initialised with a keyword and alphabet
+        // Used to encrypt and decrypt strings using the Hill Cipher
+
+
         private string _alphabet;
         private int _matrixSize;
         private Matrix _encryptMatrix;

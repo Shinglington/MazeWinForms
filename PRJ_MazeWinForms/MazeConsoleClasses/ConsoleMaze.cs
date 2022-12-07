@@ -8,6 +8,7 @@ namespace MazeConsole
 {
     public class ConsoleMaze : Maze
     {
+        // Console implementation of the Maze, used initially for testing generation and solving algorithms
         public ConsoleMaze(int width, int height, GenAlgorithm algorithm, bool showGeneration) :
             base(new MazeSettings(width, height, algorithm, showGeneration))
         {

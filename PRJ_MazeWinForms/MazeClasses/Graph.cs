@@ -6,6 +6,12 @@ namespace MazeClasses
 {
     public class Graph
     {
+
+        // Stores information about a rectangular "graph"
+        // Used in Maze class
+
+
+
         // readonly since nodes should only be changed via UpdateEdge method
         private readonly Node[,] _nodes;
         public int Width { get; }

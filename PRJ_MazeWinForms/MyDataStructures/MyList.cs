@@ -7,6 +7,10 @@ namespace MyDataStructures
 
     public class MyList<T> : IList<T>
     {
+        // Implementation of List, which can has a dynamic size
+        // internal array is enlarged as required
+
+
         private const int _initialCapacity = 4;
 
         private T[] _items;
