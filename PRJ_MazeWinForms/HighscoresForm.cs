@@ -47,6 +47,7 @@ namespace PRJ_MazeWinForms
             this.btn_back.Click += new EventHandler(ReturnToMenu);
             this.btn_toggleGlobal.Click += new EventHandler((sender, e) => SwitchVisibilityMode());
             this.btn_sort.Click += new EventHandler((sender, e) => SwitchSortedView());
+            this.VisibleChanged += new EventHandler((sender, e) => UpdateDataCache());
         }
 
         private void ReturnToMenu(object sender, EventArgs e)
