@@ -93,7 +93,7 @@ namespace PRJ_MazeWinForms
             // populate menu strip
 
             ToolStripMenuItem FileMenu = new ToolStripMenuItem("File");
-            FileMenu.DropDownItems.Add("Temp");
+            FileMenu.DropDownItems.Add("Exit").Click += new EventHandler(ReturnToMenu);
             menuStrip.Items.Add(FileMenu);
 
             ToolStripMenuItem HintMenu = new ToolStripMenuItem("Hint");
